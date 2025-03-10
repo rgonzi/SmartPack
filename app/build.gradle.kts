@@ -2,6 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    //Firebase Google Services
+    id("com.google.gms.google-services")
+    // Crashlytics Gradle plugin
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -52,6 +56,12 @@ dependencies {
 
     //Navigation compose
     implementation(libs.androidx.navigation.compose)
+    //Firebase BoM
+    implementation(platform(libs.firebase.bom))
+    //Firebase Analytics
+    implementation(libs.firebase.analytics)
+    //Firebase Crashlytics
+    implementation(libs.firebase.crashlytics)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
