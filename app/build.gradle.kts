@@ -6,6 +6,8 @@ plugins {
     id("com.google.gms.google-services")
     // Crashlytics Gradle plugin
     id("com.google.firebase.crashlytics")
+    //Serialization
+    kotlin("plugin.serialization") version "2.1.10"
 }
 
 android {
@@ -56,6 +58,9 @@ dependencies {
 
     //Navigation compose
     implementation(libs.androidx.navigation.compose)
+    //Serialization
+    implementation(libs.kotlinx.serialization.json)
+
     //Firebase BoM
     implementation(platform(libs.firebase.bom))
     //Firebase Analytics
