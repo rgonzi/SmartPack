@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.inovatech.smartpack.ui.screens.Login
 import com.inovatech.smartpack.ui.screens.LoginScreen
+import com.inovatech.smartpack.ui.theme.LoginScreenBackground
 
 @Composable
 fun Navigation(
@@ -19,7 +20,9 @@ fun Navigation(
 ) {
     val navController: NavHostController = rememberNavController()
 
-    Scaffold {
+    Scaffold (
+        modifier = Modifier.fillMaxSize()
+    ){
         NavHost(
             navController = navController,
             startDestination = Login,
