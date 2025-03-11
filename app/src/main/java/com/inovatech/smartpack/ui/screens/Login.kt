@@ -1,6 +1,5 @@
 package com.inovatech.smartpack.ui.screens
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,7 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.serialization.Serializable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.inovatech.smartpack.R
 import com.inovatech.smartpack.ui.theme.Background
 
@@ -31,9 +31,12 @@ object Login
 
 @Composable
 fun LoginScreen(
+    viewModel: LoginViewModel = viewModel(),
     onLoginClick: () -> Unit = {},
     onRegisterClick: () -> Unit,
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,9 +54,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -70,8 +71,8 @@ fun LoginScreen(
                     unfocusedContainerColor = Color.White
                 ),
                 modifier = Modifier.fillMaxWidth(),
-                value = "",
-                onValueChange = {},
+                value = uiState.email,
+                onValueChange = { viewModel.updateEmail(it) },
                 singleLine = true,
                 label = { Text("Correu") },
                 trailingIcon = {
@@ -95,15 +96,17 @@ fun LoginScreen(
                     unfocusedContainerColor = Color.White
                 ),
                 modifier = Modifier.fillMaxWidth(),
-                value = "",
-                onValueChange = {},
+                value = uiState.password,
+                onValueChange = { viewModel.updatePassword(it) },
                 singleLine = true,
                 label = { Text("Contrasenya") },
-                visualTransformation = PasswordVisualTransformation(), /* TODO toggle password visibility */
+                visualTransformation = if (uiState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.Lock,
-                        contentDescription = "Icona d'un candau"
+                        contentDescription = "Icona d'un candau",
+                        modifier = Modifier.clickable { viewModel.togglePasswordVisibility() }
+
                     )
                 },
                 keyboardOptions = KeyboardOptions(

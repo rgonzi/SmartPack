@@ -27,11 +27,13 @@ fun Navigation(
         ) {
             composable<Login> {
                 LoginScreen(
-                    onRegisterClick = {navController.navigate(SignUpEmail)}
+                    onRegisterClick = { navController.navigate(SignUpEmail) }
                 )
             }
             composable<SignUpEmail> {
-                SignUpEmailScreen()
+                SignUpEmailScreen(
+                    onCancelClick = { navController.popBackStack(Login, inclusive = false) }
+                )
             }
         }
     }
