@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextDecoration
@@ -25,17 +24,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.serialization.Serializable
 import com.inovatech.smartpack.R
-import com.inovatech.smartpack.ui.theme.LoginScreenBackground
+import com.inovatech.smartpack.ui.theme.Background
 
 @Serializable
 object Login
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onLoginClick: () -> Unit = {},
+    onRegisterClick: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LoginScreenBackground)
+            .background(Background)
             .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -48,15 +50,16 @@ fun LoginScreen() {
         )
         Spacer(modifier = Modifier.weight(1f))
 
-        Column (
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Text(
                 "Inicia sessió",
                 fontWeight = FontWeight.Bold,
-                fontSize = 32.sp
+                fontSize = 28.sp
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -135,7 +138,7 @@ fun LoginScreen() {
                     contentColor = Color.White
                 ),
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { /*TODO Registre*/ }
+                onClick = { onRegisterClick() }
             ) {
                 Text("Registra't")
             }
@@ -144,8 +147,8 @@ fun LoginScreen() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showSystemUi = true)
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen()
+    LoginScreen(onRegisterClick = {})
 }

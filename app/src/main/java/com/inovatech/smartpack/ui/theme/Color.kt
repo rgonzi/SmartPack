@@ -11,7 +11,7 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
-val LoginScreenBackground = Brush.verticalGradient(
+val Background = Brush.verticalGradient(
     colors = listOf(Color(0xFFF6D051), Color(0xFFF3871A))
 )
 
