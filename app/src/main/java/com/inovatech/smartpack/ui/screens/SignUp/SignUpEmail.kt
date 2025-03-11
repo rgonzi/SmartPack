@@ -20,10 +20,13 @@ import kotlinx.serialization.Serializable
 object SignUpEmail
 
 @Composable
-fun SignUpEmailScreen() {
+fun SignUpEmailScreen(
+    onNextClick: () -> Unit = {},
+    onCancelClick: () -> Unit = {}
+) {
     CommonSignUpScreen(
         onNextClick = { /*TODO: Navegar a la pantalla de dades personals*/ },
-        onCancelClick = { /*TODO: Tornar a la pantalla de login*/ },
+        onCancelClick = onCancelClick,
     ) {
         OutlinedTextField(
             colors = TextFieldDefaults.colors(
