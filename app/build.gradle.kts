@@ -68,6 +68,13 @@ dependencies {
     //Firebase Crashlytics
     implementation(libs.firebase.crashlytics)
 
+    // Retrofit
+    implementation(libs.retrofit)
+    // Gson converter
+    implementation(libs.converter.gson)
+    //OkHttp
+    implementation(libs.okhttp)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
