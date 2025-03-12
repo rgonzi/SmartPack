@@ -8,10 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.inovatech.smartpack.ui.screens.Login
-import com.inovatech.smartpack.ui.screens.LoginScreen
-import com.inovatech.smartpack.ui.screens.SignUp.SignUpEmail
-import com.inovatech.smartpack.ui.screens.SignUp.SignUpEmailScreen
+import com.inovatech.smartpack.ui.screens.*
 
 @Composable
 fun Navigation(
@@ -27,11 +24,18 @@ fun Navigation(
         ) {
             composable<Login> {
                 LoginScreen(
-                    onRegisterClick = { navController.navigate(SignUpEmail) }
+                    onRegisterClick = { navController.navigate(SignUp) }
                 )
             }
-            composable<SignUpEmail> {
+            composable<SignUp> {
                 SignUpEmailScreen(
+                    onNextClick = { /*TODO: Mostrar missatge de confirmació i registrar-se*/ },
+                    onCancelClick = { navController.popBackStack(Login, inclusive = false) }
+                )
+            }
+            composable<RememberPassword> {
+                RememberPasswordScreen(
+                    onNextClick = {/* TODO: Implementar recordar contrasenya */ },
                     onCancelClick = { navController.popBackStack(Login, inclusive = false) }
                 )
             }
