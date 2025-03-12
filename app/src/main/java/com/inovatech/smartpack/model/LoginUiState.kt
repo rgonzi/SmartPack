@@ -4,5 +4,7 @@ data class LoginUiState(
     var email: String = "",
     var password: String = "",
     var passwordVisible: Boolean = false,
-    var loginTried: Boolean = false,
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val token: String? = null
 )
