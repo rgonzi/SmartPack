@@ -24,7 +24,8 @@ fun Navigation(
         ) {
             composable<Login> {
                 LoginScreen(
-                    onRegisterClick = { navController.navigate(SignUp) }
+                    onRegisterClick = { navController.navigate(SignUp) },
+                    onForgotPasswordClick = { navController.navigate(RememberPassword) }
                 )
             }
             composable<SignUp> {

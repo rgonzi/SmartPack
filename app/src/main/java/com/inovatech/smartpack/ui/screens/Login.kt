@@ -35,6 +35,7 @@ object Login
 fun LoginScreen(
     viewModel: LoginViewModel = viewModel(),
     onLoginClick: () -> Unit = {},
+    onForgotPasswordClick: () -> Unit = {},
     onRegisterClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -122,12 +123,10 @@ fun LoginScreen(
                 )
 
                 Text(
-                    "He oblidat la contrassenya",
+                    "He oblidat la contrasenya",
                     modifier = Modifier
                         .align(Alignment.End)
-                        .clickable {
-                            /*TODO Anar a recordar contrasenya */
-                        },
+                        .clickable { onForgotPasswordClick() },
                     fontWeight = FontWeight.Bold,
                     textDecoration = TextDecoration.Underline
                 )

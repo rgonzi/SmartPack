@@ -30,8 +30,9 @@ fun SignUpEmailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    CommonSignUpScreen(
-        title = "Registra't a l'aplicació",
+    CommonInitScreen(
+        title = "Introdueix les teves dades",
+        nomBotoPrincipal = "Registrar-me",
         onNextClick = onNextClick,
         onCancelClick = onCancelClick,
     ) {
