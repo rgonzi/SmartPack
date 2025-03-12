@@ -1,4 +1,4 @@
-package com.inovatech.smartpack.ui.screens.SignUp
+package com.inovatech.smartpack.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,6 +16,7 @@ import com.inovatech.smartpack.ui.theme.Background
 
 @Composable
 fun CommonSignUpScreen(
+    title: String,
     onNextClick: () -> Unit,
     onCancelClick: () -> Unit,
     content: @Composable () -> Unit,
@@ -64,7 +65,7 @@ fun CommonSignUpScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    "Registra't a l'aplicació",
+                    title,
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp
                 )
