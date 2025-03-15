@@ -46,10 +46,10 @@ class LoginViewModel : ViewModel() {
                     val response = RetrofitInstance.smartPackRepository.login(
                         email = email, password = password
                     )
-                    if (response.isSuccessful) {
-                        val loginResponse = response.body()
+                    if (response.isSuccessful && response.body() != null) {
+                        val loginResponse = response.body()!!
                         _uiState.update {
-                            it.copy(token = loginResponse?.token, error = null)
+                            it.copy(token = loginResponse.token, error = null)
                         }
                     } else {
                         _uiState.update {
@@ -59,7 +59,7 @@ class LoginViewModel : ViewModel() {
                 }
             } catch (e: HttpException) {
                 _uiState.update {
-                    it.copy(error = "S'ha produït un error: ${e.message()}")
+                    it.copy(error = "S'ha produït un error en el servidor: ${e.message()}")
                 }
             } catch (e: IOException) {
                 _uiState.update {
