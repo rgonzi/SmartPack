@@ -73,7 +73,8 @@ dependencies {
     // Gson converter
     implementation(libs.converter.gson)
     //OkHttp
-    implementation(libs.okhttp)
+    //implementation(libs.okhttp)
+    implementation (libs.okhttp3.logging.interceptor)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
