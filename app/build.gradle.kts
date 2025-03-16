@@ -76,6 +76,9 @@ dependencies {
     //implementation(libs.okhttp)
     implementation (libs.okhttp3.logging.interceptor)
 
+    //Criptografia per a EncryptedSharedPreferences
+    implementation(libs.androidx.security.crypto)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
