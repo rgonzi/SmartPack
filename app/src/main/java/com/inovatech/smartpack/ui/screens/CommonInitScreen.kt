@@ -38,7 +38,7 @@ fun CommonInitScreen(
     ) {
         Scaffold(containerColor = Color.Transparent, modifier = Modifier.fillMaxSize(),
             topBar = {
-                TopAppBar(
+                CenterAlignedTopAppBar(
                     title = {
                         Text(
                             stringResource(R.string.app_name),

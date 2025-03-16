@@ -1,7 +1,5 @@
 package com.inovatech.smartpack.ui.screens
 
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.model.SignUpUiState
@@ -35,7 +33,7 @@ class SignUpViewModel : ViewModel() {
     }
 
     fun register() {
-        _uiState.update { it.copy(hasTriedRegister = true) }
+        _uiState.update { it.copy(hasTriedRegister = true, error = null) }
 
         val state = _uiState.value
 
@@ -43,8 +41,11 @@ class SignUpViewModel : ViewModel() {
             _uiState.update { it.copy(error = "Revisa les dades introduïdes") }
             return
         }
+
+        _uiState.update { it.copy(isLoading = true) }
+
         viewModelScope.launch {
-            //TODO Registrar usuari
+            //TODO Registrar usuari. Veure LoginViewModel
         }
     }
 

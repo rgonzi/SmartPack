@@ -46,6 +46,7 @@ fun RememberPasswordScreen(
             value = uiState.email,
             onValueChange = { viewModel.updateEmail(it) },
             label = { Text("Correu") },
+            maxLines = 1,
             trailingIcon = { Icon(Icons.Default.Email, contentDescription = "Email") },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,

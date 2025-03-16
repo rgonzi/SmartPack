@@ -38,6 +38,7 @@ fun LoginScreen(
     onRegisterClick: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -116,7 +117,7 @@ fun LoginScreen(
 
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { viewModel.login() }
+                    onClick = { viewModel.login(context) }
                 ) {
                     Text("Iniciar sessió", fontWeight = FontWeight.Bold)
                 }

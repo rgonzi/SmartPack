@@ -15,6 +15,6 @@ interface SmartPackApiService {
         @Query("password") password: String,
     ): Response<LoginResponse>
 
-    @POST("/auth/register")
+    @POST("/auth/registrar")
     suspend fun register(@Body usuari: Usuari): Response<Usuari>
 }
