@@ -1,19 +1,17 @@
 package com.inovatech.smartpack.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
@@ -24,7 +22,11 @@ import androidx.compose.ui.unit.sp
 import kotlinx.serialization.Serializable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.inovatech.smartpack.R
+import com.inovatech.smartpack.ui.EmailTextField
+import com.inovatech.smartpack.ui.PasswordTextField
 import com.inovatech.smartpack.ui.theme.Background
+import com.inovatech.smartpack.utils.isValidEmail
+import com.inovatech.smartpack.utils.isValidPassword
 
 @Serializable
 object Login
@@ -69,55 +71,33 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 //Email
-                OutlinedTextField(
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
+                EmailTextField(
                     value = uiState.email,
-                    onValueChange = { viewModel.updateEmail(it) },
-                    singleLine = true,
-                    label = { Text("Correu") },
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Email,
-                            contentDescription = "Icona d'un email"
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next
-                    )
+                    onValueChange = viewModel::updateEmail,
+                    imeAction = ImeAction.Next,
+                    isError = uiState.hasTriedLogin && !uiState.email.isValidEmail()
                 )
+
+                if (uiState.hasTriedLogin) {
+                    if (uiState.email.isEmpty()) ShowErrorText("Camp obligatori")
+
+                    if (!uiState.email.isValidEmail() && uiState.email.isNotEmpty()) {
+                        ShowErrorText("Introdueix un correu vàlid")
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 //Password
-                OutlinedTextField(
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
+                PasswordTextField(
                     value = uiState.password,
-                    onValueChange = { viewModel.updatePassword(it) },
-                    singleLine = true,
-                    label = { Text("Contrasenya") },
+                    onValueChange = viewModel::updatePassword,
                     visualTransformation = if (uiState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Lock,
-                            contentDescription = "Icona d'un candau",
-                            modifier = Modifier.clickable { viewModel.togglePasswordVisibility() }
-
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
-                    )
+                    trailingIconClick = viewModel::togglePasswordVisibility,
+                    imeAction = ImeAction.Done,
+                    isError = uiState.hasTriedLogin && !uiState.password.isValidPassword()
                 )
+
 
                 Text(
                     "He oblidat la contrasenya",
@@ -127,6 +107,11 @@ fun LoginScreen(
                     fontWeight = FontWeight.Bold,
                     textDecoration = TextDecoration.Underline
                 )
+
+                if (uiState.hasTriedLogin && uiState.password.isEmpty()) {
+                    ShowErrorText("Camp obligatori")
+                }
+
                 Spacer(modifier = Modifier.weight(0.5f))
 
                 Button(
@@ -151,7 +136,19 @@ fun LoginScreen(
             }
         }
         if (uiState.isLoading) {
-            CircularProgressIndicator()
+            //Embolcallem el CircularProgressIndicator perquè així no es pugui interectuar
+            //amb la pantalla mentre s'executa el login
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f)) // Fons semitransparent
+                    .clickable(enabled = false) {} // Evita interaccions
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 }

@@ -1,11 +1,14 @@
 package com.inovatech.smartpack.ui.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
@@ -37,6 +40,7 @@ fun SignUpEmailScreen(
         nomBotoPrincipal = "Registrar-me",
         onNextClick = {
             viewModel.register()
+            //TODO Si s'ha pogut registrar correctament tornar a la pantalla de login
         },
         onCancelClick = onCancelClick,
     ) {
@@ -98,6 +102,22 @@ fun SignUpEmailScreen(
 
         if (uiState.hasTriedRegister && uiState.password != uiState.repeatedPassword) {
             ShowErrorText("Les contrasenyes no coincideixen")
+        }
+
+        if (uiState.isLoading) {
+            //Embolcallem el CircularProgressIndicator perquè així no es pugui interectuar
+            //amb la pantalla mentre s'executa el registre
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f)) // Fons semitransparent
+                    .clickable(enabled = false) {} // Evita interaccions
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 }
