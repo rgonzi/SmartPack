@@ -1,4 +1,4 @@
-package com.inovatech.smartpack.ui.utils
+package com.inovatech.smartpack.utils
 
 
 fun String.isValidEmail(): Boolean {
