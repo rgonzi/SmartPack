@@ -2,8 +2,10 @@ package com.inovatech.smartpack.ui.screens
 
 import androidx.lifecycle.ViewModel
 import com.inovatech.smartpack.model.RememberPasswordUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 
+@HiltViewModel
 class RememberPasswordViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(RememberPasswordUiState())
     val uiState: StateFlow<RememberPasswordUiState> = _uiState.asStateFlow()

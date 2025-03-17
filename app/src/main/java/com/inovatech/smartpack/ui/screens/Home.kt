@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.inovatech.smartpack.R
 import com.inovatech.smartpack.ui.theme.Background
 import kotlinx.serialization.Serializable
@@ -22,7 +23,7 @@ data object Home
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = viewModel(),
+    viewModel: HomeViewModel = hiltViewModel(),
     backToLogin: () -> Unit = {},
 ) {
     Box(

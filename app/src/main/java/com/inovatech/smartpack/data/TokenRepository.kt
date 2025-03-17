@@ -1,10 +1,12 @@
 package com.inovatech.smartpack.data
 
-import android.content.Context
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class TokenRepository(private val context: Context) {
-
-    private val authTokenService = AuthTokenService(context)
+@Singleton
+class TokenRepository @Inject constructor(
+    private val authTokenService: AuthTokenService,
+) {
 
     fun saveAuthToken(token: String) {
         authTokenService.saveAuthToken(token)

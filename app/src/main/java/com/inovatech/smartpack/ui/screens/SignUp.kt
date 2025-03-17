@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.inovatech.smartpack.ui.EmailTextField
 import com.inovatech.smartpack.ui.PasswordTextField
@@ -29,7 +30,7 @@ object SignUp
 
 @Composable
 fun SignUpEmailScreen(
-    viewModel: SignUpViewModel = viewModel(),
+    viewModel: SignUpViewModel = hiltViewModel(),
     onNextClick: () -> Unit = {},
     onCancelClick: () -> Unit = {},
 ) {
@@ -40,7 +41,8 @@ fun SignUpEmailScreen(
         nomBotoPrincipal = "Registrar-me",
         onNextClick = {
             viewModel.register()
-            //TODO Si s'ha pogut registrar correctament tornar a la pantalla de login
+            //TODO Pantalla d'avís si s'ha registrat correctament o ha donat error
+            //TODO Tornar a la pantalla de login
         },
         onCancelClick = onCancelClick,
     ) {

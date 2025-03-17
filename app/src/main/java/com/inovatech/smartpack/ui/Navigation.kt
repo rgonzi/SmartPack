@@ -19,11 +19,9 @@ import com.inovatech.smartpack.ui.screens.*
 @Composable
 fun Navigation(
     modifier: Modifier = Modifier,
+    storage: TokenRepository
 ) {
     val navController: NavHostController = rememberNavController()
-    val context = LocalContext.current
-    val activity = context as Activity
-    val storage = TokenRepository(context)
     var startDestination by remember { mutableStateOf<Any>(Login) }
 
     LaunchedEffect(Unit) {
@@ -34,7 +32,7 @@ fun Navigation(
     Surface {
         NavHost(
             navController = navController,
-            startDestination = Home,
+            startDestination = startDestination,
             modifier = modifier.fillMaxSize()
         ) {
             composable<Login> {

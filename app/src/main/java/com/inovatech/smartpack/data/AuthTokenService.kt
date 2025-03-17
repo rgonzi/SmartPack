@@ -3,8 +3,14 @@ package com.inovatech.smartpack.data
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AuthTokenService(context: Context) {
+@Singleton
+class AuthTokenService @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
     private val TOKEN_STORAGE = "token_storage"
     private val TOKEN_KEY = "token_key"
 

@@ -16,6 +16,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.serialization.Serializable
 
@@ -24,7 +25,7 @@ data object RememberPassword
 
 @Composable
 fun RememberPasswordScreen(
-    viewModel: RememberPasswordViewModel = viewModel(),
+    viewModel: RememberPasswordViewModel = hiltViewModel(),
     onNextClick: () -> Unit,
     onCancelClick: () -> Unit
 ) {
