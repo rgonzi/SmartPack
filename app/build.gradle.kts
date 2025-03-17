@@ -8,6 +8,9 @@ plugins {
     id("com.google.firebase.crashlytics")
     //Serialization
     kotlin("plugin.serialization") version "2.1.10"
+    //Dager Hilt DI
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -78,12 +81,27 @@ dependencies {
 
     //Criptografia per a EncryptedSharedPreferences
     implementation(libs.androidx.security.crypto)
+    implementation(libs.core.ktx)
+
+    //Dager Hilt DI
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
 
     testImplementation(libs.junit)
+    testImplementation (libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Mocking amb Mockito
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    androidTestImplementation(libs.mockito.android)
+}
+
+kapt {
+    correctErrorTypes = true
 }

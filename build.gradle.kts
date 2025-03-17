@@ -7,4 +7,6 @@ plugins {
     id("com.google.gms.google-services") version "4.4.2" apply false
     //Firebase Crashlytics
     id("com.google.firebase.crashlytics") version "3.0.3" apply false
+    //Dager Hilt DI
+    id("com.google.dagger.hilt.android") version "2.51.1" apply false
 }
