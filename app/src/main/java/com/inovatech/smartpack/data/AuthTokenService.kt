@@ -7,6 +7,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ *
+ */
 @Singleton
 class AuthTokenService @Inject constructor(
     @ApplicationContext private val context: Context
@@ -40,8 +43,10 @@ class AuthTokenService @Inject constructor(
 
     fun isTokenValid(): Boolean {
         val token = this.getAuthToken()
-        //TODO Implantar validació del token
-
-        return false
+        if (this.getAuthToken() == null) {
+            return false
+        }
+        return true
+        //TODO Implementar peticio al servidor per si el token és valid o no
     }
 }

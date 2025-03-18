@@ -5,6 +5,6 @@ data class Usuari(
     val email: String,
     val password: String,
     val role: String = "USER",
-    val enabled: Boolean
+    val enabled: Boolean? = null,
     //TODO Acabar de posar tots els camps de la BBDD per a un usuari
 )

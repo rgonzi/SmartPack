@@ -10,10 +10,7 @@ import retrofit2.http.Query
 interface SmartPackApiService {
 
     @POST("/auth/login")
-    suspend fun login(
-        @Query("email") email: String,
-        @Query("password") password: String,
-    ): Response<LoginResponse>
+    suspend fun login(@Body usuari: Usuari): Response<LoginResponse>
 
     @POST("/auth/registrar")
     suspend fun register(@Body usuari: Usuari): Response<Usuari>

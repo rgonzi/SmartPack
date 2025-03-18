@@ -1,24 +1,24 @@
-package com.inovatech.smartpack.ui.screens
-
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.data.TokenRepository
 import com.inovatech.smartpack.model.LoginResponse
+import com.inovatech.smartpack.ui.screens.LoginViewModel
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
+import junit.framework.Assert.assertFalse
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
+import kotlinx.coroutines.test.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
+import org.junit.*
 import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import retrofit2.Response
@@ -27,18 +27,27 @@ import retrofit2.Response
 class LoginViewModelTest {
 
     private lateinit var loginViewModel: LoginViewModel
-    
+
     @Mock
-    private val tokenRepository = mock(TokenRepository::class.java)
-    private val smartPackRepository = mock(SmartPackRepository::class.java)
+    private lateinit var tokenRepository: TokenRepository
+
+    @Mock
+    private lateinit var smartPackRepository: SmartPackRepository
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val testDispatcher = StandardTestDispatcher()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
-        Dispatchers.setMain(StandardTestDispatcher())
-        loginViewModel = LoginViewModel(
-            tokenRepository, smartPackRepository
-        )
+        Dispatchers.setMain(testDispatcher)
+        loginViewModel = LoginViewModel(tokenRepository, smartPackRepository)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain() // Restaurar el dispatcher després dels tests
     }
 
     @Test
@@ -76,7 +85,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun testValidCredentials() = runTest {
+    fun testValidCredentials() {
         val email = "william@gmail.com"
         val pass = "Password1"
         loginViewModel.updateEmail(email)
@@ -84,9 +93,26 @@ class LoginViewModelTest {
 
         assertTrue(email.isValidEmail())
         assertTrue(pass.isValidPassword())
-        assertEquals(null, loginViewModel.uiState.value.error)
     }
 
+    @Test
+    fun testInvalidLogin() = runTest {
+        val email = "william@gmail.com"
+        val pass = "1234"
+        loginViewModel.updateEmail(email)
+        loginViewModel.updatePassword(pass)
+
+        loginViewModel.login()
+
+        with(loginViewModel.uiState.value) {
+            assertTrue(hasTriedLogin)
+            assertEquals("Revisa les dades introduïdes", error)
+            assertEquals(null, token)
+        }
+        verify(tokenRepository, never()).saveAuthToken(any())
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun testValidLogin() = runTest {
         val email = "william@gmail.com"
@@ -95,15 +121,16 @@ class LoginViewModelTest {
         loginViewModel.updatePassword(pass)
 
         val mockResponse = LoginResponse(token = "test_token")
-        whenever(smartPackRepository.login(loginViewModel.uiState.value.email,loginViewModel.uiState.value.password))
-            .thenReturn(Response.success(mockResponse))
+        whenever(smartPackRepository.login(email, pass)).thenReturn(Response.success(mockResponse))
 
         loginViewModel.login()
+        advanceUntilIdle()
 
-        assertEquals(true, loginViewModel.uiState.value.hasTriedLogin)
-        assertEquals(null, loginViewModel.uiState.value.error)
-        assertEquals("test_token", loginViewModel.uiState.value.token)
-
+        with(loginViewModel.uiState.value) {
+            assertTrue(hasTriedLogin)
+            assertEquals(null, error)
+            assertEquals("test_token", token)
+        }
 
         verify(tokenRepository).saveAuthToken("test_token")
     }

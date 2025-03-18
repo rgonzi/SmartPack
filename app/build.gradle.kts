@@ -83,7 +83,7 @@ dependencies {
     implementation(libs.androidx.security.crypto)
     implementation(libs.core.ktx)
 
-    //Dager Hilt DI
+    //Dagger Hilt DI
     implementation (libs.hilt.android)
     kapt (libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
@@ -109,6 +109,7 @@ dependencies {
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
     androidTestImplementation(libs.mockito.android)
+    testImplementation(kotlin("test"))
 }
 
 kapt {

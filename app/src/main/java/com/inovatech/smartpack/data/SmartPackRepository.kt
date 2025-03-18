@@ -8,7 +8,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 interface SmartPackRepository {
-    suspend fun login(email: String, password: String): Response<LoginResponse>
+    suspend fun login(usuari: Usuari): Response<LoginResponse>
 
     suspend fun register(usuari: Usuari): Response<Usuari>
 }
@@ -17,8 +17,8 @@ interface SmartPackRepository {
  class NetworkSmartPackRepository @Inject constructor(
     private val smartPackApiService: SmartPackApiService
  ) : SmartPackRepository {
-    override suspend fun login(email: String, password: String): Response<LoginResponse> {
-        return smartPackApiService.login(email, password)
+    override suspend fun login(usuari: Usuari): Response<LoginResponse> {
+        return smartPackApiService.login(usuari)
     }
 
     override suspend fun register(usuari: Usuari): Response<Usuari> {

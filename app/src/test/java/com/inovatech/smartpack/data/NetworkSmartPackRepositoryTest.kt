@@ -3,6 +3,7 @@ package com.inovatech.smartpack.data
 import com.inovatech.smartpack.model.LoginResponse
 import com.inovatech.smartpack.network.SmartPackApiService
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Before
@@ -22,7 +23,7 @@ class NetworkSmartPackRepositoryTest {
     }
 
     @Test
-    fun testLoginSuccess() = runBlocking {
+    fun testLoginSuccess() = runTest {
         val mockResponse = Response.success(LoginResponse("fake_token"))
         whenever(mockApiService.login("email", "password")).thenReturn(mockResponse)
 
@@ -33,7 +34,7 @@ class NetworkSmartPackRepositoryTest {
     }
 
     @Test
-    fun testLoginError() = runBlocking {
+    fun testLoginError() = runTest {
         val mockResponse = Response.error<LoginResponse>(401, "".toResponseBody(null))
         whenever(mockApiService.login("email", "password")).thenReturn(mockResponse)
 

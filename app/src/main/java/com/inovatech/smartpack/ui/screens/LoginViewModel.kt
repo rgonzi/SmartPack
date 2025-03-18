@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.data.TokenRepository
 import com.inovatech.smartpack.model.LoginUiState
+import com.inovatech.smartpack.model.Usuari
 import com.inovatech.smartpack.utils.Settings.TIMEOUT
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
@@ -55,22 +56,24 @@ class LoginViewModel @Inject constructor(
             return
         }
 
-        _uiState.update { it.copy(isLoading = true) }
 
         if (!email.isValidEmail() || !password.isValidPassword()) {
             _uiState.update {
-                it.copy(isLoading = false, error = "Revisa les dades introduïdes")
+                it.copy(error = "Revisa les dades introduïdes")
             }
             return
         }
+        _uiState.update { it.copy(isLoading = true) }
+
+        val usuariLogin = Usuari(email = email, password = password)
 
         viewModelScope.launch {
+
             val storage = tokenRepository
             val result = withTimeoutOrNull(TIMEOUT) {
                 try {
-                    val response = smartPackRepository.login(
-                        email = email, password = password
-                    )
+                    val response = smartPackRepository.login(usuariLogin)
+
                     if (response.isSuccessful && response.body() != null) {
                         val loginResponse = response.body()!!
                         _uiState.update {
@@ -87,8 +90,6 @@ class LoginViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(error = "S'ha produït un error en la petició: ${e.message}")
                     }
-                } finally {
-                    _uiState.update { it.copy(isLoading = false) }
                 }
             }
             if (result == null) {
@@ -96,6 +97,7 @@ class LoginViewModel @Inject constructor(
                     it.copy(error = "S'ha produït un error: S'ha superat el temps de resposta")
                 }
             }
+            _uiState.update { it.copy(isLoading = false) }
         }
     }
 }

@@ -3,6 +3,7 @@ package com.inovatech.smartpack.ui.screens
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.model.SignUpUiState
+import com.inovatech.smartpack.model.Usuari
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,6 +47,8 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
         }
 
         _uiState.update { it.copy(isLoading = true) }
+
+        val usuariPerRegistrar = Usuari(email = state.email, password = state.password)
 
         viewModelScope.launch {
             //TODO Registrar usuari. Veure LoginViewModel

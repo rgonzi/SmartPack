@@ -10,7 +10,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
@@ -18,7 +17,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.inovatech.smartpack.ui.EmailTextField
 import com.inovatech.smartpack.ui.PasswordTextField
 import com.inovatech.smartpack.utils.isValidEmail
@@ -29,7 +27,7 @@ import kotlinx.serialization.Serializable
 object SignUp
 
 @Composable
-fun SignUpEmailScreen(
+fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel(),
     onNextClick: () -> Unit = {},
     onCancelClick: () -> Unit = {},
@@ -41,8 +39,12 @@ fun SignUpEmailScreen(
         nomBotoPrincipal = "Registrar-me",
         onNextClick = {
             viewModel.register()
-            //TODO Pantalla d'avís si s'ha registrat correctament o ha donat error
-            //TODO Tornar a la pantalla de login
+            if (uiState.signUpSuccess) {
+                //TODO Pantalla d'avís si s'ha registrat correctament o ha donat error
+                onNextClick()
+            } else {
+                //TODO Pantalla d'error
+            }
         },
         onCancelClick = onCancelClick,
     ) {
@@ -139,5 +141,5 @@ fun ShowErrorText(
 @Preview(showSystemUi = true)
 @Composable
 fun SignUpScreenPreview() {
-    SignUpEmailScreen()
+    SignUpScreen()
 }

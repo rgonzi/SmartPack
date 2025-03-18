@@ -1,37 +1,50 @@
 package com.inovatech.smartpack.ui
 
-import android.app.Activity
-import android.app.Application
-import android.content.Context
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.inovatech.smartpack.data.TokenRepository
 import com.inovatech.smartpack.ui.screens.*
+import kotlinx.coroutines.delay
 
 @Composable
 fun Navigation(
     storage: TokenRepository,
 ) {
     val navController: NavHostController = rememberNavController()
-    var startDestination by remember { mutableStateOf<Any?>(null) }
+    var startDestination by remember { mutableStateOf<Any>(Splash) }
 
-    LaunchedEffect(storage.isTokenValid()) {
+    LaunchedEffect(Unit) {
+        delay(1500)
         val isValid = storage.isTokenValid()
         startDestination = if (isValid) Home else Login
     }
-
+    AnimatedVisibility(
+        startDestination == Splash,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            SplashScreen()
+        }
+    }
+    AnimatedVisibility(
+        startDestination != Splash,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
         Surface {
             NavHost(
                 navController = navController,
-                startDestination = startDestination!!,
+                startDestination = startDestination,
                 modifier = Modifier.fillMaxSize()
             ) {
                 composable<Login> {
@@ -41,8 +54,8 @@ fun Navigation(
                     )
                 }
                 composable<SignUp> {
-                    SignUpEmailScreen(
-                        onNextClick = { /*TODO: Mostrar missatge de confirmació i registrar-se*/ },
+                    SignUpScreen(
+                        onNextClick = { navController.popBackStack(Login, inclusive = false) },
                         onCancelClick = { navController.popBackStack(Login, inclusive = false) }
                     )
                 }
@@ -60,3 +73,4 @@ fun Navigation(
             }
         }
     }
+}
