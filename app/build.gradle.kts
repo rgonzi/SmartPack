@@ -6,9 +6,9 @@ plugins {
     id("com.google.gms.google-services")
     // Crashlytics Gradle plugin
     id("com.google.firebase.crashlytics")
-    //Serialization
-    kotlin("plugin.serialization") version "2.1.10"
-    //Dager Hilt DI
+
+    kotlin("plugin.serialization")
+    //Dagger Hilt DI
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
 }
@@ -84,9 +84,9 @@ dependencies {
     implementation(libs.core.ktx)
 
     //Dager Hilt DI
-    implementation(libs.hilt.android)
+    implementation (libs.hilt.android)
+    kapt (libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
-    kapt(libs.hilt.android.compiler)
 
     testImplementation(libs.junit)
     testImplementation (libs.kotlinx.coroutines.test)
@@ -96,6 +96,14 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // For instrumentation tests
+    androidTestImplementation  (libs.hilt.android.testing)
+    kaptAndroidTest (libs.hilt.compiler)
+
+    // For local unit tests
+    testImplementation (libs.hilt.android.testing)
+    kaptTest (libs.hilt.compiler)
 
     //Mocking amb Mockito
     testImplementation(libs.mockito.core)

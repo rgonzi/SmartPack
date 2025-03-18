@@ -8,5 +8,7 @@ plugins {
     //Firebase Crashlytics
     id("com.google.firebase.crashlytics") version "3.0.3" apply false
     //Dager Hilt DI
-    id("com.google.dagger.hilt.android") version "2.51.1" apply false
+    id("com.google.dagger.hilt.android") version "2.55" apply false
+
+    kotlin("plugin.serialization") version "2.1.10" apply false
 }

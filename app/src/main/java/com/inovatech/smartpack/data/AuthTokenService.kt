@@ -42,6 +42,6 @@ class AuthTokenService @Inject constructor(
         val token = this.getAuthToken()
         //TODO Implantar validació del token
 
-        return true
+        return false
     }
 }

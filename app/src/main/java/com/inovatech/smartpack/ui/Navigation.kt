@@ -18,46 +18,45 @@ import com.inovatech.smartpack.ui.screens.*
 
 @Composable
 fun Navigation(
-    modifier: Modifier = Modifier,
-    storage: TokenRepository
+    storage: TokenRepository,
 ) {
     val navController: NavHostController = rememberNavController()
-    var startDestination by remember { mutableStateOf<Any>(Login) }
+    var startDestination by remember { mutableStateOf<Any?>(null) }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(storage.isTokenValid()) {
         val isValid = storage.isTokenValid()
         startDestination = if (isValid) Home else Login
     }
 
-    Surface {
-        NavHost(
-            navController = navController,
-            startDestination = startDestination,
-            modifier = modifier.fillMaxSize()
-        ) {
-            composable<Login> {
-                LoginScreen(
-                    onRegisterClick = { navController.navigate(SignUp) },
-                    onForgotPasswordClick = { navController.navigate(RememberPassword) }
-                )
-            }
-            composable<SignUp> {
-                SignUpEmailScreen(
-                    onNextClick = { /*TODO: Mostrar missatge de confirmació i registrar-se*/ },
-                    onCancelClick = { navController.popBackStack(Login, inclusive = false) }
-                )
-            }
-            composable<RememberPassword> {
-                RememberPasswordScreen(
-                    onNextClick = {/* TODO: Implementar recordar contrasenya */ },
-                    onCancelClick = { navController.popBackStack(Login, inclusive = false) }
-                )
-            }
-            composable<Home> {
-                HomeScreen(
-                    backToLogin = { navController.popBackStack(Login, inclusive = false) }
-                )
+        Surface {
+            NavHost(
+                navController = navController,
+                startDestination = startDestination!!,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                composable<Login> {
+                    LoginScreen(
+                        onRegisterClick = { navController.navigate(SignUp) },
+                        onForgotPasswordClick = { navController.navigate(RememberPassword) }
+                    )
+                }
+                composable<SignUp> {
+                    SignUpEmailScreen(
+                        onNextClick = { /*TODO: Mostrar missatge de confirmació i registrar-se*/ },
+                        onCancelClick = { navController.popBackStack(Login, inclusive = false) }
+                    )
+                }
+                composable<RememberPassword> {
+                    RememberPasswordScreen(
+                        onNextClick = {/* TODO: Implementar recordar contrasenya */ },
+                        onCancelClick = { navController.popBackStack(Login, inclusive = false) }
+                    )
+                }
+                composable<Home> {
+                    HomeScreen(
+                        backToLogin = { navController.popBackStack(Login, inclusive = false) }
+                    )
+                }
             }
         }
     }
-}

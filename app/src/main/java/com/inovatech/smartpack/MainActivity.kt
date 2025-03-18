@@ -11,18 +11,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.inovatech.smartpack.data.TokenRepository
 import com.inovatech.smartpack.ui.Navigation
 import com.inovatech.smartpack.ui.theme.SmartPackTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject lateinit var storage: TokenRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             SmartPackTheme {
-                Navigation()
+                Navigation(storage)
             }
         }
     }
