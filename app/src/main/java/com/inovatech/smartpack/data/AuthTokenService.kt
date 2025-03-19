@@ -6,13 +6,14 @@ import androidx.security.crypto.MasterKey
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.core.content.edit
 
 /**
  *
  */
 @Singleton
 class AuthTokenService @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
 ) {
     private val TOKEN_STORAGE = "token_storage"
     private val TOKEN_KEY = "token_key"
@@ -30,7 +31,7 @@ class AuthTokenService @Inject constructor(
     )
 
     fun saveAuthToken(token: String) {
-        storage.edit().putString(TOKEN_KEY, token).apply()
+        storage.edit() { putString(TOKEN_KEY, token) }
     }
 
     fun getAuthToken(): String? {
@@ -38,7 +39,7 @@ class AuthTokenService @Inject constructor(
     }
 
     fun clearAuthToken() {
-        storage.edit().remove(TOKEN_KEY).apply()
+        storage.edit() { remove(TOKEN_KEY) }
     }
 
     fun isTokenValid(): Boolean {

@@ -22,8 +22,12 @@ fun Navigation(
     val navController: NavHostController = rememberNavController()
     var startDestination by remember { mutableStateOf<Any>(Splash) }
 
+    //Per quan poguem validar si el token és vàlid al servidor
     LaunchedEffect(Unit) {
-        delay(1500)
+
+        //Posem 1s de retard per si la petició és molt ràpida que
+        //tinguem temps de mostrar la SplashScreen
+        delay(1000)
         val isValid = storage.isTokenValid()
         startDestination = if (isValid) Home else Login
     }
@@ -49,14 +53,14 @@ fun Navigation(
             ) {
                 composable<Login> {
                     LoginScreen(
+                        onLoginSuccess = { navController.navigate(Home) },
                         onRegisterClick = { navController.navigate(SignUp) },
                         onForgotPasswordClick = { navController.navigate(RememberPassword) }
                     )
                 }
                 composable<SignUp> {
                     SignUpScreen(
-                        onNextClick = { navController.popBackStack(Login, inclusive = false) },
-                        onCancelClick = { navController.popBackStack(Login, inclusive = false) }
+                        goToLoginScreen = { navController.popBackStack(Login, inclusive = false) }
                     )
                 }
                 composable<RememberPassword> {
