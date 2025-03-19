@@ -5,11 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.data.TokenRepository
 import com.inovatech.smartpack.model.LoginUiState
-import com.inovatech.smartpack.model.Usuari
+import com.inovatech.smartpack.model.LoginRequest
 import com.inovatech.smartpack.utils.Settings.TIMEOUT
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
@@ -19,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val tokenRepository: TokenRepository,
-    private val smartPackRepository: SmartPackRepository
+    private val smartPackRepository: SmartPackRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -65,10 +66,20 @@ class LoginViewModel @Inject constructor(
         }
         _uiState.update { it.copy(isLoading = true) }
 
-        val usuariLogin = Usuari(email = email, password = password)
+        /**
+         * Mock per iniciar sessió mentre el servidor no estigui implementat
+         */
+        if (email == "roger@inovatech.com" && password == "1234567A") {
+            val token = "29uht4rg246iejsh9834tyhr563gf"
+            _uiState.update { it.copy(token = token) }
+            tokenRepository.saveAuthToken(token)
+            return
+        }
+
+        val usuariLogin = LoginRequest(email = email, password = password)
 
         viewModelScope.launch {
-
+            delay(800)
             val storage = tokenRepository
             val result = withTimeoutOrNull(TIMEOUT) {
                 try {
