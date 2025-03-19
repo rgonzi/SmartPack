@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,7 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.inovatech.smartpack.R
 import com.inovatech.smartpack.ui.theme.Background
 import kotlinx.serialization.Serializable
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.*
 
 @Serializable
 data object Home
@@ -26,6 +27,8 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     backToLogin: () -> Unit = {},
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -39,11 +42,16 @@ fun HomeScreen(
                 HomeBottomBar(
                     onClick = {
                         viewModel.logout()
-                        backToLogin()
                     }
                 )
             }
         ) {
+            LaunchedEffect(uiState.isLogoutSuccess) {
+                if (uiState.isLogoutSuccess) {
+                    backToLogin()
+                }
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -98,6 +106,7 @@ fun HomeBottomBar(
         ) {
             Text("Tancar sessió")
         }
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
