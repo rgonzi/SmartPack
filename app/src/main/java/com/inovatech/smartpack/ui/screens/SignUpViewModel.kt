@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.model.RegisterRequest
 import com.inovatech.smartpack.model.SignUpUiState
-import com.inovatech.smartpack.model.Usuari
 import com.inovatech.smartpack.utils.Settings.TIMEOUT
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
