@@ -31,6 +31,7 @@ object Login
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
+    onLoginSuccess: () -> Unit = {},
     onForgotPasswordClick: () -> Unit = {},
     onRegisterClick: () -> Unit,
 ) {
@@ -113,7 +114,12 @@ fun LoginScreen(
 
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { viewModel.login() }
+                    onClick = {
+                        viewModel.login()
+                        if (uiState.token != null) {
+                            onLoginSuccess()
+                        }
+                    }
                 ) {
                     Text("Iniciar sessió", fontWeight = FontWeight.Bold)
                 }
