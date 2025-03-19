@@ -40,29 +40,22 @@ fun SignUpScreen(
     CommonInitScreen(
         title = "Introdueix les teves dades",
         nomBotoPrincipal = "Registrar-me",
-        onNextClick = {
-            viewModel.register()
+        onNextClick = { viewModel.register() },
+        onCancelClick = goToLoginScreen,
+    ) {
+        LaunchedEffect(uiState.signUpSuccess) {
             if (uiState.signUpSuccess) {
+                viewModel.clearFields()
                 Toast.makeText(context, "S'ha registrat correctament", Toast.LENGTH_SHORT).show()
                 goToLoginScreen()
             }
-        },
-        onCancelClick = goToLoginScreen,
-    ) {
+        }
         EmailTextField(
             value = uiState.email,
             onValueChange = viewModel::updateEmail,
             imeAction = ImeAction.Next,
             isError = uiState.hasTriedRegister && !uiState.email.isValidEmail()
         )
-
-        if (uiState.hasTriedRegister) {
-            if (uiState.email.isEmpty()) ShowErrorText("Camp obligatori")
-
-            if (!uiState.email.isValidEmail() && uiState.email.isNotEmpty()) {
-                ShowErrorText("Introdueix un correu vàlid")
-            }
-        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -74,14 +67,6 @@ fun SignUpScreen(
             imeAction = ImeAction.Next,
             isError = uiState.hasTriedRegister && !uiState.password.isValidPassword()
         )
-
-        if (uiState.hasTriedRegister) {
-            if (uiState.password.isEmpty()) ShowErrorText("Camp obligatori")
-
-            if (!uiState.password.isValidPassword() && uiState.password.isNotEmpty()) {
-                ShowErrorText("Ha de tenir mínim 8 caràcters, almenys 1 lletra majúscula i almenys un número")
-            }
-        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -100,14 +85,12 @@ fun SignUpScreen(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done
             ),
-            isError = uiState.hasTriedRegister && uiState.password != uiState.repeatedPassword,
+            isError = uiState.hasTriedRegister &&
+                    (uiState.password != uiState.repeatedPassword || uiState.repeatedPassword.isEmpty()),
             modifier = Modifier
                 .fillMaxWidth()
         )
 
-        if (uiState.hasTriedRegister && uiState.password != uiState.repeatedPassword) {
-            ShowErrorText("Les contrasenyes no coincideixen")
-        }
         Spacer(modifier = Modifier.height(16.dp))
         if (uiState.error != null) {
             ShowErrorText(uiState.error!!)

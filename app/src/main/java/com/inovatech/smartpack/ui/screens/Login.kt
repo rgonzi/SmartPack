@@ -1,5 +1,6 @@
 package com.inovatech.smartpack.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
@@ -41,6 +43,12 @@ fun LoginScreen(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
+        LaunchedEffect(uiState.loginSuccess) {
+            if (uiState.loginSuccess) {
+                viewModel.clearFields()
+                onLoginSuccess()
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -68,7 +76,6 @@ fun LoginScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
-                //Email
                 EmailTextField(
                     value = uiState.email,
                     onValueChange = viewModel::updateEmail,
@@ -76,17 +83,8 @@ fun LoginScreen(
                     isError = uiState.hasTriedLogin && !uiState.email.isValidEmail()
                 )
 
-                if (uiState.hasTriedLogin) {
-                    if (uiState.email.isEmpty()) ShowErrorText("Camp obligatori")
-
-                    if (!uiState.email.isValidEmail() && uiState.email.isNotEmpty()) {
-                        ShowErrorText("Introdueix un correu vàlid")
-                    }
-                }
-
                 Spacer(modifier = Modifier.height(8.dp))
 
-                //Password
                 PasswordTextField(
                     value = uiState.password,
                     onValueChange = viewModel::updatePassword,
@@ -106,19 +104,17 @@ fun LoginScreen(
                     textDecoration = TextDecoration.Underline
                 )
 
-                if (uiState.hasTriedLogin && uiState.password.isEmpty()) {
-                    ShowErrorText("Camp obligatori")
+                if (uiState.error != null) {
+                    ShowErrorText(uiState.error!!)
                 }
 
                 Spacer(modifier = Modifier.weight(0.5f))
 
                 Button(
                     modifier = Modifier.fillMaxWidth(),
+                    enabled = !uiState.isLoading,
                     onClick = {
                         viewModel.login()
-                        if (uiState.token != null) {
-                            onLoginSuccess()
-                        }
                     }
                 ) {
                     Text("Iniciar sessió", fontWeight = FontWeight.Bold)

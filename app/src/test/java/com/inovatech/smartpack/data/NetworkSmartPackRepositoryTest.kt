@@ -1,5 +1,6 @@
 package com.inovatech.smartpack.data
 
+import com.inovatech.smartpack.model.LoginRequest
 import com.inovatech.smartpack.model.LoginResponse
 import com.inovatech.smartpack.network.SmartPackApiService
 import kotlinx.coroutines.runBlocking
@@ -11,6 +12,7 @@ import org.junit.Test
 import org.mockito.Mockito.*
 import org.mockito.kotlin.whenever
 import retrofit2.Response
+import java.util.Date
 
 class NetworkSmartPackRepositoryTest {
 
@@ -24,10 +26,13 @@ class NetworkSmartPackRepositoryTest {
 
     @Test
     fun testLoginSuccess() = runTest {
-        val mockResponse = Response.success(LoginResponse("fake_token"))
-        whenever(mockApiService.login("email", "password")).thenReturn(mockResponse)
+        val date: Date = Date()
+        val mockResponse = Response.success(LoginResponse("fake_token", date))
+        val request = LoginRequest("email", "password")
 
-        val result = repository.login("email", "password")
+        whenever(mockApiService.login(request)).thenReturn(mockResponse)
+
+        val result = repository.login(request)
 
         assert(result.isSuccessful)
         assert(result.body()?.token == "fake_token")
@@ -36,9 +41,11 @@ class NetworkSmartPackRepositoryTest {
     @Test
     fun testLoginError() = runTest {
         val mockResponse = Response.error<LoginResponse>(401, "".toResponseBody(null))
-        whenever(mockApiService.login("email", "password")).thenReturn(mockResponse)
+        val request = LoginRequest("email", "password")
 
-        val result = repository.login("email", "password")
+        whenever(mockApiService.login(request)).thenReturn(mockResponse)
+
+        val result = repository.login(request)
 
         assert(!result.isSuccessful)
     }

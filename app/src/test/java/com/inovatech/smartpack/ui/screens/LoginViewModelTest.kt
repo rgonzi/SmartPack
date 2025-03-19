@@ -1,28 +1,32 @@
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.data.TokenRepository
+import com.inovatech.smartpack.model.LoginRequest
 import com.inovatech.smartpack.model.LoginResponse
 import com.inovatech.smartpack.ui.screens.LoginViewModel
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
-import junit.framework.Assert.assertFalse
-import junit.framework.TestCase.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
+import okio.IOException
 import org.junit.*
 import org.junit.Assert.assertTrue
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
+import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import retrofit2.Response
+import java.net.SocketTimeoutException
+import java.util.Date
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(MockitoJUnitRunner::class)
 class LoginViewModelTest {
 
@@ -34,17 +38,14 @@ class LoginViewModelTest {
     @Mock
     private lateinit var smartPackRepository: SmartPackRepository
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private val testDispatcher = StandardTestDispatcher()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         loginViewModel = LoginViewModel(tokenRepository, smartPackRepository)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun tearDown() {
         Dispatchers.resetMain() // Restaurar el dispatcher després dels tests
@@ -56,8 +57,9 @@ class LoginViewModelTest {
         loginViewModel.updatePassword("")
 
         loginViewModel.login()
+        advanceUntilIdle()
 
-        assertEquals("Omple tots els camps", loginViewModel.uiState.value.error)
+        assertEquals("El correu és obligatori",loginViewModel.uiState.value.error)
     }
 
     @Test
@@ -67,9 +69,10 @@ class LoginViewModelTest {
         loginViewModel.updatePassword("Password1")
 
         loginViewModel.login()
+        advanceUntilIdle()
 
         assertFalse(email.isValidEmail())
-        assertEquals("Revisa les dades introduïdes", loginViewModel.uiState.value.error)
+        assertEquals("Introdueix un correu vàlid", loginViewModel.uiState.value.error)
     }
 
     @Test
@@ -79,9 +82,10 @@ class LoginViewModelTest {
         loginViewModel.updatePassword(pass)
 
         loginViewModel.login()
+        advanceUntilIdle()
 
         assertFalse(pass.isValidPassword())
-        assertEquals("Revisa les dades introduïdes", loginViewModel.uiState.value.error)
+        assertEquals("La contrasenya ha de tenir mínim 8 caràcters, almenys 1 majúscula i 1 número", loginViewModel.uiState.value.error)
     }
 
     @Test
@@ -93,35 +97,43 @@ class LoginViewModelTest {
 
         assertTrue(email.isValidEmail())
         assertTrue(pass.isValidPassword())
+        assertEquals(null, loginViewModel.uiState.value.error)
     }
 
     @Test
-    fun testInvalidLogin() = runTest {
-        val email = "william@gmail.com"
-        val pass = "1234"
-        loginViewModel.updateEmail(email)
-        loginViewModel.updatePassword(pass)
-
-        loginViewModel.login()
-
-        with(loginViewModel.uiState.value) {
-            assertTrue(hasTriedLogin)
-            assertEquals("Revisa les dades introduïdes", error)
-            assertEquals(null, token)
-        }
-        verify(tokenRepository, never()).saveAuthToken(any())
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun testValidLogin() = runTest {
+    fun testUnauthorizedLogin() = runTest {
         val email = "william@gmail.com"
         val pass = "Password1"
         loginViewModel.updateEmail(email)
         loginViewModel.updatePassword(pass)
 
-        val mockResponse = LoginResponse(token = "test_token")
-        whenever(smartPackRepository.login(email, pass)).thenReturn(Response.success(mockResponse))
+        val mockResponse = Response.error<LoginResponse>(401, "".toResponseBody(null))
+        val request = LoginRequest(email, pass)
+
+        whenever(smartPackRepository.login(request)).thenReturn(mockResponse)
+
+        loginViewModel.login()
+        advanceUntilIdle()
+
+        with(loginViewModel.uiState.value) {
+            assertTrue(hasTriedLogin)
+            assertEquals("Error: Credencials incorrectes", error)
+            assertEquals(null, token)
+        }
+        verify(tokenRepository, never()).saveAuthToken(any())
+    }
+
+    @Test
+    fun testLoginSuccess() = runTest {
+        val email = "william@gmail.com"
+        val pass = "Password1"
+        loginViewModel.updateEmail(email)
+        loginViewModel.updatePassword(pass)
+
+        val mockResponse = LoginResponse(token = "test_token", expiresIn = Date())
+        val request = LoginRequest(email, pass)
+
+        whenever(smartPackRepository.login(request)).thenReturn(Response.success(mockResponse))
 
         loginViewModel.login()
         advanceUntilIdle()

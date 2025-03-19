@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,7 +18,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun Navigation(
-    storage: TokenRepository,
+    tokenRepository: TokenRepository,
 ) {
     val navController: NavHostController = rememberNavController()
     var startDestination by remember { mutableStateOf<Any>(Splash) }
@@ -28,8 +29,7 @@ fun Navigation(
         //Posem 1s de retard per si la petició és molt ràpida que
         //tinguem temps de mostrar la SplashScreen
         delay(1000)
-        val isValid = storage.isTokenValid()
-        startDestination = if (isValid) Home else Login
+        startDestination = if (tokenRepository.isTokenValid()) Home else Login
     }
     AnimatedVisibility(
         startDestination == Splash,
@@ -71,7 +71,15 @@ fun Navigation(
                 }
                 composable<Home> {
                     HomeScreen(
-                        backToLogin = { navController.popBackStack(Login, inclusive = false) }
+                        backToLogin = {
+                            if (tokenRepository.isTokenValid()) {
+                                navController.navigate(Login) {
+                                    popUpTo(startDestination) { inclusive = true }
+                                    launchSingleTop = true
+                                }
+                            }
+                            navController.popBackStack(Login, inclusive = false)
+                        }
                     )
                 }
             }
