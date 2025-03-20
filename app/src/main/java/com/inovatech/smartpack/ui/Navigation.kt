@@ -29,7 +29,8 @@ fun Navigation(
         //Posem 1s de retard per si la petició és molt ràpida que
         //tinguem temps de mostrar la SplashScreen
         delay(1000)
-        startDestination = if (tokenRepository.isTokenValid()) Home else Login
+        //startDestination = if (tokenRepository.isTokenValid()) Home else Login
+        startDestination = Login
     }
     AnimatedVisibility(
         startDestination == Splash,
@@ -53,7 +54,12 @@ fun Navigation(
             ) {
                 composable<Login> {
                     LoginScreen(
-                        onLoginSuccess = { navController.navigate(Home) },
+                        onLoginSuccess = {
+                            navController.navigate(Home) {
+                                popUpTo(startDestination) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        },
                         onRegisterClick = { navController.navigate(SignUp) },
                         onForgotPasswordClick = { navController.navigate(RememberPassword) }
                     )
@@ -72,13 +78,10 @@ fun Navigation(
                 composable<Home> {
                     HomeScreen(
                         backToLogin = {
-                            if (tokenRepository.isTokenValid()) {
-                                navController.navigate(Login) {
-                                    popUpTo(startDestination) { inclusive = true }
-                                    launchSingleTop = true
-                                }
+                            navController.navigate(Login) {
+                                popUpTo(Home) { inclusive = true }
                             }
-                            navController.popBackStack(Login, inclusive = false)
+
                         }
                     )
                 }
