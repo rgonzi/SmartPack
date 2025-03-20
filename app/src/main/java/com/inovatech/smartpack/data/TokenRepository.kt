@@ -3,6 +3,10 @@ package com.inovatech.smartpack.data
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Singleton que crea un TokenRepository per poder realitzar peticions al AuthTokenService i
+ * gestionar el Token d'inici de sessió
+ */
 @Singleton
 class TokenRepository @Inject constructor(
     private val authTokenService: AuthTokenService,

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,6 +15,12 @@ import com.inovatech.smartpack.data.TokenRepository
 import com.inovatech.smartpack.ui.screens.*
 import kotlinx.coroutines.delay
 
+/**
+ * Composable que defineix un NavGraph per poder navegar per les diferents pantalles de l'aplicació
+ *
+ * @param tokenRepository: Quan es pugui validar la vigència d'un token al servidor, no caldrà iniciar
+ * sessió cada vegada al obrir la app
+ */
 @Composable
 fun Navigation(
     tokenRepository: TokenRepository,

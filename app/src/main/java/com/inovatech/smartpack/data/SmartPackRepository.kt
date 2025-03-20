@@ -15,6 +15,9 @@ interface SmartPackRepository {
     suspend fun register(usuari: RegisterRequest): Response<Usuari>
 }
 
+/**
+ * Repository principal que s'usa per fer peticions a l'hora d'iniciar sessió o registrar-se
+ */
 @Singleton
  class NetworkSmartPackRepository @Inject constructor(
     private val smartPackApiService: SmartPackApiService

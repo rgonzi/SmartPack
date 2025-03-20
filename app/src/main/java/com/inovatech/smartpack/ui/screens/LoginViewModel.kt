@@ -18,6 +18,10 @@ import kotlinx.coroutines.withTimeoutOrNull
 import okio.IOException
 import javax.inject.Inject
 
+/**
+ * ViewModel associat a la pantalla de Login. Gestiona l'estat i resolt peticions
+ * des de la pantalla.
+ */
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val tokenRepository: TokenRepository,
@@ -29,24 +33,37 @@ class LoginViewModel @Inject constructor(
 
     private val TAG = "SmartPack-Debug"
 
+    /**
+     * Actualitza l'email en el UiState i obliga a la UI a recomposar-se
+     */
     fun updateEmail(email: String) {
         _uiState.update {
             it.copy(email = email)
         }
     }
 
+    /**
+     * Actualitza la contrasenya en el UiState i obliga a la UI a recomposar-se
+     */
     fun updatePassword(password: String) {
         _uiState.update {
             it.copy(password = password)
         }
     }
 
+    /**
+     * Canvia la visibilitat de la contrasenya en el TextField corresponent
+     */
     fun togglePasswordVisibility() {
         _uiState.update {
             it.copy(passwordVisible = !it.passwordVisible)
         }
     }
 
+    /**
+     * Mètode que valida que els inputs als TextField de la pantalla siguin correctes, validant que
+     * no estiguin buits i que compleixen un patró en Regex
+     */
     private fun validateInputs(): Boolean {
         val email = _uiState.value.email
         val password = _uiState.value.password
@@ -75,6 +92,10 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Mètode que realitza el login al servidor després de cridar a la funció que valida els inputs.
+     * Mock: Incorpora un mock per poder inicar sessió en proves quan no disposem de la API
+     */
     fun login() {
 
         _uiState.update { it.copy(hasTriedLogin = true) }
@@ -153,6 +174,9 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Funció que reseteja l'estat de la UiState associada
+     */
     fun clearFields() {
         _uiState.update {
             it.copy(

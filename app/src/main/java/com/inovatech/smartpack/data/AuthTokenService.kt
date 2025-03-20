@@ -9,7 +9,8 @@ import javax.inject.Singleton
 import androidx.core.content.edit
 
 /**
- *
+ *  Singletó que gestiona el token en un EncryptedSharedPreferences. Utilitza una clau cifrada de
+ *  tipus AES256 per a garantir la seguritat del token.
  */
 @Singleton
 class AuthTokenService @Inject constructor(

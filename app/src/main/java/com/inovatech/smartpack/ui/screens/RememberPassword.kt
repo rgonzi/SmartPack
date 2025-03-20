@@ -23,6 +23,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object RememberPassword
 
+/**
+ * Composable que defineix el disseny de la pantalla de recordar la contrasenya
+ *
+ * @param viewModel: El seu viewModel associat
+ * @param onNextClick
+ * @param onCancelClick: Destí de navegació per tornar a la pantalla Login al cancelar
+ * la operació.
+ */
 @Composable
 fun RememberPasswordScreen(
     viewModel: RememberPasswordViewModel = hiltViewModel(),

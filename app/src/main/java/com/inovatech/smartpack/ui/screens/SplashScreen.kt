@@ -18,6 +18,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object Splash
 
+/**
+ * Composable que defineix una pantalla Splash que es mostrarà a l'iniciar l'aplicació.
+ * Dona marge perquè es puguin fer les configuracions inicials abans de mostrar la pantalla
+ * de Login
+ */
 @Composable
 fun SplashScreen() {
     Column(

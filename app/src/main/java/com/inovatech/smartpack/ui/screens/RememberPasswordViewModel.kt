@@ -6,6 +6,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
+/**
+ * ViewModel associat a la pantalla de recordar contrasenya. Gestiona l'estat i resolt peticions
+ * des de la pantalla.
+ */
 @HiltViewModel
 class RememberPasswordViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(RememberPasswordUiState())
@@ -16,4 +20,6 @@ class RememberPasswordViewModel @Inject constructor() : ViewModel() {
             it.copy(email = email)
         }
     }
+
+    //TODO Petició per recordar contrasenya
 }

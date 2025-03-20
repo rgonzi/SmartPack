@@ -24,6 +24,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Ens assegurem que al tancar l'app eliminem el token de les SharedPreferences
+     */
     override fun onDestroy() {
         super.onDestroy()
         storage.clearAuthToken()

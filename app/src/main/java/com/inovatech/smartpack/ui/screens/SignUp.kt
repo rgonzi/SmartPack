@@ -28,6 +28,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 object SignUp
 
+/**
+ * Composable que defineix el disseny de la pantalla de Login
+ *
+ * @param viewModel: El seu viewModel associat
+ * @param goToLoginScreen: Destí de navegació per anar a la pantalla de Login un
+ * cop s'ha registrat correctament o es vol cancelar la operació
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(

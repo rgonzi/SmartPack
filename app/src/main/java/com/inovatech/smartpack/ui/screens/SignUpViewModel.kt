@@ -17,6 +17,10 @@ import kotlinx.coroutines.withTimeoutOrNull
 import okio.IOException
 import javax.inject.Inject
 
+/**
+ * ViewModel associat a la pantalla de registre. Gestiona l'estat i resolt peticions
+ * des de la pantalla.
+ */
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val smartPackRepository: SmartPackRepository,
@@ -26,12 +30,18 @@ class SignUpViewModel @Inject constructor(
 
     private val TAG = "SmartPack-Debug"
 
+    /**
+     * Actualitza l'email en el UiState i obliga a la UI a recomposar-se
+     */
     fun updateEmail(email: String) {
         _uiState.update {
             it.copy(email = email)
         }
     }
 
+    /**
+     * Actualitza la contrasenya en el UiState i obliga a la UI a recomposar-se
+     */
     fun updatePassword(password: String) {
         _uiState.update {
             it.copy(
@@ -40,12 +50,18 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Actualitza la contrasenya del camp de repetir contrasenya en el UiState
+     */
     fun updateRepeatedPassword(repeatedPassword: String) {
         _uiState.update {
             it.copy(repeatedPassword = repeatedPassword)
         }
     }
-
+    /**
+     * Mètode que valida que els inputs als TextField de la pantalla siguin correctes, validant que
+     * no estiguin buits, que les dues contrasenyes coincideixin i que compleixen un patró en Regex
+     */
     private fun validateInputs(): Boolean {
         val email = _uiState.value.email
         val password = _uiState.value.password
@@ -78,6 +94,11 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Mètode que realitza la petició de registre al servidor desprñes de validar la informació
+     * dels inputs. Inclou un Mock per provar la funcionalitat quan no tinguem internet o
+     * accés a l'API.
+     */
     fun register() {
         _uiState.update { it.copy(hasTriedRegister = true) }
 
@@ -155,6 +176,9 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Funció que reseteja l'estat de la UiState associada
+     */
     fun togglePasswordVisibility() {
         _uiState.update {
             it.copy(passwordVisible = !it.passwordVisible)

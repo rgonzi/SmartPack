@@ -30,6 +30,14 @@ import com.inovatech.smartpack.utils.isValidPassword
 @Serializable
 object Login
 
+/**
+ * Composable que defineix el disseny de la pantalla de Login
+ *
+ * @param viewModel: El seu viewModel associat
+ * @param onLoginSuccess: Destí de navegació si s'ha produït un login amb èxit
+ * @param onForgotPasswordClick: Destí de navegació per anar a la pantalla de RememberPassword
+ * @param onRegisterClick: Destí de navegació per anar a la pantalla de SignUp
+ */
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),

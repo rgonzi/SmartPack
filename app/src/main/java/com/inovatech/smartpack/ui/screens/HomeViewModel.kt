@@ -10,6 +10,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
+/**
+ * ViewModel associat a la pantalla principal. Gestiona l'estat i resolt peticions
+ * des de la pantalla.
+ */
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val tokenRepository: TokenRepository,
@@ -18,6 +22,9 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
+    /**
+     * Mètode que realitza el logout de l'aplicació eliminant el token guardat.
+     */
     fun logout() {
         tokenRepository.clearAuthToken()
 

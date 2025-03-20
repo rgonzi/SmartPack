@@ -22,6 +22,13 @@ import androidx.compose.runtime.*
 @Serializable
 data object Home
 
+/**
+ * Composable que defineix el disseny de la pantalla principal de l'app
+ *
+ * @param viewModel: El seu viewModel associat
+ * @param backToLogin: Destí de navegació quan s'ha produït un logout i volem tornar
+ * a la pantalla de Login
+ */
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
