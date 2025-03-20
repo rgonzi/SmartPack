@@ -1,8 +1,5 @@
 package com.inovatech.smartpack.model
 
-import com.inovatech.smartpack.utils.isValidEmail
-import com.inovatech.smartpack.utils.isValidPassword
-
 data class LoginUiState(
     val email: String = "",
     val password: String = "",
@@ -10,6 +7,5 @@ data class LoginUiState(
     val isLoading: Boolean = false,
     val hasTriedLogin: Boolean = false,
     val loginSuccess: Boolean = false,
-    val error: String? = null,
-    val token: String? = null
+    val error: String? = null
 )

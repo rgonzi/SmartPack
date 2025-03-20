@@ -3,7 +3,6 @@ package com.inovatech.smartpack.ui.screens
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.inovatech.smartpack.R
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.data.TokenRepository
 import com.inovatech.smartpack.model.LoginUiState
@@ -105,7 +104,7 @@ class LoginViewModel @Inject constructor(
                 val token = "29uht4rg246iejsh9834tyhr563gf"
                 tokenRepository.saveAuthToken(token)
                 _uiState.update {
-                    it.copy(token = token, isLoading = false, loginSuccess = true)
+                    it.copy(isLoading = false, loginSuccess = true)
                 }
                 return@launch
             }
@@ -123,7 +122,6 @@ class LoginViewModel @Inject constructor(
 
                             _uiState.update {
                                 it.copy(
-                                    token = loginResponse.token,
                                     error = null,
                                     loginSuccess = true
                                 )
