@@ -1,52 +1,86 @@
 package com.inovatech.smartpack.data
 
 import com.inovatech.smartpack.model.LoginRequest
-import com.inovatech.smartpack.model.LoginResponse
+import com.inovatech.smartpack.model.RegisterRequest
 import com.inovatech.smartpack.network.SmartPackApiService
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import okhttp3.ResponseBody
-import okhttp3.ResponseBody.Companion.toResponseBody
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.*
-import org.mockito.kotlin.whenever
-import retrofit2.Response
-import java.util.Date
+import org.junit.Assert.*
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.Random
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class NetworkSmartPackRepositoryTest {
 
     private lateinit var repository: NetworkSmartPackRepository
-    private val mockApiService: SmartPackApiService = mock(SmartPackApiService::class.java)
+
+    private lateinit var apiService: SmartPackApiService
 
     @Before
     fun setUp() {
-        repository = NetworkSmartPackRepository(mockApiService)
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://localhost:8080")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+
+        apiService = retrofit.create(SmartPackApiService::class.java)
+        repository = NetworkSmartPackRepository(apiService)
+    }
+
+    @Test
+    fun testRegisterSuccess() = runTest {
+        val randomEmail = Random().nextInt(1000).toString() + "@test.com"
+        val request = RegisterRequest(
+            email = randomEmail,
+            password = "1234567A",
+            role = null,
+            name = "Test",
+            surname = "Test test",
+            tel = "123456789",
+            address = "some address"
+        )
+        val response = repository.register(request)
+
+        assertTrue(response.isSuccessful)
+        assertEquals(200, response.code())
+        assertEquals(randomEmail, response.body()?.email)
     }
 
     @Test
     fun testLoginSuccess() = runTest {
-        val date: Date = Date()
-        val mockResponse = Response.success(LoginResponse("fake_token", date))
-        val request = LoginRequest("email", "password")
+        val request = LoginRequest("test@test.com", "1234567A")
+        val response = repository.login(request)
+        advanceUntilIdle()
 
-        whenever(mockApiService.login(request)).thenReturn(mockResponse)
-
-        val result = repository.login(request)
-
-        assert(result.isSuccessful)
-        assert(result.body()?.token == "fake_token")
+        assertTrue(response.isSuccessful)
+        assertEquals(200, response.code())
+        assertNotNull(response.body()?.token)
     }
 
     @Test
-    fun testLoginError() = runTest {
-        val mockResponse = Response.error<LoginResponse>(401, "".toResponseBody(null))
-        val request = LoginRequest("email", "password")
+    fun testUnauthorizedLogin() = runTest {
+        val email = "william@gmail.com"
+        val pass = "Password1"
 
-        whenever(mockApiService.login(request)).thenReturn(mockResponse)
+        val response = repository.login(LoginRequest(email, pass))
+        advanceUntilIdle()
 
-        val result = repository.login(request)
-
-        assert(!result.isSuccessful)
+        assertFalse(response.isSuccessful)
+        assertEquals(403, response.code())
+        assertNull(response.body())
     }
 }

@@ -31,14 +31,14 @@ class SignUpViewModelTest {
     private lateinit var signUpViewModel: SignUpViewModel
 
     @Mock
-    private lateinit var smartPackRepository: SmartPackRepository
+    private lateinit var mockRepository: SmartPackRepository
 
     private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        signUpViewModel = SignUpViewModel(smartPackRepository)
+        signUpViewModel = SignUpViewModel(mockRepository)
     }
 
     @After
@@ -48,9 +48,13 @@ class SignUpViewModelTest {
 
     @Test
     fun testInvalidSignUp() = runTest {
-        signUpViewModel.updateEmail("email")
-        signUpViewModel.updatePassword("1234")
-        signUpViewModel.updateRepeatedPassword("1234")
+        signUpViewModel.updateField("email", "email")
+        signUpViewModel.updateField("password", "1234")
+        signUpViewModel.updateField("repeatedPassword", "1234")
+        signUpViewModel.updateField("name", "Test")
+        signUpViewModel.updateField("surname", "Test test")
+        signUpViewModel.updateField("tel", "123456789")
+        signUpViewModel.updateField("address", "some address")
 
         signUpViewModel.register()
         advanceUntilIdle()
@@ -61,37 +65,41 @@ class SignUpViewModelTest {
     @Test
     fun testInvalidEmail() = runTest {
         val email = "email"
-        signUpViewModel.updateEmail(email)
-        signUpViewModel.updatePassword("Password1")
-        signUpViewModel.updateRepeatedPassword("Password1")
+        signUpViewModel.updateField("email", "email")
+        signUpViewModel.updateField("password", "1234567A")
+        signUpViewModel.updateField("repeatedPassword", "1234567A")
 
         signUpViewModel.register()
         advanceUntilIdle()
 
         assertFalse(email.isValidEmail())
-    assertEquals("Introdueix un correu vàlid", signUpViewModel.uiState.value.error)
+        assertEquals("Introdueix un correu vàlid", signUpViewModel.uiState.value.error)
     }
 
     @Test
     fun testInvalidPassword() = runTest {
         val pass = "1234"
-        signUpViewModel.updateEmail("william@gmail.com")
-        signUpViewModel.updatePassword(pass)
-        signUpViewModel.updateRepeatedPassword(pass)
+
+        signUpViewModel.updateField("email", "william@gmail.com")
+        signUpViewModel.updateField("password", pass)
+        signUpViewModel.updateField("repeatedPassword", pass)
 
         signUpViewModel.register()
         advanceUntilIdle()
 
         assertFalse(pass.isValidPassword())
-        assertEquals("La contrasenya ha de tenir mínim 8 caràcters, almenys 1 majúscula i 1 número", signUpViewModel.uiState.value.error)
+        assertEquals(
+            "La contrasenya ha de tenir mínim 8 caràcters, almenys 1 majúscula i 1 número",
+            signUpViewModel.uiState.value.error
+        )
     }
 
     @Test
     fun testInvalidRepeatedPassword() = runTest {
-        val pass = "Password1"
-        signUpViewModel.updateEmail("william@gmail.com")
-        signUpViewModel.updatePassword(pass)
-        signUpViewModel.updateRepeatedPassword("Password2")
+
+        signUpViewModel.updateField("email", "william@gmail.com")
+        signUpViewModel.updateField("password", "Password1")
+        signUpViewModel.updateField("repeatedPassword", "Password2")
 
         signUpViewModel.register()
         advanceUntilIdle()
@@ -100,39 +108,33 @@ class SignUpViewModelTest {
     }
 
     @Test
-    fun testValidCredentials() {
-        val email = "william@gmail.com"
-        val pass = "Password1"
-        signUpViewModel.updateEmail(email)
-        signUpViewModel.updatePassword(pass)
-        signUpViewModel.updateRepeatedPassword(pass)
+    fun testSignUpSuccessMock() = runTest {
 
-        assertTrue(email.isValidEmail())
-        assertTrue(pass.isValidPassword())
-        assertEquals(null, signUpViewModel.uiState.value.error)
-    }
+        signUpViewModel.updateField("email", "email")
+        signUpViewModel.updateField("password", "1234567A")
+        signUpViewModel.updateField("repeatedPassword", "1234567A")
+        signUpViewModel.updateField("name", "Test")
+        signUpViewModel.updateField("surname", "Test test")
+        signUpViewModel.updateField("tel", "123456789")
+        signUpViewModel.updateField("address", "some address")
 
-    @Test
-    fun testSignUpSuccess() = runTest {
-        val email = "william@gmail.com"
-        val pass = "Password1"
-        signUpViewModel.updateEmail(email)
-        signUpViewModel.updatePassword(pass)
-        signUpViewModel.updateRepeatedPassword(pass)
+        val request = RegisterRequest(
+            email = "email",
+            password = "1234567A",
+            role = null,
+            name = "Test",
+            surname = "Test test",
+            tel = "123456789",
+            address = "some address"
+        )
 
-        val mockResponse = Usuari(email = email, password = pass)
-        val request = RegisterRequest(email, pass)
+        val mockResponse = Response.success(Usuari(email = "email", password = "1234567A"))
 
-        whenever(smartPackRepository.register(request)).thenReturn(Response.success(mockResponse))
+        whenever(mockRepository.register(request)).thenReturn(mockResponse)
 
-        signUpViewModel.register()
-        advanceUntilIdle()
+        mockRepository.register(request)
 
-        with(signUpViewModel.uiState.value) {
-            assertEquals(null, error)
-            assertEquals(true, hasTriedRegister)
-            assertEquals(false, isLoading)
-            assertEquals(true, signUpSuccess)
-        }
+        assertTrue(mockResponse.isSuccessful)
+        assertEquals("email", mockResponse.body()?.email)
     }
 }

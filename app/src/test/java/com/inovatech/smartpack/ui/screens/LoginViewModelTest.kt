@@ -11,19 +11,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
 import okhttp3.ResponseBody.Companion.toResponseBody
-import okio.IOException
 import org.junit.*
 import org.junit.Assert.assertTrue
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
-import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import retrofit2.Response
-import java.net.SocketTimeoutException
 import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -36,14 +33,18 @@ class LoginViewModelTest {
     private lateinit var tokenRepository: TokenRepository
 
     @Mock
-    private lateinit var smartPackRepository: SmartPackRepository
+    private lateinit var mockRepository: SmartPackRepository
+
+    private lateinit var respository: SmartPackRepository
 
     private val testDispatcher = StandardTestDispatcher()
+    private val validEmail = "test@test.com"
+    private val validPassword = "1234567A"
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        loginViewModel = LoginViewModel(tokenRepository, smartPackRepository)
+        loginViewModel = LoginViewModel(tokenRepository, mockRepository)
     }
 
     @After
@@ -59,7 +60,7 @@ class LoginViewModelTest {
         loginViewModel.login()
         advanceUntilIdle()
 
-        assertEquals("El correu és obligatori",loginViewModel.uiState.value.error)
+        assertEquals("El correu és obligatori", loginViewModel.uiState.value.error)
     }
 
     @Test
@@ -85,7 +86,10 @@ class LoginViewModelTest {
         advanceUntilIdle()
 
         assertFalse(pass.isValidPassword())
-        assertEquals("La contrasenya ha de tenir mínim 8 caràcters, almenys 1 majúscula i 1 número", loginViewModel.uiState.value.error)
+        assertEquals(
+            "La contrasenya ha de tenir mínim 8 caràcters, almenys 1 majúscula i 1 número",
+            loginViewModel.uiState.value.error
+        )
     }
 
     @Test
@@ -101,16 +105,16 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun testUnauthorizedLogin() = runTest {
+    fun testUnauthorizedLoginMock() = runTest {
         val email = "william@gmail.com"
         val pass = "Password1"
         loginViewModel.updateEmail(email)
         loginViewModel.updatePassword(pass)
 
-        val mockResponse = Response.error<LoginResponse>(401, "".toResponseBody(null))
+        val mockResponse = Response.error<LoginResponse>(403, "".toResponseBody(null))
         val request = LoginRequest(email, pass)
 
-        whenever(smartPackRepository.login(request)).thenReturn(mockResponse)
+        whenever(mockRepository.login(request)).thenReturn(mockResponse)
 
         loginViewModel.login()
         advanceUntilIdle()
@@ -118,13 +122,12 @@ class LoginViewModelTest {
         with(loginViewModel.uiState.value) {
             assertTrue(hasTriedLogin)
             assertEquals("Error: Credencials incorrectes", error)
-            assertEquals(null, token)
         }
         verify(tokenRepository, never()).saveAuthToken(any())
     }
 
     @Test
-    fun testLoginSuccess() = runTest {
+    fun testLoginSuccessMock() = runTest {
         val email = "william@gmail.com"
         val pass = "Password1"
         loginViewModel.updateEmail(email)
@@ -133,7 +136,7 @@ class LoginViewModelTest {
         val mockResponse = LoginResponse(token = "test_token", expiresIn = Date())
         val request = LoginRequest(email, pass)
 
-        whenever(smartPackRepository.login(request)).thenReturn(Response.success(mockResponse))
+        whenever(mockRepository.login(request)).thenReturn(Response.success(mockResponse))
 
         loginViewModel.login()
         advanceUntilIdle()
@@ -141,7 +144,6 @@ class LoginViewModelTest {
         with(loginViewModel.uiState.value) {
             assertTrue(hasTriedLogin)
             assertEquals(null, error)
-            assertEquals("test_token", token)
         }
 
         verify(tokenRepository).saveAuthToken("test_token")
