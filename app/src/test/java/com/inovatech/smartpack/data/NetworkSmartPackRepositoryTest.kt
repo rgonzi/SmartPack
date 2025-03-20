@@ -2,6 +2,7 @@ package com.inovatech.smartpack.data
 
 import com.inovatech.smartpack.model.LoginRequest
 import com.inovatech.smartpack.model.RegisterRequest
+import com.inovatech.smartpack.model.Role
 import com.inovatech.smartpack.network.SmartPackApiService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -41,13 +42,16 @@ class NetworkSmartPackRepositoryTest {
         repository = NetworkSmartPackRepository(apiService)
     }
 
+    /**
+     * Test que verifica un registre correcte d'un usuari amb un email aleatori.
+     */
     @Test
     fun testRegisterSuccess() = runTest {
         val randomEmail = Random().nextInt(1000).toString() + "@test.com"
         val request = RegisterRequest(
             email = randomEmail,
             password = "1234567A",
-            role = null,
+            role = Role.ROLE_USER,
             name = "Test",
             surname = "Test test",
             tel = "123456789",
@@ -60,6 +64,9 @@ class NetworkSmartPackRepositoryTest {
         assertEquals(randomEmail, response.body()?.email)
     }
 
+    /**
+     * Test que verifica un inici de sessió d'un usuari existent.
+     */
     @Test
     fun testLoginSuccess() = runTest {
         val request = LoginRequest("test@test.com", "1234567A")
@@ -71,6 +78,9 @@ class NetworkSmartPackRepositoryTest {
         assertNotNull(response.body()?.token)
     }
 
+    /**
+     * Test que verifica un inici de sessió no vàlid d'un usuari que no existeix a la BBDD.
+     */
     @Test
     fun testUnauthorizedLogin() = runTest {
         val email = "william@gmail.com"

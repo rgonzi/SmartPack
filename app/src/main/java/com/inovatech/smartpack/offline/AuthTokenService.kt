@@ -1,12 +1,12 @@
-package com.inovatech.smartpack.data
+package com.inovatech.smartpack.offline
 
 import android.content.Context
+import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
-import androidx.core.content.edit
 
 /**
  *  Singletó que gestiona el token en un EncryptedSharedPreferences. Utilitza una clau cifrada de
@@ -19,14 +19,14 @@ class AuthTokenService @Inject constructor(
     private val TOKEN_STORAGE = "token_storage"
     private val TOKEN_KEY = "token_key"
 
-    private val masterKeyAlias = MasterKey.Builder(context)
+    private val masterKey = MasterKey.Builder(context)
         .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
         .build()
 
     private val storage = EncryptedSharedPreferences.create(
         context,
         TOKEN_STORAGE,
-        masterKeyAlias,
+        masterKey,
         EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )

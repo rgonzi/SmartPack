@@ -1,5 +1,6 @@
 package com.inovatech.smartpack.data
 
+import com.inovatech.smartpack.offline.AuthTokenService
 import javax.inject.Inject
 import javax.inject.Singleton
 

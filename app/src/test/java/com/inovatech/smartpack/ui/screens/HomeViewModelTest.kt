@@ -21,6 +21,9 @@ class HomeViewModelTest {
         viewModel = HomeViewModel(tokenRepository)
     }
 
+    /**
+     * Test que prova que al realitzar el logout del viewmodel s'esborri el token d'acces.
+     */
     @Test
     fun testLogout() {
         viewModel.logout()

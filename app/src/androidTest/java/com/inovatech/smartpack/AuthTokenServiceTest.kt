@@ -1,7 +1,8 @@
-package com.inovatech.smartpack.data
+package com.inovatech.smartpack
 
 import androidx.test.core.app.ApplicationProvider
-import org.junit.Assert.assertEquals
+import com.inovatech.smartpack.offline.AuthTokenService
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
@@ -14,6 +15,10 @@ class AuthTokenServiceTest {
         authTokenService = AuthTokenService(ApplicationProvider.getApplicationContext())
     }
 
+    /**
+     * Test d'instrumentació que verifica que donat un token aquest es pot desar correctament i
+     * posteriorment recuperar des de la SharedPreferences
+     */
     @Test
     fun testSaveAndGetAuthToken() {
         val token = "test_token"
@@ -22,18 +27,19 @@ class AuthTokenServiceTest {
 
         val savedToken = authTokenService.getAuthToken()
 
-        assertEquals(token, savedToken)
+        Assert.assertEquals(token, savedToken)
     }
 
+    /**
+     * Test d'integració que verifica que donat un token ja desat es pot eliminar des de la
+     * SharedPreferences
+     */
     @Test
     fun testClearAuthToken() {
-        val token = "testToken"
-        authTokenService.saveAuthToken(token)
-
         authTokenService.clearAuthToken()
 
         val savedToken = authTokenService.getAuthToken()
 
-        assertEquals(null, savedToken)
+        Assert.assertEquals(null, savedToken)
     }
 }

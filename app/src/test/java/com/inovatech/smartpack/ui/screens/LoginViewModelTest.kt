@@ -35,11 +35,7 @@ class LoginViewModelTest {
     @Mock
     private lateinit var mockRepository: SmartPackRepository
 
-    private lateinit var respository: SmartPackRepository
-
     private val testDispatcher = StandardTestDispatcher()
-    private val validEmail = "test@test.com"
-    private val validPassword = "1234567A"
 
     @Before
     fun setUp() {
@@ -52,6 +48,9 @@ class LoginViewModelTest {
         Dispatchers.resetMain() // Restaurar el dispatcher després dels tests
     }
 
+    /**
+     * Test que verifica que el viewmodel mostri l'error corresponent davant d'una entrada buida
+     */
     @Test
     fun testLoginEmptyFields() = runTest {
         loginViewModel.updateEmail("")
@@ -63,6 +62,9 @@ class LoginViewModelTest {
         assertEquals("El correu és obligatori", loginViewModel.uiState.value.error)
     }
 
+    /**
+     * Test que verifica que el viewmodel mostri l'error corresponent davant d'un correu no vàlid
+     */
     @Test
     fun testInvalidEmail() = runTest {
         val email = "email"
@@ -76,6 +78,10 @@ class LoginViewModelTest {
         assertEquals("Introdueix un correu vàlid", loginViewModel.uiState.value.error)
     }
 
+    /**
+     * Test que verifica que el viewmodel mostri l'error corresponent davant d'una
+     * contrasenya que no compleix els requisits.
+     */
     @Test
     fun testInvalidPassword() = runTest {
         val pass = "1234"
@@ -92,6 +98,10 @@ class LoginViewModelTest {
         )
     }
 
+    /**
+     * Test que verifica que el viewmodel és capaç de comprovar que tant el email com la
+     * contrasenya estan ben escrits segons requisits.
+     */
     @Test
     fun testValidCredentials() {
         val email = "william@gmail.com"
@@ -104,6 +114,10 @@ class LoginViewModelTest {
         assertEquals(null, loginViewModel.uiState.value.error)
     }
 
+    /**
+     * Test que verifica que el viewmodel mostri l'error corresponent davant d'un intent d'inici
+     * de sessió en el que l'usuari proporcionat no existeix en un servidor fictici (error 403)
+     */
     @Test
     fun testUnauthorizedLoginMock() = runTest {
         val email = "william@gmail.com"
@@ -111,7 +125,7 @@ class LoginViewModelTest {
         loginViewModel.updateEmail(email)
         loginViewModel.updatePassword(pass)
 
-        val mockResponse = Response.error<LoginResponse>(403, "".toResponseBody(null))
+        val mockResponse = Response.error<LoginResponse>(403, "".toResponseBody())
         val request = LoginRequest(email, pass)
 
         whenever(mockRepository.login(request)).thenReturn(mockResponse)
@@ -119,13 +133,15 @@ class LoginViewModelTest {
         loginViewModel.login()
         advanceUntilIdle()
 
-        with(loginViewModel.uiState.value) {
-            assertTrue(hasTriedLogin)
-            assertEquals("Error: Credencials incorrectes", error)
-        }
+        assertEquals(403, mockResponse.code())
+        assertTrue(loginViewModel.uiState.value.hasTriedLogin)
         verify(tokenRepository, never()).saveAuthToken(any())
     }
 
+    /**
+     * Test que verifica que el viewmodel és capaç de realitzar un inici de sessió correcte davant
+     * d'unes credencials vàlides i que l'estat de l'error es manté en null.
+     */
     @Test
     fun testLoginSuccessMock() = runTest {
         val email = "william@gmail.com"

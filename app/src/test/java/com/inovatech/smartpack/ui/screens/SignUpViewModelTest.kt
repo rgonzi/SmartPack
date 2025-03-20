@@ -46,11 +46,16 @@ class SignUpViewModelTest {
         Dispatchers.resetMain()
     }
 
+
+    /**
+     * Test que verifica que el viewmodel mostri l'error corresponent davant d'un correu no vàlid
+     */
     @Test
-    fun testInvalidSignUp() = runTest {
+    fun testInvalidEmail() = runTest {
+        val email = "email"
         signUpViewModel.updateField("email", "email")
-        signUpViewModel.updateField("password", "1234")
-        signUpViewModel.updateField("repeatedPassword", "1234")
+        signUpViewModel.updateField("password", "1234567A")
+        signUpViewModel.updateField("repeatedPassword", "1234567A")
         signUpViewModel.updateField("name", "Test")
         signUpViewModel.updateField("surname", "Test test")
         signUpViewModel.updateField("tel", "123456789")
@@ -59,23 +64,14 @@ class SignUpViewModelTest {
         signUpViewModel.register()
         advanceUntilIdle()
 
-        assertEquals("Introdueix un correu vàlid", signUpViewModel.uiState.value.error)
-    }
-
-    @Test
-    fun testInvalidEmail() = runTest {
-        val email = "email"
-        signUpViewModel.updateField("email", "email")
-        signUpViewModel.updateField("password", "1234567A")
-        signUpViewModel.updateField("repeatedPassword", "1234567A")
-
-        signUpViewModel.register()
-        advanceUntilIdle()
-
         assertFalse(email.isValidEmail())
         assertEquals("Introdueix un correu vàlid", signUpViewModel.uiState.value.error)
     }
 
+    /**
+     * Test que verifica que el viewmodel mostri l'error corresponent davant d'una
+     * contrasenya que no compleix els requisits
+     */
     @Test
     fun testInvalidPassword() = runTest {
         val pass = "1234"
@@ -83,6 +79,10 @@ class SignUpViewModelTest {
         signUpViewModel.updateField("email", "william@gmail.com")
         signUpViewModel.updateField("password", pass)
         signUpViewModel.updateField("repeatedPassword", pass)
+        signUpViewModel.updateField("name", "Test")
+        signUpViewModel.updateField("surname", "Test test")
+        signUpViewModel.updateField("tel", "123456789")
+        signUpViewModel.updateField("address", "some address")
 
         signUpViewModel.register()
         advanceUntilIdle()
@@ -94,12 +94,20 @@ class SignUpViewModelTest {
         )
     }
 
+    /**
+     * Test que verifica que el viewmodel mostri l'error corresponent al no posar la mateixa
+     * contrasenya en els dos quadres de text corresponents.
+     */
     @Test
     fun testInvalidRepeatedPassword() = runTest {
 
         signUpViewModel.updateField("email", "william@gmail.com")
         signUpViewModel.updateField("password", "Password1")
         signUpViewModel.updateField("repeatedPassword", "Password2")
+        signUpViewModel.updateField("name", "Test")
+        signUpViewModel.updateField("surname", "Test test")
+        signUpViewModel.updateField("tel", "123456789")
+        signUpViewModel.updateField("address", "some address")
 
         signUpViewModel.register()
         advanceUntilIdle()
@@ -107,10 +115,14 @@ class SignUpViewModelTest {
         assertEquals("Les contrasenyes no coincideixen", signUpViewModel.uiState.value.error)
     }
 
+    /**
+     * Test que verifica que el viewmodel es comporta correctament al realitzar un registred'un
+     * usuari vàlid en un repositori fals. L'estat de l'error ha de ser null
+     */
     @Test
     fun testSignUpSuccessMock() = runTest {
 
-        signUpViewModel.updateField("email", "email")
+        signUpViewModel.updateField("email", "test@test.com")
         signUpViewModel.updateField("password", "1234567A")
         signUpViewModel.updateField("repeatedPassword", "1234567A")
         signUpViewModel.updateField("name", "Test")
@@ -128,13 +140,15 @@ class SignUpViewModelTest {
             address = "some address"
         )
 
-        val mockResponse = Response.success(Usuari(email = "email", password = "1234567A"))
+        val mockResponse = Response.success(Usuari(email = "test@test.com", password = "1234567A"))
 
         whenever(mockRepository.register(request)).thenReturn(mockResponse)
 
         mockRepository.register(request)
 
         assertTrue(mockResponse.isSuccessful)
-        assertEquals("email", mockResponse.body()?.email)
+        assertEquals("test@test.com", mockResponse.body()?.email)
+        assertEquals(null, signUpViewModel.uiState.value.error)
+
     }
 }
