@@ -10,12 +10,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.*
 
 @Composable
-fun EmailTextField(
+fun CommonTextField(
     value: String,
     onValueChange: (String) -> Unit,
+    label: String? = null,
+    trailingIcon: ImageVector,
     imeAction: ImeAction,
     isError: Boolean
 ) {
@@ -26,9 +29,9 @@ fun EmailTextField(
         ),
         value = value,
         onValueChange = onValueChange,
-        label = { Text("Correu") },
+        label = { Text(label ?: "") },
         maxLines = 1,
-        trailingIcon = { Icon(Icons.Default.Email, contentDescription = "Email") },
+        trailingIcon = { Icon(trailingIcon, contentDescription = "") },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Email,
             imeAction = imeAction

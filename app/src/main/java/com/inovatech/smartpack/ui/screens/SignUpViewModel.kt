@@ -31,31 +31,17 @@ class SignUpViewModel @Inject constructor(
     private val TAG = "SmartPack-Debug"
 
     /**
-     * Actualitza l'email en el UiState i obliga a la UI a recomposar-se
+     * Actualitza l'input del TextField corresponent en el UiState i obliga a la UI a recomposar-se
      */
-    fun updateEmail(email: String) {
-        _uiState.update {
-            it.copy(email = email)
-        }
-    }
-
-    /**
-     * Actualitza la contrasenya en el UiState i obliga a la UI a recomposar-se
-     */
-    fun updatePassword(password: String) {
-        _uiState.update {
-            it.copy(
-                password = password
-            )
-        }
-    }
-
-    /**
-     * Actualitza la contrasenya del camp de repetir contrasenya en el UiState
-     */
-    fun updateRepeatedPassword(repeatedPassword: String) {
-        _uiState.update {
-            it.copy(repeatedPassword = repeatedPassword)
+    fun updateField(field: String, value: String) {
+        when (field) {
+            "email" -> _uiState.update { it.copy(email = value) }
+            "password" -> _uiState.update { it.copy(password = value) }
+            "repeatedPassword" -> _uiState.update { it.copy(repeatedPassword = value) }
+            "name" -> _uiState.update { it.copy(name = value) }
+            "surname" -> _uiState.update { it.copy(surname = value) }
+            "tel" -> _uiState.update { it.copy(tel = value) }
+            "address" -> _uiState.update { it.copy(address = value) }
         }
     }
     /**
@@ -65,25 +51,26 @@ class SignUpViewModel @Inject constructor(
     private fun validateInputs(): Boolean {
         val email = _uiState.value.email
         val password = _uiState.value.password
+        val repeatedPassword = _uiState.value.repeatedPassword
+        val name = _uiState.value.name
+        val surname = _uiState.value.surname
+        val tel = _uiState.value.tel
+        val address = _uiState.value.address
 
         return when {
-            email.isEmpty() -> {
-                _uiState.update { it.copy(error = "El correu és obligatori") }
+            name.isEmpty() || surname.isEmpty() || tel.isEmpty() || address.isEmpty() -> {
+                _uiState.update { it.copy(error = "Tots els camps són obligatoris") }
                 false
             }
             !email.isValidEmail() -> {
                 _uiState.update { it.copy(error = "Introdueix un correu vàlid") }
                 false
             }
-            password.isEmpty() -> {
-                _uiState.update { it.copy(error = "El camp de contrasenya és obligatori") }
-                false
-            }
             !password.isValidPassword() -> {
                 _uiState.update { it.copy(error = "La contrasenya ha de tenir mínim 8 caràcters, almenys 1 majúscula i 1 número") }
                 false
             }
-            _uiState.value.password != _uiState.value.repeatedPassword -> {
+            password != repeatedPassword -> {
                 _uiState.update { it.copy(error = "Les contrasenyes no coincideixen") }
                 false
             }
@@ -129,7 +116,11 @@ class SignUpViewModel @Inject constructor(
 
             val usuariPerRegistrar = RegisterRequest(
                 email = state.email,
-                password = state.password
+                password = state.password,
+                name = state.name,
+                surname = state.surname,
+                tel = state.tel,
+                address = state.address
             )
             val result = withTimeoutOrNull(TIMEOUT) {
                 try {
@@ -143,7 +134,7 @@ class SignUpViewModel @Inject constructor(
                         }
                     } else {
                         _uiState.update {
-                            it.copy(error = "Aquest usuari ja està registrat")
+                            it.copy(error = "Error ${response.code()}: S'ha produït un error al registrar")
                         }
                     }
 

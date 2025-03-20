@@ -149,12 +149,17 @@ class LoginViewModel @Inject constructor(
                             }
                         }
                     } else {
-                        if(response.code() == 401) {
+                        if(response.code() == 403) {
                             _uiState.update {
                                 it.copy(
                                     error = "Error: Credencials incorrectes"
                                 )
                             }
+                        }
+                        _uiState.update {
+                            it.copy(
+                                error = "Error ${response.code()}: S'ha produït un error al iniciar sessió"
+                            )
                         }
                     }
 

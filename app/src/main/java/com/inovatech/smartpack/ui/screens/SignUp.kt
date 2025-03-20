@@ -6,7 +6,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.inovatech.smartpack.ui.EmailTextField
+import com.inovatech.smartpack.ui.CommonTextField
 import com.inovatech.smartpack.ui.PasswordTextField
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
@@ -57,10 +62,13 @@ fun SignUpScreen(
                 goToLoginScreen()
             }
         }
-        EmailTextField(
+        //Email
+        CommonTextField(
             value = uiState.email,
-            onValueChange = viewModel::updateEmail,
+            onValueChange = { viewModel.updateField("email", it) },
+            label = "Correu",
             imeAction = ImeAction.Next,
+            trailingIcon = Icons.Default.Email,
             isError = uiState.hasTriedRegister && !uiState.email.isValidEmail()
         )
 
@@ -68,7 +76,7 @@ fun SignUpScreen(
 
         PasswordTextField(
             value = uiState.password,
-            onValueChange = viewModel::updatePassword,
+            onValueChange = { viewModel.updateField("password", it) },
             visualTransformation = if (uiState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIconClick = { viewModel.togglePasswordVisibility() },
             imeAction = ImeAction.Next,
@@ -83,14 +91,14 @@ fun SignUpScreen(
                 unfocusedContainerColor = Color.White
             ),
             value = uiState.repeatedPassword,
-            onValueChange = viewModel::updateRepeatedPassword,
+            onValueChange = { viewModel.updateField("repeatedPassword", it) },
             label = { Text("Repeteix la contrasenya") },
             maxLines = 1,
             visualTransformation = PasswordVisualTransformation(),
             trailingIcon = { Icon(Icons.Default.Lock, contentDescription = "Candau") },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Done
+                imeAction = ImeAction.Next
             ),
             isError = uiState.hasTriedRegister &&
                     (uiState.password != uiState.repeatedPassword || uiState.repeatedPassword.isEmpty()),
@@ -98,7 +106,54 @@ fun SignUpScreen(
                 .fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+
+        //Name
+        CommonTextField(
+            value = uiState.name,
+            onValueChange = { viewModel.updateField("name", it) },
+            label = "Nom",
+            trailingIcon = Icons.Default.Person,
+            imeAction = ImeAction.Next,
+            isError = uiState.hasTriedRegister && uiState.name.isEmpty()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        //Surname
+        CommonTextField(
+            value = uiState.surname,
+            onValueChange = { viewModel.updateField("surname", it) },
+            label = "Cognoms",
+            trailingIcon = Icons.Default.Person,
+            imeAction = ImeAction.Next,
+            isError = uiState.hasTriedRegister && uiState.surname.isEmpty()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        //Tel number
+        CommonTextField(
+            value = uiState.tel,
+            onValueChange = { viewModel.updateField("tel", it) },
+            label = "Número de telèfon",
+            trailingIcon = Icons.Default.Phone,
+            imeAction = ImeAction.Next,
+            isError = uiState.hasTriedRegister && uiState.tel.isEmpty()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        //Address
+        CommonTextField(
+            value = uiState.address,
+            onValueChange = { viewModel.updateField("address", it) },
+            label = "Adreça",
+            trailingIcon = Icons.Default.Place,
+            imeAction = ImeAction.Done,
+            isError = uiState.hasTriedRegister && uiState.address.isEmpty()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         if (uiState.error != null) {
             ShowErrorText(uiState.error!!)
         }

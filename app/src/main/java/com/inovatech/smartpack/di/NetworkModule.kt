@@ -3,6 +3,7 @@ package com.inovatech.smartpack.di
 import com.inovatech.smartpack.data.NetworkSmartPackRepository
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.network.SmartPackApiService
+import com.inovatech.smartpack.utils.Settings
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,8 +22,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://localhost:8080"
-
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
@@ -40,7 +39,7 @@ object NetworkModule {
     fun provideRetrofit(client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
+            .baseUrl(Settings.BASE_URL)
             .client(client)
             .build()
     }

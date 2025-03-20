@@ -18,6 +18,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.inovatech.smartpack.ui.CommonTextField
+import com.inovatech.smartpack.utils.isValidEmail
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -47,21 +49,13 @@ fun RememberPasswordScreen(
     ) {
         Text("No passa res. Introdueix el teu email a continació per poder cambiar la contrasenya")
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White
-            ),
+        CommonTextField(
             value = uiState.email,
-            onValueChange = { viewModel.updateEmail(it) },
-            label = { Text("Correu") },
-            maxLines = 1,
-            trailingIcon = { Icon(Icons.Default.Email, contentDescription = "Email") },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Next
-            ),
-            modifier = Modifier.fillMaxWidth()
+            onValueChange = { viewModel::updateEmail },
+            label = "Correu",
+            imeAction = ImeAction.Next,
+            trailingIcon = Icons.Default.Email,
+            isError = !uiState.email.isEmpty() && !uiState.email.isValidEmail()
         )
     }
 }

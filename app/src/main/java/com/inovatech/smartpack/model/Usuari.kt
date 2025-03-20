@@ -6,12 +6,12 @@ data class Usuari(
     val id: Int? = null,
     val email: String,
     val password: String,
-    val role: Role? = null,
+    val role: Role = Role.ROLE_USER,
     val enabled: Boolean? = null,
     val createdAt: Date? = null,
     val updatedAt: Date? = null
 )
 
 enum class Role {
-    ADMIN, USER
+    ROLE_USER, ROLE_ADMIN, ROLE_DELIVERYMAN
 }
