@@ -1,8 +1,11 @@
 package com.inovatech.smartpack.network
 
+import com.inovatech.smartpack.model.ForgotPasswordRequest
+import com.inovatech.smartpack.model.ForgotPasswordResponse
 import com.inovatech.smartpack.model.LoginResponse
 import com.inovatech.smartpack.model.LoginRequest
 import com.inovatech.smartpack.model.RegisterRequest
+import com.inovatech.smartpack.model.ResetPasswordRequest
 import com.inovatech.smartpack.model.Usuari
 import retrofit2.Response
 import retrofit2.http.Body
@@ -32,4 +35,10 @@ interface SmartPackApiService {
      */
     @POST("/auth/registrar")
     suspend fun register(@Body usuari: RegisterRequest): Response<Usuari>
+
+    @POST("/auth/forgot-password")
+    suspend fun forgotPassword(@Body email: ForgotPasswordRequest): Response<ForgotPasswordResponse>
+
+    @POST("/auth/reset-password")
+    suspend fun resetPassword(@Body resetPasswordRequest: ResetPasswordRequest): Response<Unit>
 }

@@ -1,5 +1,6 @@
 package com.inovatech.smartpack.ui.screens
 
+import ShowErrorText
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -47,118 +48,114 @@ fun LoginScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        LaunchedEffect(uiState.loginSuccess) {
-            if (uiState.loginSuccess) {
-                viewModel.clearFields()
-                onLoginSuccess()
-            }
+
+    LaunchedEffect(uiState.loginSuccess) {
+        if (uiState.loginSuccess) {
+            viewModel.clearFields()
+            onLoginSuccess()
         }
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Background)
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+        Image(
+            painter = painterResource(id = R.drawable.logo_transparent),
+            contentDescription = "Logo SmartPack",
+            contentScale = ContentScale.FillWidth,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.weight(1f))
+
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Background)
-                .padding(32.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.weight(1f))
-            Image(
-                painter = painterResource(id = R.drawable.logo_transparent),
-                contentDescription = "Logo SmartPack",
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier.fillMaxWidth()
+            Text(
+                "Inicia sessió",
+                fontWeight = FontWeight.Bold,
+                fontSize = 28.sp
             )
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    "Inicia sessió",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 28.sp
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+            //Email
+            CommonTextField(
+                value = uiState.email,
+                onValueChange = { viewModel.updateEmail(it) },
+                label = "Correu",
+                imeAction = ImeAction.Next,
+                trailingIcon = Icons.Default.Email,
+                isError = uiState.hasTriedLogin && !uiState.email.isValidEmail()
+            )
 
-                //Email
-                CommonTextField(
-                    value = uiState.email,
-                    onValueChange = { viewModel.updateEmail(it) },
-                    label = "Correu",
-                    imeAction = ImeAction.Next,
-                    trailingIcon = Icons.Default.Email,
-                    isError = uiState.hasTriedLogin && !uiState.email.isValidEmail()
-                )
+            Spacer(modifier = Modifier.height(8.dp))
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                PasswordTextField(
-                    value = uiState.password,
-                    onValueChange = viewModel::updatePassword,
-                    visualTransformation = if (uiState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIconClick = viewModel::togglePasswordVisibility,
-                    imeAction = ImeAction.Done,
-                    isError = uiState.hasTriedLogin && !uiState.password.isValidPassword()
-                )
+            PasswordTextField(
+                value = uiState.password,
+                onValueChange = viewModel::updatePassword,
+                visualTransformation = if (uiState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIconClick = viewModel::togglePasswordVisibility,
+                imeAction = ImeAction.Done,
+                isError = uiState.hasTriedLogin && !uiState.password.isValidPassword()
+            )
 
 
-                Text(
-                    "He oblidat la contrasenya",
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .clickable { onForgotPasswordClick() },
-                    fontWeight = FontWeight.Bold,
-                    textDecoration = TextDecoration.Underline
-                )
-
-                if (uiState.error != null) {
-                    ShowErrorText(uiState.error!!)
-                }
-
-                Spacer(modifier = Modifier.weight(0.5f))
-
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = !uiState.isLoading,
-                    onClick = {
-                        viewModel.login()
-                    }
-                ) {
-                    Text("Iniciar sessió", fontWeight = FontWeight.Bold)
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Button(
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.DarkGray,
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onRegisterClick() }
-                ) {
-                    Text("Registra't")
-                }
-                Spacer(modifier = Modifier.weight(2f))
-            }
-        }
-        if (uiState.isLoading) {
-            /* Embolcallem el CircularProgressIndicator perquè així no es pugui
-            interectuar amb la pantalla mentre s'executa el login */
-            Box(
+            Text(
+                "He oblidat la contrasenya",
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.3f)) // Fons semitransparent
-                    .clickable(enabled = false) {} // Evita interaccions
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = MaterialTheme.colorScheme.primary
-                )
+                    .align(Alignment.End)
+                    .clickable { onForgotPasswordClick() },
+                fontWeight = FontWeight.Bold,
+                textDecoration = TextDecoration.Underline
+            )
+
+            if (uiState.error != null) {
+                ShowErrorText(uiState.error!!)
             }
+
+            Spacer(modifier = Modifier.weight(0.5f))
+
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !uiState.isLoading,
+                onClick = {
+                    viewModel.login()
+                }
+            ) {
+                Text("Iniciar sessió", fontWeight = FontWeight.Bold)
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.DarkGray,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onRegisterClick() }
+            ) {
+                Text("Registra't")
+            }
+            Spacer(modifier = Modifier.weight(2f))
+        }
+    }
+    if (uiState.isLoading) {
+        /* Embolcallem el CircularProgressIndicator perquè així no es pugui
+        interectuar amb la pantalla mentre s'executa el login */
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.3f)) // Fons semitransparent
+                .clickable(enabled = false) {} // Evita interaccions
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }

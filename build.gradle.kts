@@ -9,6 +9,9 @@ plugins {
     id("com.google.firebase.crashlytics") version "3.0.3" apply false
     //Dager Hilt DI
     id("com.google.dagger.hilt.android") version "2.55" apply false
+    //Dokka - Javadoc equivalent per a Kotlin
+    id("org.jetbrains.dokka") version "2.0.0" apply false
+
 
     kotlin("plugin.serialization") version "2.1.10" apply false
 }

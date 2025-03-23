@@ -69,16 +69,12 @@ class LoginViewModel @Inject constructor(
         val password = _uiState.value.password
 
         return when {
-            email.isEmpty() -> {
-                _uiState.update { it.copy(error = "El correu és obligatori") }
+            email.isEmpty() ||  password.isEmpty() -> {
+                _uiState.update { it.copy(error = "Tots els camps són obligatoris") }
                 false
             }
             !email.isValidEmail() -> {
                 _uiState.update { it.copy(error = "Introdueix un correu vàlid") }
-                false
-            }
-            password.isEmpty() -> {
-                _uiState.update { it.copy(error = "El camp de contrasenya és obligatori") }
                 false
             }
             !password.isValidPassword() -> {
@@ -121,14 +117,14 @@ class LoginViewModel @Inject constructor(
 
             delay(800) //Simulacio de latencia
 
-            if (email == "roger@inovatech.com" && password == "1234567A") {
-                val token = "29uht4rg246iejsh9834tyhr563gf"
-                tokenRepository.saveAuthToken(token)
-                _uiState.update {
-                    it.copy(isLoading = false, loginSuccess = true)
-                }
-                return@launch
-            }
+//            if (email == "roger@inovatech.com" && password == "1234567A") {
+//                val token = "29uht4rg246iejsh9834tyhr563gf"
+//                tokenRepository.saveAuthToken(token)
+//                _uiState.update {
+//                    it.copy(isLoading = false, loginSuccess = true)
+//                }
+//                return@launch
+//            }
 
             val usuariLogin = LoginRequest(email = email, password = password)
 
@@ -151,8 +147,7 @@ class LoginViewModel @Inject constructor(
                     } else {
                         _uiState.update {
                             it.copy(
-                                error = "Error ${response.code()}: S'ha produït un error al iniciar sessió" +
-                                        "\nComprova les credencials"
+                                error = "Error ${response.code()}: Comprova les credencials"
                             )
                         }
                     }
@@ -166,7 +161,7 @@ class LoginViewModel @Inject constructor(
             }
             if (result == null) {
                 _uiState.update {
-                    it.copy(error = "S'ha superat el temps de resposta")
+                    it.copy(error = "No s'ha pogut connectar amb el servidor")
                 }
             }
             _uiState.update { it.copy(isLoading = false) }

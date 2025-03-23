@@ -76,8 +76,7 @@ fun Navigation(
                 }
                 composable<RememberPassword> {
                     RememberPasswordScreen(
-                        onNextClick = {/* TODO: Implementar recordar contrasenya */ },
-                        onCancelClick = { navController.popBackStack(Login, inclusive = false) }
+                        onBackClick = { navController.popBackStack(Login, inclusive = false) }
                     )
                 }
                 composable<Home> {

@@ -11,6 +11,12 @@ plugins {
     //Dagger Hilt DI
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
+    //Dokka
+    id("org.jetbrains.dokka")
+}
+
+tasks.dokkaHtml {
+    outputDirectory.set(layout.buildDirectory.dir("documentation"))
 }
 
 android {

@@ -5,5 +5,6 @@ import java.util.Date
 
 data class LoginResponse(
     @SerializedName("token") val token: String,
-    @SerializedName("expiresIn") val expiresIn: Date
+    @SerializedName("expiresIn") val expiresIn: Date,
+    @SerializedName("role") val role: Role
 )

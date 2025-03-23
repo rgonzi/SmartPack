@@ -1,6 +1,6 @@
 package com.inovatech.smartpack.ui.screens
 
-import android.widget.Toast
+import ShowErrorText
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,17 +16,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.*
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.inovatech.smartpack.ui.CommonTextField
 import com.inovatech.smartpack.ui.PasswordTextField
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -46,19 +44,25 @@ fun SignUpScreen(
     goToLoginScreen: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     CommonInitScreen(
         title = "Introdueix les teves dades",
         nomBotoPrincipal = "Registrar-me",
+        snackbarHostState = snackbarHostState,
         onNextClick = { viewModel.register() },
-        onCancelClick = goToLoginScreen,
+        onBackClick = goToLoginScreen,
     ) {
         LaunchedEffect(uiState.signUpSuccess) {
             if (uiState.signUpSuccess) {
                 viewModel.clearFields()
-                Toast.makeText(context, "S'ha registrat correctament", Toast.LENGTH_SHORT).show()
-                goToLoginScreen()
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = "S'ha registrat correctament",
+                        duration = SnackbarDuration.Short
+                    )
+                }
             }
         }
         //Email
@@ -172,18 +176,6 @@ fun SignUpScreen(
             )
         }
     }
-}
-
-@Composable
-fun ShowErrorText(
-    text: String,
-) {
-    Text(
-        text = text,
-        color = Color.Red,
-        fontSize = 12.sp,
-        textAlign = TextAlign.Start
-    )
 }
 
 @Preview(showSystemUi = true)

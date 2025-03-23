@@ -7,6 +7,7 @@ import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.model.RegisterRequest
 import com.inovatech.smartpack.model.Role
 import com.inovatech.smartpack.model.SignUpUiState
+import com.inovatech.smartpack.utils.Settings
 import com.inovatech.smartpack.utils.Settings.TIMEOUT
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
@@ -29,7 +30,6 @@ class SignUpViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
 
-    private val TAG = "SmartPack-Debug"
 
     /**
      * Actualitza l'input del TextField corresponent en el UiState i obliga a la UI a recomposar-se
@@ -144,7 +144,7 @@ class SignUpViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(error = "No s'ha pogut connectar amb el servidor")
                     }
-                    Log.d(TAG, e.message.toString())
+                    Log.d(Settings.LOG_TAG, e.message.toString())
                 }
             }
             if (result == null) {
@@ -162,6 +162,10 @@ class SignUpViewModel @Inject constructor(
                 email = "",
                 password = "",
                 repeatedPassword = "",
+                name = "",
+                surname = "",
+                tel = "",
+                address = "",
                 hasTriedRegister = false,
                 signUpSuccess = false,
                 error = null
