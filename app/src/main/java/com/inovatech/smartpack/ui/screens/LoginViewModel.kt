@@ -140,7 +140,8 @@ class LoginViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     error = null,
-                                    loginSuccess = true
+                                    loginSuccess = true,
+                                    role = loginResponse.role
                                 )
                             }
                         }

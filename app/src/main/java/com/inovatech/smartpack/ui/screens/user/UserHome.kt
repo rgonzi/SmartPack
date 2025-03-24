@@ -1,7 +1,12 @@
-package com.inovatech.smartpack.ui.screens
+package com.inovatech.smartpack.ui.screens.user
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -20,7 +25,7 @@ import kotlinx.serialization.Serializable
 import androidx.compose.runtime.*
 
 @Serializable
-data object Home
+data object UserHome
 
 /**
  * Composable que defineix el disseny de la pantalla principal de l'app
@@ -30,8 +35,8 @@ data object Home
  * a la pantalla de Login
  */
 @Composable
-fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel(),
+fun UserHomeScreen(
+    viewModel: UserHomeViewModel = hiltViewModel(),
     backToLogin: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -45,12 +50,9 @@ fun HomeScreen(
             modifier = Modifier.fillMaxSize(),
             containerColor = Color.Transparent,
             topBar = { HomeTopAppBar() },
+            floatingActionButton = { Fab() },
             bottomBar = {
-                HomeBottomBar(
-                    onClick = {
-                        viewModel.logout()
-                    }
-                )
+                HomeBottomBar()
             }
         ) {
             LaunchedEffect(uiState.isLogoutSuccess) {
@@ -91,34 +93,40 @@ fun HomeTopAppBar() {
             containerColor = Color.Transparent,
             titleContentColor = Color.Black
         )
-        //TODO Afegir botó perfil usuari
     )
 }
 
 @Composable
-fun HomeBottomBar(
-    onClick: () -> Unit = {},
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+fun Fab() {
+    FloatingActionButton(
+        onClick = {  },
+
     ) {
-        Button(
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.error, contentColor = Color.Black
-            ),
-            onClick = onClick,
-        ) {
-            Text("Tancar sessió")
+        Icon(Icons.Default.Add, contentDescription = "Crear nou servei")
+    }
+}
+
+@Composable
+fun HomeBottomBar(
+) {
+    var selectedItem by remember { mutableStateOf(0) }
+    val items = listOf("Seguiment", "Històric", "Configuració")
+    val icons = listOf(Icons.Default.Search, Icons.Default.DateRange, Icons.Default.Settings)
+
+    NavigationBar {
+        items.forEachIndexed { index, item ->
+            NavigationBarItem(
+                selected = selectedItem == index,
+                onClick = { selectedItem = index },
+                icon = { Icon(icons[index], contentDescription = "") },
+                label = { Text(items[index]) }
+            )
         }
-        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
 @Preview(showSystemUi = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen()
+    UserHomeScreen()
 }

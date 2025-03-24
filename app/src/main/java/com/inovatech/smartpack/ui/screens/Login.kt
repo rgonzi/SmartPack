@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.serialization.Serializable
 import com.inovatech.smartpack.R
+import com.inovatech.smartpack.model.Role
 import com.inovatech.smartpack.ui.CommonTextField
 import com.inovatech.smartpack.ui.PasswordTextField
 import com.inovatech.smartpack.ui.theme.Background
@@ -42,7 +43,9 @@ object Login
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
-    onLoginSuccess: () -> Unit = {},
+    onNavigateUserHome: () -> Unit = {},
+    onNavigateDeliveryManHome: () -> Unit = {},
+    onNavigateAdminHome: () -> Unit = {},
     onForgotPasswordClick: () -> Unit = {},
     onRegisterClick: () -> Unit,
 ) {
@@ -52,7 +55,12 @@ fun LoginScreen(
     LaunchedEffect(uiState.loginSuccess) {
         if (uiState.loginSuccess) {
             viewModel.clearFields()
-            onLoginSuccess()
+            when (uiState.role) {
+                Role.ROLE_USER -> onNavigateUserHome
+                Role.ROLE_DELIVERYMAN -> onNavigateDeliveryManHome
+                Role.ROLE_ADMIN -> onNavigateAdminHome
+            }
+
         }
     }
     Column(

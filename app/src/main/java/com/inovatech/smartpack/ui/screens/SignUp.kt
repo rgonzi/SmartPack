@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Place
@@ -145,15 +147,31 @@ fun SignUpScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        //Address
-        CommonTextField(
-            value = uiState.address,
-            onValueChange = { viewModel.updateField("address", it) },
-            label = "Adreça",
-            trailingIcon = Icons.Default.Place,
-            imeAction = ImeAction.Done,
-            isError = uiState.hasTriedRegister && uiState.address.isEmpty()
-        )
+        //TODO Afegir desplegable tipus de via
+        Row (
+            modifier = Modifier.fillMaxWidth()
+        ){
+            CommonTextField(
+                value = uiState.addressType,
+                onValueChange = { viewModel.updateField("addressType", it) },
+                label = "Via",
+                trailingIcon = Icons.Default.Place,
+                imeAction = ImeAction.Next,
+                isError = uiState.hasTriedRegister && uiState.addressType.isEmpty(),
+                modifier = Modifier.fillMaxWidth(0.3f)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            //Address
+            CommonTextField(
+                value = uiState.address,
+                onValueChange = { viewModel.updateField("address", it) },
+                label = "Adreça",
+                trailingIcon = Icons.Default.Home,
+                imeAction = ImeAction.Done,
+                isError = uiState.hasTriedRegister && uiState.address.isEmpty(),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 

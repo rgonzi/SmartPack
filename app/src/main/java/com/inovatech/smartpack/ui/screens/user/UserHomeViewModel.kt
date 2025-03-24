@@ -1,4 +1,4 @@
-package com.inovatech.smartpack.ui.screens
+package com.inovatech.smartpack.ui.screens.user
 
 import androidx.lifecycle.ViewModel
 import com.inovatech.smartpack.data.TokenRepository
@@ -15,7 +15,7 @@ import javax.inject.Inject
  * des de la pantalla.
  */
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class UserHomeViewModel @Inject constructor(
     private val tokenRepository: TokenRepository,
 ) : ViewModel() {
 

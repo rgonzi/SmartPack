@@ -42,9 +42,11 @@ class SignUpViewModel @Inject constructor(
             "name" -> _uiState.update { it.copy(name = value) }
             "surname" -> _uiState.update { it.copy(surname = value) }
             "tel" -> _uiState.update { it.copy(tel = value) }
+            "addressType" -> _uiState.update { it.copy(addressType = value) }
             "address" -> _uiState.update { it.copy(address = value) }
         }
     }
+
     /**
      * Mètode que valida que els inputs als TextField de la pantalla siguin correctes, validant que
      * no estiguin buits, que les dues contrasenyes coincideixin i que compleixen un patró en Regex
@@ -57,24 +59,30 @@ class SignUpViewModel @Inject constructor(
         val surname = _uiState.value.surname
         val tel = _uiState.value.tel
         val address = _uiState.value.address
+        val addressType = _uiState.value.addressType
 
         return when {
-            name.isEmpty() || surname.isEmpty() || tel.isEmpty() || address.isEmpty() -> {
+            name.isEmpty() || surname.isEmpty() || tel.isEmpty() || address.isEmpty() || addressType
+                .isEmpty()-> {
                 _uiState.update { it.copy(error = "Tots els camps són obligatoris") }
                 false
             }
+
             !email.isValidEmail() -> {
                 _uiState.update { it.copy(error = "Introdueix un correu vàlid") }
                 false
             }
+
             !password.isValidPassword() -> {
                 _uiState.update { it.copy(error = "La contrasenya ha de tenir mínim 8 caràcters, almenys 1 majúscula i 1 número") }
                 false
             }
+
             password != repeatedPassword -> {
                 _uiState.update { it.copy(error = "Les contrasenyes no coincideixen") }
                 false
             }
+
             else -> {
                 _uiState.update { it.copy(error = null) }
                 true
@@ -94,11 +102,13 @@ class SignUpViewModel @Inject constructor(
 
         val state = _uiState.value
 
-        _uiState.update { it.copy(
-            isLoading = true,
-            error = null,
-            signUpSuccess = false
-        ) }
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                error = null,
+                signUpSuccess = false
+            )
+        }
 
 
         viewModelScope.launch {
@@ -122,7 +132,8 @@ class SignUpViewModel @Inject constructor(
                 name = state.name,
                 surname = state.surname,
                 tel = state.tel,
-                address = state.address
+                //Concatenem el tipus de via amb el nom de la via
+                address = state.addressType +  " " + state.address
             )
             val result = withTimeoutOrNull(TIMEOUT) {
                 try {

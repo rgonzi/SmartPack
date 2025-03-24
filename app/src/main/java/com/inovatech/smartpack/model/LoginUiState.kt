@@ -7,5 +7,6 @@ data class LoginUiState(
     val isLoading: Boolean = false,
     val hasTriedLogin: Boolean = false,
     val loginSuccess: Boolean = false,
+    val role: Role = Role.ROLE_USER,
     val error: String? = null
 )

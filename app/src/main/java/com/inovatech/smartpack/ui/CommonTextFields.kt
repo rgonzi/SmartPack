@@ -20,7 +20,8 @@ fun CommonTextField(
     enabled: Boolean = true,
     trailingIcon: ImageVector,
     imeAction: ImeAction,
-    isError: Boolean
+    isError: Boolean,
+    modifier: Modifier = Modifier
 ) {
     OutlinedTextField(
         colors = TextFieldDefaults.colors(
@@ -38,7 +39,7 @@ fun CommonTextField(
             imeAction = imeAction
         ),
         isError = isError,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
     )
 }

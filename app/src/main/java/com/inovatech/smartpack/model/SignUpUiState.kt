@@ -7,6 +7,7 @@ data class SignUpUiState(
     val name: String = "",
     val surname: String = "",
     val tel: String = "",
+    val addressType: String = "",
     val address: String = "",
 
     val isLoading: Boolean = false,

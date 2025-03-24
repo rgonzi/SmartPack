@@ -13,6 +13,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.inovatech.smartpack.data.TokenRepository
 import com.inovatech.smartpack.ui.screens.*
+import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHome
+import com.inovatech.smartpack.ui.screens.admin.AdminHome
+import com.inovatech.smartpack.ui.screens.admin.AdminHomeScreen
+import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHomeScreen
+import com.inovatech.smartpack.ui.screens.user.UserHome
+import com.inovatech.smartpack.ui.screens.user.UserHomeScreen
 import kotlinx.coroutines.delay
 
 /**
@@ -59,8 +65,20 @@ fun Navigation(
             ) {
                 composable<Login> {
                     LoginScreen(
-                        onLoginSuccess = {
-                            navController.navigate(Home) {
+                        onNavigateUserHome = {
+                            navController.navigate(UserHome) {
+                                popUpTo(startDestination) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        },
+                        onNavigateDeliveryManHome = {
+                            navController.navigate(DeliverymanHome) {
+                                popUpTo(startDestination) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        },
+                        onNavigateAdminHome = {
+                            navController.navigate(AdminHome) {
                                 popUpTo(startDestination) { inclusive = true }
                                 launchSingleTop = true
                             }
@@ -79,15 +97,14 @@ fun Navigation(
                         onBackClick = { navController.popBackStack(Login, inclusive = false) }
                     )
                 }
-                composable<Home> {
-                    HomeScreen(
-                        backToLogin = {
-                            navController.navigate(Login) {
-                                popUpTo(Home) { inclusive = true }
-                            }
-
-                        }
-                    )
+                composable<UserHome> {
+                    UserHomeScreen()
+                }
+                composable<DeliverymanHome> {
+                    DeliverymanHomeScreen()
+                }
+                composable<AdminHome> {
+                    AdminHomeScreen()
                 }
             }
         }

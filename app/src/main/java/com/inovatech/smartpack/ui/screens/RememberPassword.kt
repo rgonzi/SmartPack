@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,7 +39,6 @@ data object RememberPassword
  * Composable que defineix el disseny de la pantalla de recordar la contrasenya
  *
  * @param viewModel: El seu viewModel associat
- * @param onNextClick
  * @param onBackClick: Destí de navegació per tornar a la pantalla Login al cancelar
  * la operació.
  */
