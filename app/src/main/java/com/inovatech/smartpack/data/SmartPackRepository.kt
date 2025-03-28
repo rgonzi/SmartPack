@@ -1,11 +1,11 @@
 package com.inovatech.smartpack.data
 
-import com.inovatech.smartpack.model.ForgotPasswordRequest
-import com.inovatech.smartpack.model.ForgotPasswordResponse
-import com.inovatech.smartpack.model.LoginResponse
-import com.inovatech.smartpack.model.LoginRequest
-import com.inovatech.smartpack.model.RegisterRequest
-import com.inovatech.smartpack.model.ResetPasswordRequest
+import com.inovatech.smartpack.model.auth.ForgotPasswordRequest
+import com.inovatech.smartpack.model.auth.ForgotPasswordResponse
+import com.inovatech.smartpack.model.auth.LoginResponse
+import com.inovatech.smartpack.model.auth.LoginRequest
+import com.inovatech.smartpack.model.auth.RegisterRequest
+import com.inovatech.smartpack.model.auth.ResetPasswordRequest
 import com.inovatech.smartpack.model.Usuari
 import com.inovatech.smartpack.network.SmartPackApiService
 import retrofit2.Response

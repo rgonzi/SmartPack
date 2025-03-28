@@ -1,7 +1,7 @@
 package com.inovatech.smartpack.data
 
-import com.inovatech.smartpack.model.LoginRequest
-import com.inovatech.smartpack.model.RegisterRequest
+import com.inovatech.smartpack.model.auth.LoginRequest
+import com.inovatech.smartpack.model.auth.RegisterRequest
 import com.inovatech.smartpack.model.Role
 import com.inovatech.smartpack.network.SmartPackApiService
 import kotlinx.coroutines.ExperimentalCoroutinesApi

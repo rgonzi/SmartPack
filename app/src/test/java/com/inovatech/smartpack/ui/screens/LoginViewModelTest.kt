@@ -1,7 +1,7 @@
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.data.TokenRepository
-import com.inovatech.smartpack.model.LoginRequest
-import com.inovatech.smartpack.model.LoginResponse
+import com.inovatech.smartpack.model.auth.LoginRequest
+import com.inovatech.smartpack.model.auth.LoginResponse
 import com.inovatech.smartpack.ui.screens.LoginViewModel
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword

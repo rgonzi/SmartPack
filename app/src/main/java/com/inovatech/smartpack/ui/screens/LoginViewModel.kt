@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.data.TokenRepository
-import com.inovatech.smartpack.model.LoginUiState
-import com.inovatech.smartpack.model.LoginRequest
+import com.inovatech.smartpack.model.auth.LoginUiState
+import com.inovatech.smartpack.model.auth.LoginRequest
 import com.inovatech.smartpack.utils.Settings.TIMEOUT
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword

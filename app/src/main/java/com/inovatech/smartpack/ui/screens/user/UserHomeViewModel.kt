@@ -23,7 +23,7 @@ class UserHomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     /**
-     * Mètode que realitza el logout de l'aplicació eliminant el token guardat.
+     * Mètode que realitza el logout de l'aplicació eliminant el token guardat
      */
     fun logout() {
         tokenRepository.clearAuthToken()

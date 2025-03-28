@@ -56,9 +56,9 @@ fun LoginScreen(
         if (uiState.loginSuccess) {
             viewModel.clearFields()
             when (uiState.role) {
-                Role.ROLE_USER -> onNavigateUserHome
-                Role.ROLE_DELIVERYMAN -> onNavigateDeliveryManHome
-                Role.ROLE_ADMIN -> onNavigateAdminHome
+                Role.ROLE_USER -> onNavigateUserHome()
+                Role.ROLE_DELIVERYMAN -> onNavigateDeliveryManHome()
+                Role.ROLE_ADMIN -> onNavigateAdminHome()
             }
 
         }

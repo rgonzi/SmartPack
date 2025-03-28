@@ -98,10 +98,24 @@ fun Navigation(
                     )
                 }
                 composable<UserHome> {
-                    UserHomeScreen()
+                    UserHomeScreen(
+                        backToLogin = {
+                            navController.navigate(Login) {
+                                popUpTo(UserHome) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
                 }
                 composable<DeliverymanHome> {
-                    DeliverymanHomeScreen()
+                    DeliverymanHomeScreen(
+                        backToLogin = {
+                            navController.navigate(Login) {
+                                popUpTo(DeliverymanHome) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
                 }
                 composable<AdminHome> {
                     AdminHomeScreen()

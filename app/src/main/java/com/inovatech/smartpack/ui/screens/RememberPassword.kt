@@ -80,6 +80,7 @@ fun RememberPasswordScreen(
             trailingIcon = Icons.Default.Email,
             isError = !uiState.email.isEmpty() && !uiState.email.isValidEmail()
         )
+        //TODO Demanar la paraula secreta
 
         if (uiState.newTokenObtained) {
             Spacer(modifier = Modifier.height(16.dp))

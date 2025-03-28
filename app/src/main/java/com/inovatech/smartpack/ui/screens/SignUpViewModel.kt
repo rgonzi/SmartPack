@@ -4,9 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
-import com.inovatech.smartpack.model.RegisterRequest
+import com.inovatech.smartpack.model.auth.RegisterRequest
 import com.inovatech.smartpack.model.Role
-import com.inovatech.smartpack.model.SignUpUiState
+import com.inovatech.smartpack.model.auth.SignUpUiState
 import com.inovatech.smartpack.utils.Settings
 import com.inovatech.smartpack.utils.Settings.TIMEOUT
 import com.inovatech.smartpack.utils.isValidEmail
@@ -39,12 +39,18 @@ class SignUpViewModel @Inject constructor(
             "email" -> _uiState.update { it.copy(email = value) }
             "password" -> _uiState.update { it.copy(password = value) }
             "repeatedPassword" -> _uiState.update { it.copy(repeatedPassword = value) }
+            "secretWord" -> _uiState.update { it.copy(secretWord = value) }
             "name" -> _uiState.update { it.copy(name = value) }
             "surname" -> _uiState.update { it.copy(surname = value) }
             "tel" -> _uiState.update { it.copy(tel = value) }
             "addressType" -> _uiState.update { it.copy(addressType = value) }
             "address" -> _uiState.update { it.copy(address = value) }
+
         }
+    }
+
+    fun updateRole(newRole: Role) {
+        _uiState.update { it.copy(role = newRole) }
     }
 
     /**
@@ -60,10 +66,10 @@ class SignUpViewModel @Inject constructor(
         val tel = _uiState.value.tel
         val address = _uiState.value.address
         val addressType = _uiState.value.addressType
+        val secretWord = _uiState.value.secretWord
 
         return when {
-            name.isEmpty() || surname.isEmpty() || tel.isEmpty() || address.isEmpty() || addressType
-                .isEmpty()-> {
+            name.isEmpty() || surname.isEmpty() || tel.isEmpty() || address.isEmpty() || addressType.isEmpty() || secretWord.isEmpty() -> {
                 _uiState.update { it.copy(error = "Tots els camps són obligatoris") }
                 false
             }
@@ -104,9 +110,7 @@ class SignUpViewModel @Inject constructor(
 
         _uiState.update {
             it.copy(
-                isLoading = true,
-                error = null,
-                signUpSuccess = false
+                isLoading = true, error = null, signUpSuccess = false
             )
         }
 
@@ -128,12 +132,13 @@ class SignUpViewModel @Inject constructor(
             val usuariPerRegistrar = RegisterRequest(
                 email = state.email,
                 password = state.password,
-                role = Role.ROLE_USER,
+                secretWord = state.secretWord,
+                role = state.role,
                 name = state.name,
                 surname = state.surname,
                 tel = state.tel,
                 //Concatenem el tipus de via amb el nom de la via
-                address = state.addressType +  " " + state.address
+                address = state.addressType + " " + state.address
             )
             val result = withTimeoutOrNull(TIMEOUT) {
                 try {
@@ -173,10 +178,12 @@ class SignUpViewModel @Inject constructor(
                 email = "",
                 password = "",
                 repeatedPassword = "",
+                secretWord = "",
                 name = "",
                 surname = "",
                 tel = "",
                 address = "",
+                addressType = "",
                 hasTriedRegister = false,
                 signUpSuccess = false,
                 error = null

@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.data.TokenRepository
-import com.inovatech.smartpack.model.ForgotPasswordRequest
-import com.inovatech.smartpack.model.RememberPasswordUiState
-import com.inovatech.smartpack.model.ResetPasswordRequest
+import com.inovatech.smartpack.model.auth.ForgotPasswordRequest
+import com.inovatech.smartpack.model.auth.RememberPasswordUiState
+import com.inovatech.smartpack.model.auth.ResetPasswordRequest
 import com.inovatech.smartpack.utils.Settings
 import com.inovatech.smartpack.utils.Settings.TIMEOUT
 import com.inovatech.smartpack.utils.isValidEmail

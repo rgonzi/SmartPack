@@ -37,7 +37,7 @@ data object UserHome
 @Composable
 fun UserHomeScreen(
     viewModel: UserHomeViewModel = hiltViewModel(),
-    backToLogin: () -> Unit = {},
+    backToLogin: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -69,9 +69,18 @@ fun UserHomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Benvingut a la app de SmartPack"
+                    text = "Benvingut a la app de SmartPack, usuari"
                 )
                 Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error, contentColor = Color.Black
+                    ),
+                    onClick = { viewModel.logout() },
+                ) {
+                    Text("Tancar sessió")
+                }
 
             }
         }
@@ -123,10 +132,4 @@ fun HomeBottomBar(
             )
         }
     }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun HomeScreenPreview() {
-    UserHomeScreen()
 }

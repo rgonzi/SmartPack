@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lock
@@ -13,15 +14,19 @@ import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.inovatech.smartpack.model.Role
 import com.inovatech.smartpack.ui.CommonTextField
 import com.inovatech.smartpack.ui.PasswordTextField
 import com.inovatech.smartpack.utils.isValidEmail
@@ -48,6 +53,7 @@ fun SignUpScreen(
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+    var checked by remember { mutableStateOf(false) }
 
     CommonInitScreen(
         title = "Introdueix les teves dades",
@@ -90,6 +96,7 @@ fun SignUpScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        //Repeat password
         OutlinedTextField(
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
@@ -112,6 +119,45 @@ fun SignUpScreen(
         )
 
         Spacer(modifier = Modifier.height(8.dp))
+
+        //Paraula secreta
+        Text(
+            "Paraula secreta en cas de recuperar la contrasenya",
+            fontSize = 14.sp
+        )
+        CommonTextField(
+            value = uiState.secretWord,
+            onValueChange = { viewModel.updateField("secretWord", it) },
+            label = "Paraula secreta",
+            trailingIcon = Icons.Default.Warning,
+            imeAction = ImeAction.Next,
+            isError = uiState.hasTriedRegister && uiState.secretWord.isEmpty(),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row (
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Text("Sou transportista?", fontSize = 14.sp)
+            Spacer(modifier = Modifier.width(8.dp))
+            Switch(
+                checked = checked,
+                onCheckedChange = { checked = it },
+                thumbContent = {
+                    if (checked) {
+                        viewModel.updateRole(Role.ROLE_DELIVERYMAN)
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = "",
+                            modifier = Modifier.size(SwitchDefaults.IconSize)
+                        )
+                    }
+                }
+            )
+        }
 
         //Name
         CommonTextField(
@@ -147,10 +193,9 @@ fun SignUpScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        //TODO Afegir desplegable tipus de via
-        Row (
+        Row(
             modifier = Modifier.fillMaxWidth()
-        ){
+        ) {
             CommonTextField(
                 value = uiState.addressType,
                 onValueChange = { viewModel.updateField("addressType", it) },
@@ -172,7 +217,6 @@ fun SignUpScreen(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-
         Spacer(modifier = Modifier.height(8.dp))
 
         if (uiState.error != null) {
