@@ -1,9 +1,13 @@
-package com.inovatech.smartpack.model
+package com.inovatech.smartpack.model.auth
+
+import com.inovatech.smartpack.model.Role
 
 data class SignUpUiState(
     val email: String = "",
     val password: String = "",
     val repeatedPassword: String = "",
+    val secretWord: String = "",
+    val role: Role = Role.ROLE_USER,
     val name: String = "",
     val surname: String = "",
     val tel: String = "",

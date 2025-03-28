@@ -1,4 +1,6 @@
-package com.inovatech.smartpack.model
+package com.inovatech.smartpack.model.auth
+
+import com.inovatech.smartpack.model.Role
 
 data class LoginUiState(
     val email: String = "",
