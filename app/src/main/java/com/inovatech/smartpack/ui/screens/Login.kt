@@ -24,6 +24,7 @@ import kotlinx.serialization.Serializable
 import com.inovatech.smartpack.R
 import com.inovatech.smartpack.model.Role
 import com.inovatech.smartpack.ui.CommonTextField
+import com.inovatech.smartpack.ui.LoadingScreen
 import com.inovatech.smartpack.ui.PasswordTextField
 import com.inovatech.smartpack.ui.theme.Background
 import com.inovatech.smartpack.utils.isValidEmail
@@ -151,19 +152,5 @@ fun LoginScreen(
             Spacer(modifier = Modifier.weight(2f))
         }
     }
-    if (uiState.isLoading) {
-        /* Embolcallem el CircularProgressIndicator perquè així no es pugui
-        interectuar amb la pantalla mentre s'executa el login */
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.3f)) // Fons semitransparent
-                .clickable(enabled = false) {} // Evita interaccions
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-    }
+    LoadingScreen(uiState.isLoading)
 }

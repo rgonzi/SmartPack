@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.inovatech.smartpack.data.TokenRepository
-import com.inovatech.smartpack.ui.Navigation
 import com.inovatech.smartpack.ui.theme.SmartPackTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

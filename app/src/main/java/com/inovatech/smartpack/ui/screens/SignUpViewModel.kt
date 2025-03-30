@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
-import com.inovatech.smartpack.model.auth.RegisterRequest
+import com.inovatech.smartpack.model.UserRequest
 import com.inovatech.smartpack.model.Role
 import com.inovatech.smartpack.model.auth.SignUpUiState
 import com.inovatech.smartpack.utils.Settings
@@ -129,7 +129,7 @@ class SignUpViewModel @Inject constructor(
                 return@launch
             }
 
-            val usuariPerRegistrar = RegisterRequest(
+            val usuariPerRegistrar = UserRequest(
                 email = state.email,
                 password = state.password,
                 secretWord = state.secretWord,

@@ -7,6 +7,7 @@ import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.data.TokenRepository
 import com.inovatech.smartpack.model.auth.LoginUiState
 import com.inovatech.smartpack.model.auth.LoginRequest
+import com.inovatech.smartpack.utils.Settings
 import com.inovatech.smartpack.utils.Settings.TIMEOUT
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
@@ -30,8 +31,6 @@ class LoginViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
-
-    private val TAG = "SmartPack-Debug"
 
     /**
      * Actualitza l'email en el UiState i obliga a la UI a recomposar-se
@@ -110,21 +109,7 @@ class LoginViewModel @Inject constructor(
         val password = _uiState.value.password.trim()
 
         viewModelScope.launch {
-            /*
-             * Mock per iniciar sessió mentre el servidor no estigui implementat.
-             * També simulem latència
-             */
-
             delay(800) //Simulacio de latencia
-
-//            if (email == "roger@inovatech.com" && password == "1234567A") {
-//                val token = "29uht4rg246iejsh9834tyhr563gf"
-//                tokenRepository.saveAuthToken(token)
-//                _uiState.update {
-//                    it.copy(isLoading = false, loginSuccess = true)
-//                }
-//                return@launch
-//            }
 
             val usuariLogin = LoginRequest(email = email, password = password)
 
@@ -152,12 +137,11 @@ class LoginViewModel @Inject constructor(
                             )
                         }
                     }
-
                 } catch (e: IOException) {
                     _uiState.update {
                         it.copy(error = "No s'ha pogut connectar amb el servidor")
                     }
-                    Log.d(TAG, e.message.toString())
+                    Log.d(Settings.LOG_TAG, e.message.toString())
                 }
             }
             if (result == null) {

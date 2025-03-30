@@ -1,7 +1,7 @@
 package com.inovatech.smartpack.ui.screens
 
 import com.inovatech.smartpack.data.TokenRepository
-import com.inovatech.smartpack.ui.screens.user.UserHomeViewModel
+import com.inovatech.smartpack.ui.screens.user.UserConfigViewModel
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -12,14 +12,14 @@ import org.mockito.kotlin.verify
 @RunWith(MockitoJUnitRunner::class)
 class HomeViewModelTest {
 
-    private lateinit var viewModel: UserHomeViewModel
+    private lateinit var viewModel: UserConfigViewModel
 
     @Mock
     private lateinit var tokenRepository: TokenRepository
 
     @Before
     fun setUp() {
-        viewModel = UserHomeViewModel(tokenRepository)
+        viewModel = UserConfigViewModel(tokenRepository)
     }
 
     /**
@@ -31,6 +31,6 @@ class HomeViewModelTest {
 
         verify(tokenRepository).clearAuthToken()
 
-        assert(viewModel.uiState.value.isLogoutSuccess)
+        assert(viewModel.uiState.value.isLogoutOrDeactivateSuccess)
     }
 }

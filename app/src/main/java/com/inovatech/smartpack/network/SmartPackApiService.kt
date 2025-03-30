@@ -4,13 +4,15 @@ import com.inovatech.smartpack.model.auth.ForgotPasswordRequest
 import com.inovatech.smartpack.model.auth.ForgotPasswordResponse
 import com.inovatech.smartpack.model.auth.LoginResponse
 import com.inovatech.smartpack.model.auth.LoginRequest
-import com.inovatech.smartpack.model.auth.RegisterRequest
+import com.inovatech.smartpack.model.UserRequest
 import com.inovatech.smartpack.model.auth.ResetPasswordRequest
-import com.inovatech.smartpack.model.Usuari
+import com.inovatech.smartpack.model.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
 
 /**
  * Interfície necessària per Retrofit per definir els endpoints de l'API a l'hora de fer les
@@ -18,6 +20,7 @@ import retrofit2.http.POST
  */
 interface SmartPackApiService {
 
+    //Autenticació
     /**
      * Petició de login
      * @param usuari: un LoginRequest que està compost d'un email i una contrasenya
@@ -35,7 +38,7 @@ interface SmartPackApiService {
      * la data de creació, si està habilitat, el rol, etc.
      */
     @POST("/auth/registrar")
-    suspend fun register(@Body usuari: RegisterRequest): Response<Usuari>
+    suspend fun register(@Body usuari: UserRequest): Response<UserResponse>
 
     @POST("/auth/forgot-password")
     suspend fun forgotPassword(@Body email: ForgotPasswordRequest): Response<ForgotPasswordResponse>
@@ -43,11 +46,16 @@ interface SmartPackApiService {
     @POST("/auth/reset-password")
     suspend fun resetPassword(@Body resetPasswordRequest: ResetPasswordRequest): Response<Unit>
 
+
+    //Usuaris
     /**
      * Petició per obtenir les dades d'un usuari
      * @param token: El token actual obtingut del login
      * @return Un usuari amb totes les seves dades
      */
-    @GET("/me")
-    suspend fun getUserDetails()
+    @GET("/usuari/me")
+    suspend fun getUserDetails(): Response<UserResponse>
+
+    @PUT("/usuari/{id}")
+    suspend fun updateUser(@Path("id") id: Int, @Body usuari: UserRequest): Response<UserResponse>
 }

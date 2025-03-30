@@ -2,6 +2,8 @@ package com.inovatech.smartpack.di
 
 import com.inovatech.smartpack.data.NetworkSmartPackRepository
 import com.inovatech.smartpack.data.SmartPackRepository
+import com.inovatech.smartpack.data.TokenRepository
+import com.inovatech.smartpack.network.AuthInterceptor
 import com.inovatech.smartpack.network.SmartPackApiService
 import com.inovatech.smartpack.utils.Settings
 import dagger.Module
@@ -24,13 +26,16 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(
+        tokenRepository: TokenRepository
+    ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
         return OkHttpClient.Builder()
             .addInterceptor(logging)
+            .addInterceptor(AuthInterceptor(tokenRepository))
             .build()
     }
 

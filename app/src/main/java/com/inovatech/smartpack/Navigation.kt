@@ -1,4 +1,4 @@
-package com.inovatech.smartpack.ui
+package com.inovatech.smartpack
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -17,6 +17,8 @@ import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHome
 import com.inovatech.smartpack.ui.screens.admin.AdminHome
 import com.inovatech.smartpack.ui.screens.admin.AdminHomeScreen
 import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHomeScreen
+import com.inovatech.smartpack.ui.screens.user.UserConfig
+import com.inovatech.smartpack.ui.screens.user.UserConfigScreen
 import com.inovatech.smartpack.ui.screens.user.UserHome
 import com.inovatech.smartpack.ui.screens.user.UserHomeScreen
 import kotlinx.coroutines.delay
@@ -44,18 +46,14 @@ fun Navigation(
         startDestination = Login
     }
     AnimatedVisibility(
-        startDestination == Splash,
-        enter = fadeIn(),
-        exit = fadeOut()
+        startDestination == Splash, enter = fadeIn(), exit = fadeOut()
     ) {
         Surface(modifier = Modifier.fillMaxSize()) {
             SplashScreen()
         }
     }
     AnimatedVisibility(
-        startDestination != Splash,
-        enter = fadeIn(),
-        exit = fadeOut()
+        startDestination != Splash, enter = fadeIn(), exit = fadeOut()
     ) {
         Surface {
             NavHost(
@@ -84,26 +82,38 @@ fun Navigation(
                             }
                         },
                         onRegisterClick = { navController.navigate(SignUp) },
-                        onForgotPasswordClick = { navController.navigate(RememberPassword) }
-                    )
+                        onForgotPasswordClick = { navController.navigate(RememberPassword) })
                 }
                 composable<SignUp> {
                     SignUpScreen(
-                        goToLoginScreen = { navController.popBackStack(Login, inclusive = false) }
-                    )
+                        goToLoginScreen = { navController.popBackStack(Login, inclusive = false) })
                 }
                 composable<RememberPassword> {
                     RememberPasswordScreen(
-                        onBackClick = { navController.popBackStack(Login, inclusive = false) }
-                    )
+                        onBackClick = { navController.popBackStack(Login, inclusive = false) })
                 }
                 composable<UserHome> {
                     UserHomeScreen(
+                        navToConfig = {
+                            navController.navigate(UserConfig)
+                        },
                         backToLogin = {
                             navController.navigate(Login) {
                                 popUpTo(UserHome) { inclusive = true }
                                 launchSingleTop = true
                             }
+                        })
+                }
+                composable<UserConfig> {
+                    UserConfigScreen(
+                        onBackPressed = { navController.popBackStack() },
+                        backToLogin = {
+                            navController.navigate(Login) {
+                                popUpTo(UserHome) { inclusive = true }
+                            }
+                        },
+                        onChangePassword = {
+                            //TODO Navegar a la pantalla per canviar contrasenya
                         }
                     )
                 }
@@ -114,8 +124,7 @@ fun Navigation(
                                 popUpTo(DeliverymanHome) { inclusive = true }
                                 launchSingleTop = true
                             }
-                        }
-                    )
+                        })
                 }
                 composable<AdminHome> {
                     AdminHomeScreen()

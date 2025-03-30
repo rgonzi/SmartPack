@@ -1,8 +1,8 @@
 package com.inovatech.smartpack.ui.screens
 
 import com.inovatech.smartpack.data.SmartPackRepository
-import com.inovatech.smartpack.model.auth.RegisterRequest
-import com.inovatech.smartpack.model.Usuari
+import com.inovatech.smartpack.model.UserRequest
+import com.inovatech.smartpack.model.User
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
 import kotlinx.coroutines.Dispatchers
@@ -130,7 +130,7 @@ class SignUpViewModelTest {
         signUpViewModel.updateField("tel", "123456789")
         signUpViewModel.updateField("address", "some address")
 
-        val request = RegisterRequest(
+        val request = UserRequest(
             email = "email",
             password = "1234567A",
             role = null,
@@ -140,7 +140,7 @@ class SignUpViewModelTest {
             address = "some address"
         )
 
-        val mockResponse = Response.success(Usuari(email = "test@test.com", password = "1234567A"))
+        val mockResponse = Response.success(User(email = "test@test.com", password = "1234567A"))
 
         whenever(mockRepository.register(request)).thenReturn(mockResponse)
 

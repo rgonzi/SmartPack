@@ -1,7 +1,7 @@
 package com.inovatech.smartpack.data
 
 import com.inovatech.smartpack.model.auth.LoginRequest
-import com.inovatech.smartpack.model.auth.RegisterRequest
+import com.inovatech.smartpack.model.UserRequest
 import com.inovatech.smartpack.model.Role
 import com.inovatech.smartpack.network.SmartPackApiService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,7 +48,7 @@ class NetworkSmartPackRepositoryTest {
     @Test
     fun testRegisterSuccess() = runTest {
         val randomEmail = Random().nextInt(1000).toString() + "@test.com"
-        val request = RegisterRequest(
+        val request = UserRequest(
             email = randomEmail,
             password = "1234567A",
             role = Role.ROLE_USER,
