@@ -23,6 +23,8 @@ import com.inovatech.smartpack.R
 import com.inovatech.smartpack.ui.theme.Background
 import kotlinx.serialization.Serializable
 import androidx.compose.runtime.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
 
 @Serializable
 data object UserHome
@@ -83,6 +85,9 @@ fun UserHomeScreen(
                 }
 
             }
+
+            val navController = rememberNavController()
+
         }
     }
 }
@@ -107,11 +112,13 @@ fun HomeTopAppBar() {
 
 @Composable
 fun Fab() {
-    FloatingActionButton(
+    ExtendedFloatingActionButton(
         onClick = {  },
 
     ) {
         Icon(Icons.Default.Add, contentDescription = "Crear nou servei")
+        Spacer(modifier = Modifier.width(8.dp))
+        Text("Nou servei")
     }
 }
 

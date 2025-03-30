@@ -9,6 +9,7 @@ import com.inovatech.smartpack.model.auth.ResetPasswordRequest
 import com.inovatech.smartpack.model.Usuari
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 /**
@@ -41,4 +42,12 @@ interface SmartPackApiService {
 
     @POST("/auth/reset-password")
     suspend fun resetPassword(@Body resetPasswordRequest: ResetPasswordRequest): Response<Unit>
+
+    /**
+     * Petició per obtenir les dades d'un usuari
+     * @param token: El token actual obtingut del login
+     * @return Un usuari amb totes les seves dades
+     */
+    @GET("/me")
+    suspend fun getUserDetails()
 }

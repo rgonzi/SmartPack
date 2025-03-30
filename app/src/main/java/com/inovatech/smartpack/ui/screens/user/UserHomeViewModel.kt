@@ -32,4 +32,12 @@ class UserHomeViewModel @Inject constructor(
             _uiState.update { it.copy(isLogoutSuccess = true) }
         }
     }
+
+    fun getUserId() {
+
+    }
+
+    fun getActiveServices() {
+        //TODO Obtenir llistat de serveis actius de l'usuari
+    }
 }
