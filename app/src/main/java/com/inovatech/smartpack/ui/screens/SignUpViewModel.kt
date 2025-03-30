@@ -113,21 +113,8 @@ class SignUpViewModel @Inject constructor(
                 isLoading = true, error = null, signUpSuccess = false
             )
         }
-
-
         viewModelScope.launch {
             delay(800)
-
-            /*
-             * Mock per iniciar sessió mentre el servidor no estigui implementat.
-             */
-
-            if (state.email == "roger@inovatech.com" && state.password == "1234567A") {
-                _uiState.update {
-                    it.copy(isLoading = false, signUpSuccess = true)
-                }
-                return@launch
-            }
 
             val usuariPerRegistrar = UserRequest(
                 email = state.email,

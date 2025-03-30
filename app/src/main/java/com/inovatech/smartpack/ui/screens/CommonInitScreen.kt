@@ -29,7 +29,7 @@ fun CommonInitScreen(
     onNextClick: () -> Unit,
     onBackClick: () -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -69,7 +69,8 @@ fun CommonInitScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Button(
-                        modifier = Modifier.fillMaxWidth(), onClick = onNextClick
+                        modifier = Modifier.fillMaxWidth(0.6f),
+                        onClick = { onNextClick() }
                     ) {
                         Text(nomBotoPrincipal, fontWeight = FontWeight.Bold)
                     }
@@ -77,7 +78,9 @@ fun CommonInitScreen(
                     Button(
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.DarkGray, contentColor = Color.White
-                        ), modifier = Modifier.fillMaxWidth(), onClick = onBackClick
+                        ),
+                        modifier = Modifier.fillMaxWidth(0.6f),
+                        onClick = { onBackClick() }
                     ) {
                         Text("Tornar")
                     }
@@ -88,7 +91,7 @@ fun CommonInitScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(horizontal = 32.dp, vertical = 16.dp)
+                    .padding(16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(

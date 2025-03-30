@@ -48,14 +48,18 @@ class UserConfigViewModel @Inject constructor(
         _uiState.update { it.copy(user = it.user!!.copy(observations = observations)) }
     }
 
+    fun resetErrorMessage() { _uiState.update { it.copy(errorMessage = null) }}
+    fun resetMsg() {_uiState.update { it.copy(msg = null) }}
 
     /**
      * Mètode que obté les dades de l'usuari a partir del token generat al fer
      * login. S'executarà només iniciar aquest ViewModel
      */
     fun getUserId() {
+        _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
         viewModelScope.launch {
+            delay(300)
             try {
                 val response = smartPackRepository.getUserDetails()
 
@@ -77,17 +81,18 @@ class UserConfigViewModel @Inject constructor(
                 }
                 Log.d(Settings.LOG_TAG, e.message.toString())
             }
+            _uiState.update { it.copy(isLoading = false) }
         }
     }
 
     fun saveChanges() {
         val user = uiState.value.user!!
 
-        _uiState.update { it.copy(isLoading = true) }
+        _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-        try {
-            viewModelScope.launch {
-                delay(800)
+        viewModelScope.launch {
+            delay(800)
+            try {
                 val response = smartPackRepository.updateUser(user.id, user.toUserRequest())
 
                 if (response.isSuccessful) {
@@ -96,7 +101,8 @@ class UserConfigViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 user = newUserData,
-                                isUserModifiedSuccess = true
+                                isUserModifiedSuccess = true,
+                                msg = "Canvis realitzats correctament"
                             )
                         }
                     }
@@ -107,15 +113,15 @@ class UserConfigViewModel @Inject constructor(
                         )
                     }
                 }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(errorMessage = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
             }
-        } catch (e: IOException) {
-            _uiState.update {
-                it.copy(errorMessage = "No s'ha pogut connectar amb el servidor")
-            }
-            Log.d(Settings.LOG_TAG, e.message.toString())
-        }
 
-        _uiState.update { it.copy(isLoading = false) }
+            _uiState.update { it.copy(isLoading = false) }
+        }
     }
 
     /**
@@ -130,12 +136,32 @@ class UserConfigViewModel @Inject constructor(
     }
 
     fun deactivateAccount() {
+        val id = uiState.value.user!!.id
+        _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+
         viewModelScope.launch {
+            try {
+                val response = smartPackRepository.deactivateUser(id)
 
-            //TODO Petició desactivar compte
+                if (response.isSuccessful) {
+                    if (response.body() != null) {
+                        _uiState.update {
+                            it.copy(
+                                isLogoutOrDeactivateSuccess = true,
+                                msg = response.body()!!.msg
+                            )
+                        }
+                    }
+                }
+
+
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(errorMessage = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+            _uiState.update { it.copy(isLoading = false) }
         }
-
-        //Si tot OK
-        _uiState.update { it.copy(isLogoutOrDeactivateSuccess = true) }
     }
 }

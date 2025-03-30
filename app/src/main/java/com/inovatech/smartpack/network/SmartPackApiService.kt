@@ -1,5 +1,6 @@
 package com.inovatech.smartpack.network
 
+import com.inovatech.smartpack.model.ApiResponse
 import com.inovatech.smartpack.model.auth.ForgotPasswordRequest
 import com.inovatech.smartpack.model.auth.ForgotPasswordResponse
 import com.inovatech.smartpack.model.auth.LoginResponse
@@ -10,6 +11,7 @@ import com.inovatech.smartpack.model.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -44,7 +46,7 @@ interface SmartPackApiService {
     suspend fun forgotPassword(@Body email: ForgotPasswordRequest): Response<ForgotPasswordResponse>
 
     @POST("/auth/reset-password")
-    suspend fun resetPassword(@Body resetPasswordRequest: ResetPasswordRequest): Response<Unit>
+    suspend fun resetPassword(@Body resetPasswordRequest: ResetPasswordRequest): Response<ApiResponse>
 
 
     //Usuaris
@@ -58,4 +60,7 @@ interface SmartPackApiService {
 
     @PUT("/usuari/{id}")
     suspend fun updateUser(@Path("id") id: Int, @Body usuari: UserRequest): Response<UserResponse>
+
+    @PATCH("/usuari/{id}/desactivate")
+    suspend fun deactivateUser(@Path("id") id: Int): Response<ApiResponse>
 }

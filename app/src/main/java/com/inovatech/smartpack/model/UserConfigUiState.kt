@@ -6,6 +6,7 @@ data class UserConfigUiState(
     val isLoading: Boolean = false,
     val isUserModifiedSuccess: Boolean = false,
     val errorMessage: String? = null,
+    val msg: String? = null,
     val name: String = "",
     val surname: String = "",
     val tel: String = "",

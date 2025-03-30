@@ -1,6 +1,5 @@
 package com.inovatech.smartpack.ui.screens
 
-import ShowErrorText
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,6 +28,7 @@ import com.inovatech.smartpack.ui.PasswordTextField
 import com.inovatech.smartpack.ui.theme.Background
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
+import kotlinx.coroutines.launch
 
 @Serializable
 object Login
@@ -64,92 +64,107 @@ fun LoginScreen(
 
         }
     }
-    Column(
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Background)
-            .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(32.dp)
     ) {
-        Spacer(modifier = Modifier.weight(1f))
-        Image(
-            painter = painterResource(id = R.drawable.logo_transparent),
-            contentDescription = "Logo SmartPack",
-            contentScale = ContentScale.FillWidth,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.weight(1f))
+        val snackbarHostState = remember { SnackbarHostState() }
+        val scope = rememberCoroutineScope()
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Scaffold(
+            containerColor = Color.Transparent,
+            snackbarHost = {
+                SnackbarHost(hostState = snackbarHostState)
+            },
+            modifier = Modifier.fillMaxSize()
         ) {
-            Text(
-                "Inicia sessió",
-                fontWeight = FontWeight.Bold,
-                fontSize = 28.sp
-            )
-            Spacer(modifier = Modifier.height(16.dp))
 
-            //Email
-            CommonTextField(
-                value = uiState.email,
-                onValueChange = { viewModel.updateEmail(it) },
-                label = "Correu",
-                imeAction = ImeAction.Next,
-                trailingIcon = Icons.Default.Email,
-                isError = uiState.hasTriedLogin && !uiState.email.isValidEmail()
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            PasswordTextField(
-                value = uiState.password,
-                onValueChange = viewModel::updatePassword,
-                visualTransformation = if (uiState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIconClick = viewModel::togglePasswordVisibility,
-                imeAction = ImeAction.Done,
-                isError = uiState.hasTriedLogin && !uiState.password.isValidPassword()
-            )
-
-
-            Text(
-                "He oblidat la contrasenya",
+            Column(
                 modifier = Modifier
-                    .align(Alignment.End)
-                    .clickable { onForgotPasswordClick() },
-                fontWeight = FontWeight.Bold,
-                textDecoration = TextDecoration.Underline
-            )
+                    .fillMaxWidth()
+                    .padding(it),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo_transparent),
+                    contentDescription = "Logo SmartPack",
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-            if (uiState.error != null) {
-                ShowErrorText(uiState.error!!)
-            }
+                Text(
+                    "Inicia sessió",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 28.sp
+                )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.weight(0.5f))
+                //Email
+                CommonTextField(
+                    value = uiState.email,
+                    onValueChange = { viewModel.updateEmail(it) },
+                    label = "Correu",
+                    imeAction = ImeAction.Next,
+                    trailingIcon = Icons.Default.Email,
+                    isError = uiState.hasTriedLogin && !uiState.email.isValidEmail()
+                )
 
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !uiState.isLoading,
-                onClick = {
-                    viewModel.login()
+                Spacer(modifier = Modifier.height(8.dp))
+
+                PasswordTextField(
+                    value = uiState.password,
+                    onValueChange = viewModel::updatePassword,
+                    visualTransformation = if (uiState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIconClick = viewModel::togglePasswordVisibility,
+                    imeAction = ImeAction.Done,
+                    isError = uiState.hasTriedLogin && !uiState.password.isValidPassword()
+                )
+
+
+                Text(
+                    "He oblidat la contrasenya",
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .clickable { onForgotPasswordClick() },
+                    fontWeight = FontWeight.Bold,
+                    textDecoration = TextDecoration.Underline
+                )
+
+                LaunchedEffect(uiState.error) {
+                    if (uiState.error != null) {
+                        snackbarHostState.showSnackbar(uiState.error!!)
+                        viewModel.clearError()
+                    }
                 }
-            ) {
-                Text("Iniciar sessió", fontWeight = FontWeight.Bold)
-            }
-            Spacer(modifier = Modifier.height(8.dp))
 
-            Button(
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.DarkGray,
-                    contentColor = Color.White
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { onRegisterClick() }
-            ) {
-                Text("Registra't")
+                Spacer(modifier = Modifier.weight(0.5f))
+
+                Button(
+                    modifier = Modifier.fillMaxWidth(0.6f),
+                    enabled = !uiState.isLoading,
+                    onClick = {
+                        viewModel.login()
+                    }
+                ) {
+                    Text("Iniciar sessió", fontWeight = FontWeight.Bold)
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.DarkGray,
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier.fillMaxWidth(0.6f),
+                    onClick = { onRegisterClick() }
+                ) {
+                    Text("Registra't")
+                }
+                Spacer(modifier = Modifier.weight(2f))
             }
-            Spacer(modifier = Modifier.weight(2f))
         }
     }
     LoadingScreen(uiState.isLoading)

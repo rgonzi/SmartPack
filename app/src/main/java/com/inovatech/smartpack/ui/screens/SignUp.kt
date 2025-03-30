@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.inovatech.smartpack.model.Role
 import com.inovatech.smartpack.ui.CommonTextField
+import com.inovatech.smartpack.ui.LoadingScreen
 import com.inovatech.smartpack.ui.PasswordTextField
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
@@ -83,7 +84,7 @@ fun SignUpScreen(
             isError = uiState.hasTriedRegister && !uiState.email.isValidEmail()
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         PasswordTextField(
             value = uiState.password,
@@ -94,7 +95,7 @@ fun SignUpScreen(
             isError = uiState.hasTriedRegister && !uiState.password.isValidPassword()
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         //Repeat password
         OutlinedTextField(
@@ -118,7 +119,7 @@ fun SignUpScreen(
                 .fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         //Paraula secreta
         Text(
@@ -169,7 +170,7 @@ fun SignUpScreen(
             isError = uiState.hasTriedRegister && uiState.name.isEmpty()
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         //Surname
         CommonTextField(
@@ -180,7 +181,7 @@ fun SignUpScreen(
             imeAction = ImeAction.Next,
             isError = uiState.hasTriedRegister && uiState.surname.isEmpty()
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         //Tel number
         CommonTextField(
@@ -191,7 +192,7 @@ fun SignUpScreen(
             imeAction = ImeAction.Next,
             isError = uiState.hasTriedRegister && uiState.tel.isEmpty()
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -205,7 +206,7 @@ fun SignUpScreen(
                 isError = uiState.hasTriedRegister && uiState.addressType.isEmpty(),
                 modifier = Modifier.fillMaxWidth(0.3f)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(4.dp))
             //Address
             CommonTextField(
                 value = uiState.address,
@@ -219,29 +220,15 @@ fun SignUpScreen(
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        if (uiState.error != null) {
-            ShowErrorText(uiState.error!!)
+        SideEffect() {
+            if (!uiState.isLoading) {
+                if (uiState.error != null) {
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(message = uiState.error!!)
+                    }
+                }
+            }
         }
     }
-    if (uiState.isLoading) {
-        //Embolcallem el CircularProgressIndicator perquè així no es pugui interectuar
-        //amb la pantalla mentre s'executa el registre
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.3f)) // Fons semitransparent
-                .clickable(enabled = false) {} // Evita interaccions
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-    }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun SignUpScreenPreview() {
-    SignUpScreen()
+    LoadingScreen(uiState.isLoading)
 }

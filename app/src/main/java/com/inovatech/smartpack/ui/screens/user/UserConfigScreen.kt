@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -38,6 +39,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.inovatech.smartpack.ui.CommonTextField
+import com.inovatech.smartpack.ui.LoadingScreen
 import com.inovatech.smartpack.ui.theme.Background
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -70,9 +72,16 @@ fun UserConfigScreen(
             containerColor = Color.Transparent,
             modifier = Modifier.fillMaxSize()
         ) { paddingValues ->
-            LaunchedEffect(uiState.isUserModifiedSuccess) {
-                if (uiState.isUserModifiedSuccess) {
-                    snackbarHostState.showSnackbar("Canvis realitzats amb èxit")
+            LaunchedEffect(uiState.isLoading) {
+                if (!uiState.isLoading) {
+                    if(uiState.msg != null) {
+                        snackbarHostState.showSnackbar(uiState.msg!!)
+                        viewModel.resetMsg()
+                    }
+                    if(uiState.errorMessage != null) {
+                        snackbarHostState.showSnackbar(uiState.errorMessage!!)
+                        viewModel.resetErrorMessage()
+                    }
                 }
             }
             Column(
@@ -82,17 +91,19 @@ fun UserConfigScreen(
                     .padding(paddingValues)
                     .padding(horizontal = 16.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = null,
-                    modifier = Modifier.size(120.dp)
-                )
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        if (uiState.user != null) {
+                if (uiState.user != null) {
+
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = null,
+                        modifier = Modifier.size(120.dp)
+                    )
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+
 
                             Text("Edita les dades que vulguis: ")
 
@@ -177,59 +188,69 @@ fun UserConfigScreen(
                             Text(
                                 "Canviar la contrasenya",
                                 modifier = Modifier
-                                    .align(Alignment.End)
+                                    .align(Alignment.CenterHorizontally)
                                     .clickable { onChangePassword() },
                                 fontWeight = FontWeight.Bold,
                                 textDecoration = TextDecoration.Underline
                             )
                         }
                     }
-                }
 
-                Spacer(modifier = Modifier.height(16.dp))
-                // Botó per guardar els canvis realitzats
-                Button(
-                    onClick = {
-                        viewModel.saveChanges()
-                        hasChanges = false
-                        if (uiState.errorMessage != null) {
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Botó per guardar els canvis realitzats
+                    Button(
+                        onClick = {
+                            viewModel.saveChanges()
+                            hasChanges = false
+                        },
+                        enabled = hasChanges,
+                        modifier = Modifier.fillMaxWidth(0.6f)
+                    ) {
+                        Text("Confirmar canvis")
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    //Botó per tancar sessió
+                    Button(
+                        onClick = {
+                            viewModel.logout()
+                            backToLogin()
+                        },
+                        modifier = Modifier.fillMaxWidth(0.6f)
+                    ) {
+                        Text("Tancar sessió")
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    //Botó per eliminar el compte
+                    OutlinedButton(
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red
+                        ),
+                        onClick = { showDeleteDialog = true },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Eliminar compte", fontWeight = FontWeight.Bold)
+                    }
+                } else {
+                    if (!uiState.isLoading) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            imageVector = Icons.Default.Warning,
+                            contentDescription = "",
+                            modifier = Modifier.size(200.dp)
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        LaunchedEffect(Unit) {
                             scope.launch {
-                                snackbarHostState.showSnackbar(uiState.errorMessage!!)
+                                snackbarHostState.showSnackbar("No s'han pogut obtenir les dades")
                             }
                         }
-                    },
-                    enabled = hasChanges
-                ) {
-                    if (isSaving) CircularProgressIndicator(modifier = Modifier.size(24.dp))
-                    else Text("Confirmar canvis")
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-
-                //Botó per tancar sessió
-                Button(
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = Color.Black
-                    ),
-                    onClick = {
-                        viewModel.logout()
-                        backToLogin()
                     }
-                ) {
-                    Text("Tancar sessió")
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                //Botó per eliminar el compte
-                OutlinedButton(
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Red
-                    ),
-                    onClick = { showDeleteDialog = true },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Eliminar compte", fontWeight = FontWeight.Bold)
                 }
 
                 if (showDeleteDialog) {
@@ -260,6 +281,7 @@ fun UserConfigScreen(
                 }
             }
         }
+        LoadingScreen(uiState.isLoading)
     }
 }
 

@@ -1,5 +1,6 @@
 package com.inovatech.smartpack.data
 
+import com.inovatech.smartpack.model.ApiResponse
 import com.inovatech.smartpack.model.auth.ForgotPasswordRequest
 import com.inovatech.smartpack.model.auth.ForgotPasswordResponse
 import com.inovatech.smartpack.model.auth.LoginResponse
@@ -19,11 +20,13 @@ interface SmartPackRepository {
 
     suspend fun forgotPassword(email: ForgotPasswordRequest): Response<ForgotPasswordResponse>
 
-    suspend fun resetPassword(resetPasswordRequest: ResetPasswordRequest): Response<Unit>
+    suspend fun resetPassword(resetPasswordRequest: ResetPasswordRequest): Response<ApiResponse>
 
     suspend fun getUserDetails(): Response<UserResponse>
 
     suspend fun updateUser(id: Int, usuari: UserRequest): Response<UserResponse>
+
+    suspend fun deactivateUser(id:Int): Response<ApiResponse>
 }
 
 /**
@@ -47,7 +50,7 @@ interface SmartPackRepository {
         return smartPackApiService.forgotPassword(email)
     }
 
-    override suspend fun resetPassword(resetPasswordRequest: ResetPasswordRequest): Response<Unit> {
+    override suspend fun resetPassword(resetPasswordRequest: ResetPasswordRequest): Response<ApiResponse> {
         return smartPackApiService.resetPassword(resetPasswordRequest)
     }
 
@@ -58,6 +61,10 @@ interface SmartPackRepository {
 
     override suspend fun updateUser(id: Int, usuari: UserRequest): Response<UserResponse> {
         return smartPackApiService.updateUser(id, usuari)
+    }
+
+    override suspend fun deactivateUser(id: Int): Response<ApiResponse> {
+        return smartPackApiService.deactivateUser(id)
     }
 
 

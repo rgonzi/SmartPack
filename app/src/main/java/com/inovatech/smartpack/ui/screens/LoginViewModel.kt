@@ -99,7 +99,6 @@ class LoginViewModel @Inject constructor(
 
         _uiState.update {
             it.copy(
-                error = null,
                 isLoading = true,
                 loginSuccess = false
             )
@@ -124,7 +123,6 @@ class LoginViewModel @Inject constructor(
 
                             _uiState.update {
                                 it.copy(
-                                    error = null,
                                     loginSuccess = true,
                                     role = loginResponse.role
                                 )
@@ -133,7 +131,7 @@ class LoginViewModel @Inject constructor(
                     } else {
                         _uiState.update {
                             it.copy(
-                                error = "Error ${response.code()}: Comprova les credencials"
+                                error = "Error ${response.code()}: S'ha produït un error"
                             )
                         }
                     }
@@ -166,5 +164,8 @@ class LoginViewModel @Inject constructor(
                 error = null
             )
         }
+    }
+    fun clearError() {
+        _uiState.update { it.copy(error = null) }
     }
 }
