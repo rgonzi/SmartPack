@@ -3,6 +3,7 @@ package com.inovatech.smartpack.ui.screens
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.inovatech.smartpack.R
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.data.TokenRepository
 import com.inovatech.smartpack.model.auth.ForgotPasswordRequest
@@ -27,7 +28,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RememberPasswordViewModel @Inject constructor(
     private val smartPackRepository: SmartPackRepository,
-    private val tokenRepository: TokenRepository
+    private val tokenRepository: TokenRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RememberPasswordUiState())
     val uiState: StateFlow<RememberPasswordUiState> = _uiState.asStateFlow()
@@ -36,6 +37,10 @@ class RememberPasswordViewModel @Inject constructor(
         _uiState.update {
             it.copy(email = email)
         }
+    }
+
+    fun updateSecretWord(secretWord: String) {
+        _uiState.update { it.copy(secretWord = secretWord) }
     }
 
     fun updateNewPassword(newPassword: String) {
@@ -64,12 +69,31 @@ class RememberPasswordViewModel @Inject constructor(
     fun rememberPassword() {
         _uiState.update { it.copy(isLoading = true) }
 
+        if (!_uiState.value.email.isValidEmail() || _uiState.value.secretWord.isEmpty()) {
+            _uiState.update { it.copy(
+                error = "Comprova les dades introduïdes",
+                isLoading = false
+            ) }
+            return
+        }
+
+        //Si ja tenim un reset token
         if (_uiState.value.newTokenObtained) {
+
+            //Comprovem que la contrasenya tingui un format adequat
+            if (!_uiState.value.newPassword.isValidPassword()){
+                _uiState.update { it.copy(
+                    error = "La contrasenya ha de tenir mínim 8 caràcters, almenys 1 majúscula i 1 número",
+                    isLoading = false
+                ) }
+                return
+            }
 
             //Canviem la contrasenya al servidor amb el nou token
             val newPassword = _uiState.value.newPassword
             if (newPassword.isValidPassword()) {
-                val resetPasswordRequest = ResetPasswordRequest(newPassword, tokenRepository.getAuthToken()!!)
+                val resetPasswordRequest =
+                    ResetPasswordRequest(newPassword, tokenRepository.getAuthToken()!!)
 
                 viewModelScope.launch {
                     delay(800)
@@ -86,7 +110,7 @@ class RememberPasswordViewModel @Inject constructor(
                                 }
                             } else {
                                 _uiState.update {
-                                    it.copy(error = "Error ${response.code()}: S'ha produït un error inesperat")
+                                    it.copy(error = "Error ${response.code()}: S'ha produït un error")
                                 }
                             }
 
@@ -113,9 +137,11 @@ class RememberPasswordViewModel @Inject constructor(
 
             //Obtenim un nou token per canviar la contrasenya de l'email proporcionat
             val email = _uiState.value.email
+            val secretWord = _uiState.value.secretWord
+
             if (email.isValidEmail()) {
                 viewModelScope.launch {
-                    val forgotPasswordRequest = ForgotPasswordRequest(email)
+                    val forgotPasswordRequest = ForgotPasswordRequest(email, secretWord)
                     delay(800)
                     val result = withTimeoutOrNull(TIMEOUT) {
                         try {
@@ -152,7 +178,6 @@ class RememberPasswordViewModel @Inject constructor(
                             it.copy(error = "S'ha superat el temps de resposta")
                         }
                     }
-                    _uiState.update { it.copy(isLoading = false) }
                 }
             } else {
                 _uiState.update {
@@ -160,5 +185,6 @@ class RememberPasswordViewModel @Inject constructor(
                 }
             }
         }
+        _uiState.update { it.copy(isLoading = false) }
     }
 }

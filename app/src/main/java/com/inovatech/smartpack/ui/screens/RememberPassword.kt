@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -70,17 +71,26 @@ fun RememberPasswordScreen(
             }
         }
 
-        Text("No passa res. Introdueix el teu email a continuació per poder canviar la contrasenya")
+        Text("No passa res. Introdueix el teu email i la teva paraula secreta a continuació per poder canviar la contrasenya")
         CommonTextField(
             value = uiState.email,
             onValueChange = { viewModel.updateEmail(it) },
             label = "Correu",
             enabled = !uiState.newTokenObtained,
-            imeAction = ImeAction.Done,
+            imeAction = ImeAction.Next,
             trailingIcon = Icons.Default.Email,
             isError = !uiState.email.isEmpty() && !uiState.email.isValidEmail()
         )
-        //TODO Demanar la paraula secreta
+        Spacer(modifier = Modifier.height(16.dp))
+        CommonTextField(
+            value = uiState.secretWord,
+            onValueChange = { viewModel.updateSecretWord(it) },
+            label = "Paraula secreta",
+            enabled = !uiState.newTokenObtained,
+            imeAction = ImeAction.Done,
+            trailingIcon = Icons.Default.Info,
+            isError = false
+        )
 
         if (uiState.newTokenObtained) {
             Spacer(modifier = Modifier.height(16.dp))

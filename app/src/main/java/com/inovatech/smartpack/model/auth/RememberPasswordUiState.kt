@@ -2,6 +2,7 @@ package com.inovatech.smartpack.model.auth
 
 data class RememberPasswordUiState(
     val email: String = "",
+    val secretWord: String = "",
     val newPassword: String = "",
     val passwordVisible: Boolean = false,
     val newTokenObtained: Boolean = false,

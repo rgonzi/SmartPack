@@ -3,6 +3,7 @@ package com.inovatech.smartpack.ui.screens
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.inovatech.smartpack.R
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.model.UserRequest
 import com.inovatech.smartpack.model.Role
@@ -80,7 +81,7 @@ class SignUpViewModel @Inject constructor(
             }
 
             !password.isValidPassword() -> {
-                _uiState.update { it.copy(error = "La contrasenya ha de tenir mínim 8 caràcters, almenys 1 majúscula i 1 número") }
+                _uiState.update { it.copy(error = R.string.password_requirements.toString()) }
                 false
             }
 
