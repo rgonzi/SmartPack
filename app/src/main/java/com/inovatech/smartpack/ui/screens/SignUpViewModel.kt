@@ -81,7 +81,7 @@ class SignUpViewModel @Inject constructor(
             }
 
             !password.isValidPassword() -> {
-                _uiState.update { it.copy(error = R.string.password_requirements.toString()) }
+                _uiState.update { it.copy(error = "La contrasenya ha de tenir mínim 8 caràcters, almenys 1 majúscula i 1 número") }
                 false
             }
 

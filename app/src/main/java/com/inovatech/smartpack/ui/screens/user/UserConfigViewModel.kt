@@ -9,6 +9,7 @@ import com.inovatech.smartpack.model.UserConfigUiState
 import com.inovatech.smartpack.model.toUserRequest
 import com.inovatech.smartpack.model.toUser
 import com.inovatech.smartpack.utils.Settings
+import com.inovatech.smartpack.utils.isValidPassword
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,6 +48,7 @@ class UserConfigViewModel @Inject constructor(
     fun updateObservations(observations: String) {
         _uiState.update { it.copy(user = it.user!!.copy(observations = observations)) }
     }
+
 
     fun resetErrorMessage() { _uiState.update { it.copy(errorMessage = null) }}
     fun resetMsg() {_uiState.update { it.copy(msg = null) }}

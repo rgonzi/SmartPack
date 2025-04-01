@@ -11,12 +11,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.inovatech.smartpack.data.TokenRepository
 import com.inovatech.smartpack.ui.screens.*
 import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHome
 import com.inovatech.smartpack.ui.screens.admin.AdminHome
 import com.inovatech.smartpack.ui.screens.admin.AdminHomeScreen
 import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHomeScreen
+import com.inovatech.smartpack.ui.screens.user.ChangePassword
+import com.inovatech.smartpack.ui.screens.user.ChangePasswordScreen
 import com.inovatech.smartpack.ui.screens.user.UserConfig
 import com.inovatech.smartpack.ui.screens.user.UserConfigScreen
 import com.inovatech.smartpack.ui.screens.user.UserHome
@@ -112,9 +115,16 @@ fun Navigation(
                                 popUpTo(UserHome) { inclusive = true }
                             }
                         },
-                        onChangePassword = {
-                            //TODO Navegar a la pantalla per canviar contrasenya
+                        onChangePassword = {id ->
+                            navController.navigate(ChangePassword(id))
                         }
+                    )
+                }
+                composable<ChangePassword> { backStackEntry ->
+                    val changePasswordStack: ChangePassword = backStackEntry.toRoute()
+                    ChangePasswordScreen(
+                        userId = changePasswordStack.id,
+                        onBackPressed = { navController.popBackStack() }
                     )
                 }
                 composable<DeliverymanHome> {

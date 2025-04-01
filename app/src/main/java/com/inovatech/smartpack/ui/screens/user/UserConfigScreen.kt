@@ -52,12 +52,11 @@ fun UserConfigScreen(
     viewModel: UserConfigViewModel = hiltViewModel(),
     onBackPressed: () -> Unit,
     backToLogin: () -> Unit,
-    onChangePassword: () -> Unit,
+    onChangePassword: (Int) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showDeleteDialog by remember { mutableStateOf(false) }
     var hasChanges by remember { mutableStateOf(false) }
-    var isSaving = uiState.isLoading
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
@@ -72,13 +71,18 @@ fun UserConfigScreen(
             containerColor = Color.Transparent,
             modifier = Modifier.fillMaxSize()
         ) { paddingValues ->
-            LaunchedEffect(uiState.isLoading) {
+
+            LaunchedEffect(uiState.msg) {
                 if (!uiState.isLoading) {
-                    if(uiState.msg != null) {
+                    if (uiState.msg != null) {
                         snackbarHostState.showSnackbar(uiState.msg!!)
                         viewModel.resetMsg()
                     }
-                    if(uiState.errorMessage != null) {
+                }
+            }
+            LaunchedEffect(uiState.errorMessage) {
+                if (!uiState.isLoading) {
+                    if (uiState.errorMessage != null) {
                         snackbarHostState.showSnackbar(uiState.errorMessage!!)
                         viewModel.resetErrorMessage()
                     }
@@ -109,7 +113,7 @@ fun UserConfigScreen(
 
                             //Name
                             CommonTextField(
-                                value = uiState.user!!.name,
+                                value = uiState.user!!.name ?: "",
                                 onValueChange = {
                                     viewModel.updateName(it)
                                     hasChanges = true
@@ -124,7 +128,7 @@ fun UserConfigScreen(
 
                             //Surname
                             CommonTextField(
-                                value = uiState.user!!.surname,
+                                value = uiState.user!!.surname ?: "",
                                 onValueChange = {
                                     viewModel.updateSurname(it)
                                     hasChanges = true
@@ -138,7 +142,7 @@ fun UserConfigScreen(
 
                             //Tel number
                             CommonTextField(
-                                value = uiState.user!!.tel,
+                                value = uiState.user!!.tel ?: "",
                                 onValueChange = {
                                     viewModel.updateTel(it)
                                     hasChanges = true
@@ -152,7 +156,7 @@ fun UserConfigScreen(
 
                             //Address
                             CommonTextField(
-                                value = uiState.user!!.address,
+                                value = uiState.user!!.address ?: "",
                                 onValueChange = {
                                     viewModel.updateAddress(it)
                                     hasChanges = true
@@ -166,7 +170,7 @@ fun UserConfigScreen(
 
                             //Observations
                             OutlinedTextField(
-                                value = uiState.user!!.observations,
+                                value = uiState.user!!.observations ?: "",
                                 onValueChange = {
                                     viewModel.updateObservations(it)
                                     hasChanges = true
@@ -189,7 +193,7 @@ fun UserConfigScreen(
                                 "Canviar la contrasenya",
                                 modifier = Modifier
                                     .align(Alignment.CenterHorizontally)
-                                    .clickable { onChangePassword() },
+                                    .clickable { onChangePassword(uiState.user!!.id) },
                                 fontWeight = FontWeight.Bold,
                                 textDecoration = TextDecoration.Underline
                             )
