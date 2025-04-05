@@ -9,7 +9,7 @@ data class UserResponse(
     @SerializedName("cognom") val surname: String = "",
     @SerializedName("telefon") val tel: String = "",
     @SerializedName("adreça") val address: String = "",
-    val observations: String = "",
+    @SerializedName("observacio") val observations: String = "",
 )
 
 fun UserResponse.toUser() = User(
