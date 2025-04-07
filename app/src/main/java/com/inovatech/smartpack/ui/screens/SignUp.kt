@@ -159,6 +159,9 @@ fun SignUpScreen(
                 }
             )
         }
+        if (checked) {
+            //TODO Mostrar camps per demanar llicència de conduïr
+        }
 
         //Name
         CommonTextField(
@@ -220,7 +223,7 @@ fun SignUpScreen(
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        SideEffect() {
+        SideEffect {
             if (!uiState.isLoading) {
                 if (uiState.error != null) {
                     coroutineScope.launch {

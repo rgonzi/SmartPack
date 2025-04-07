@@ -1,7 +1,7 @@
 package com.inovatech.smartpack.ui.screens.admin
 
 import androidx.lifecycle.ViewModel
-import com.inovatech.smartpack.model.AdminHomeUiState
+import com.inovatech.smartpack.model.uiState.AdminHomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

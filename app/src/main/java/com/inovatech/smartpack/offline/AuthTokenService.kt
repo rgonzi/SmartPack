@@ -32,7 +32,7 @@ class AuthTokenService @Inject constructor(
     )
 
     fun saveAuthToken(token: String) {
-        storage.edit() { putString(TOKEN_KEY, token) }
+        storage.edit { putString(TOKEN_KEY, token) }
     }
 
     fun getAuthToken(): String? {
@@ -40,7 +40,7 @@ class AuthTokenService @Inject constructor(
     }
 
     fun clearAuthToken() {
-        storage.edit() { remove(TOKEN_KEY) }
+        storage.edit { remove(TOKEN_KEY) }
     }
 
     fun isTokenValid(): Boolean {

@@ -1,6 +1,7 @@
-package com.inovatech.smartpack.model
+package com.inovatech.smartpack.model.api
 
 import com.google.gson.annotations.SerializedName
+import com.inovatech.smartpack.model.User
 
 data class UserResponse(
     val id: Int = 0,

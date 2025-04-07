@@ -1,4 +1,4 @@
-package com.inovatech.smartpack.model.auth
+package com.inovatech.smartpack.model.uiState
 
 data class RememberPasswordUiState(
     val email: String = "",

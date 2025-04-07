@@ -1,4 +1,4 @@
-package com.inovatech.smartpack.ui.screens.user
+package com.inovatech.smartpack.ui.screens.userConfig
 
 
 import androidx.compose.foundation.background

@@ -3,11 +3,10 @@ package com.inovatech.smartpack.ui.screens
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.inovatech.smartpack.R
 import com.inovatech.smartpack.data.SmartPackRepository
-import com.inovatech.smartpack.model.UserRequest
+import com.inovatech.smartpack.model.api.UserRequest
 import com.inovatech.smartpack.model.Role
-import com.inovatech.smartpack.model.auth.SignUpUiState
+import com.inovatech.smartpack.model.uiState.SignUpUiState
 import com.inovatech.smartpack.utils.Settings
 import com.inovatech.smartpack.utils.Settings.TIMEOUT
 import com.inovatech.smartpack.utils.isValidEmail
@@ -131,7 +130,7 @@ class SignUpViewModel @Inject constructor(
             val result = withTimeoutOrNull(TIMEOUT) {
                 try {
                     val response = smartPackRepository.register(usuariPerRegistrar)
-
+//TODO Si ha marcat transportista, crear també un transportista
                     if (response.isSuccessful) {
                         if (response.body() != null) {
                             _uiState.update {

@@ -72,7 +72,7 @@ fun LoginScreen(
             .padding(32.dp)
     ) {
         val snackbarHostState = remember { SnackbarHostState() }
-        val scope = rememberCoroutineScope()
+        rememberCoroutineScope()
 
         Scaffold(
             containerColor = Color.Transparent,

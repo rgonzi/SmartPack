@@ -1,13 +1,13 @@
 package com.inovatech.smartpack.network
 
-import com.inovatech.smartpack.model.ApiResponse
-import com.inovatech.smartpack.model.auth.ForgotPasswordRequest
-import com.inovatech.smartpack.model.auth.ForgotPasswordResponse
-import com.inovatech.smartpack.model.auth.LoginResponse
-import com.inovatech.smartpack.model.auth.LoginRequest
-import com.inovatech.smartpack.model.UserRequest
-import com.inovatech.smartpack.model.auth.ResetPasswordRequest
-import com.inovatech.smartpack.model.UserResponse
+import com.inovatech.smartpack.model.api.ApiResponse
+import com.inovatech.smartpack.model.api.ForgotPasswordRequest
+import com.inovatech.smartpack.model.api.ForgotPasswordResponse
+import com.inovatech.smartpack.model.api.LoginResponse
+import com.inovatech.smartpack.model.api.LoginRequest
+import com.inovatech.smartpack.model.api.UserRequest
+import com.inovatech.smartpack.model.api.ResetPasswordRequest
+import com.inovatech.smartpack.model.api.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -58,9 +58,13 @@ interface SmartPackApiService {
     @GET("/usuari/me")
     suspend fun getUserDetails(): Response<UserResponse>
 
+    @GET("/usuari/{id}")
+    suspend fun loadUser(@Path("id") id: Int): Response<UserResponse>
+
     @PUT("/usuari/{id}")
     suspend fun updateUser(@Path("id") id: Int, @Body usuari: UserRequest): Response<UserResponse>
 
     @PATCH("/usuari/{id}/desactivate")
     suspend fun deactivateUser(@Path("id") id: Int): Response<ApiResponse>
+
 }

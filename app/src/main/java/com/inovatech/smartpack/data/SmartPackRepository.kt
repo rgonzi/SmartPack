@@ -1,13 +1,13 @@
 package com.inovatech.smartpack.data
 
-import com.inovatech.smartpack.model.ApiResponse
-import com.inovatech.smartpack.model.auth.ForgotPasswordRequest
-import com.inovatech.smartpack.model.auth.ForgotPasswordResponse
-import com.inovatech.smartpack.model.auth.LoginResponse
-import com.inovatech.smartpack.model.auth.LoginRequest
-import com.inovatech.smartpack.model.UserRequest
-import com.inovatech.smartpack.model.auth.ResetPasswordRequest
-import com.inovatech.smartpack.model.UserResponse
+import com.inovatech.smartpack.model.api.ApiResponse
+import com.inovatech.smartpack.model.api.ForgotPasswordRequest
+import com.inovatech.smartpack.model.api.ForgotPasswordResponse
+import com.inovatech.smartpack.model.api.LoginResponse
+import com.inovatech.smartpack.model.api.LoginRequest
+import com.inovatech.smartpack.model.api.UserRequest
+import com.inovatech.smartpack.model.api.ResetPasswordRequest
+import com.inovatech.smartpack.model.api.UserResponse
 import com.inovatech.smartpack.network.SmartPackApiService
 import retrofit2.Response
 import javax.inject.Inject
@@ -23,6 +23,8 @@ interface SmartPackRepository {
     suspend fun resetPassword(resetPasswordRequest: ResetPasswordRequest): Response<ApiResponse>
 
     suspend fun getUserDetails(): Response<UserResponse>
+
+    suspend fun loadUser(id: Int): Response<UserResponse>
 
     suspend fun updateUser(id: Int, usuari: UserRequest): Response<UserResponse>
 
@@ -57,6 +59,10 @@ interface SmartPackRepository {
     //Peticions d'usuari
     override suspend fun getUserDetails(): Response<UserResponse> {
         return smartPackApiService.getUserDetails()
+    }
+
+    override suspend fun loadUser(id: Int): Response<UserResponse> {
+        return smartPackApiService.loadUser(id)
     }
 
     override suspend fun updateUser(id: Int, usuari: UserRequest): Response<UserResponse> {

@@ -1,6 +1,9 @@
 package com.inovatech.smartpack.model
 
+import com.inovatech.smartpack.model.api.UserRequest
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class User(
     val id: Int = 0,
     val email: String? = null,

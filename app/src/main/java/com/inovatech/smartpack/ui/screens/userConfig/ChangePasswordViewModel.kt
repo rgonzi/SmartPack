@@ -1,12 +1,11 @@
-package com.inovatech.smartpack.ui.screens.user
+package com.inovatech.smartpack.ui.screens.userConfig
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
-import com.inovatech.smartpack.model.ChangePasswordUiState
+import com.inovatech.smartpack.model.uiState.ChangePasswordUiState
 import com.inovatech.smartpack.model.User
-import com.inovatech.smartpack.model.toUser
 import com.inovatech.smartpack.model.toUserRequest
 import com.inovatech.smartpack.utils.Settings
 import com.inovatech.smartpack.utils.isValidPassword

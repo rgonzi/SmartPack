@@ -1,4 +1,4 @@
-package com.inovatech.smartpack.model.auth
+package com.inovatech.smartpack.model.api
 
 data class LoginRequest (
     val email: String,

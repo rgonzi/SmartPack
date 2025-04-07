@@ -34,14 +34,12 @@ data object UserHome
  * Composable que defineix el disseny de la pantalla principal de l'app
  *
  * @param viewModel: El seu viewModel associat
- * @param backToLogin: Destí de navegació quan s'ha produït un logout i volem tornar
  * a la pantalla de Login
  */
 @Composable
 fun UserHomeScreen(
 //    viewModel: UserHomeViewModel = hiltViewModel(),
     navToConfig: () -> Unit,
-    backToLogin: () -> Unit,
 ) {
 
     Box(
@@ -133,7 +131,7 @@ fun HomeTopAppBar(
         ),
         actions = {
             IconButton(onClick = { navToConfig() }) {
-                Icon(Icons.Default.AccountCircle, contentDescription = "Configuració del compte")
+                Icon(Icons.Default.AccountCircle, contentDescription = "Configuració del compte", modifier = Modifier.fillMaxSize())
             }
         }
     )

@@ -3,12 +3,11 @@ package com.inovatech.smartpack.ui.screens
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.inovatech.smartpack.R
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.data.TokenRepository
-import com.inovatech.smartpack.model.auth.ForgotPasswordRequest
-import com.inovatech.smartpack.model.auth.RememberPasswordUiState
-import com.inovatech.smartpack.model.auth.ResetPasswordRequest
+import com.inovatech.smartpack.model.api.ForgotPasswordRequest
+import com.inovatech.smartpack.model.uiState.RememberPasswordUiState
+import com.inovatech.smartpack.model.api.ResetPasswordRequest
 import com.inovatech.smartpack.utils.Settings
 import com.inovatech.smartpack.utils.Settings.TIMEOUT
 import com.inovatech.smartpack.utils.isValidEmail
@@ -151,10 +150,10 @@ class RememberPasswordViewModel @Inject constructor(
                                 if (response.body() != null) {
                                     val token = response.body()!!.tokenRecovery
                                     tokenRepository.saveAuthToken(token)
-                                    Log.d(Settings.LOG_TAG, "Code: ${response.code().toString()}")
+                                    Log.d(Settings.LOG_TAG, "Code: ${response.code()}")
                                     Log.d(Settings.LOG_TAG, "Message: ${response.message()}")
                                     Log.d(Settings.LOG_TAG, "Body: ${response.body().toString()}")
-                                    Log.d(Settings.LOG_TAG, "Full response: ${response.toString()}")
+                                    Log.d(Settings.LOG_TAG, "Full response: $response")
                                     Log.d(Settings.LOG_TAG, token)
                                     _uiState.update {
                                         it.copy(newTokenObtained = true, error = null)

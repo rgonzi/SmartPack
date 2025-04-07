@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.serialization.Serializable
 import androidx.compose.material3.Text
+import com.inovatech.smartpack.ui.screens.userConfig.UserConfigViewModel
 
 @Serializable
 data object ActiveServices

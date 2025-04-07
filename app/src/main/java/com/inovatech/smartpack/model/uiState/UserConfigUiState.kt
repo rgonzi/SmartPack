@@ -1,4 +1,6 @@
-package com.inovatech.smartpack.model
+package com.inovatech.smartpack.model.uiState
+
+import com.inovatech.smartpack.model.User
 
 data class UserConfigUiState(
     val isLogoutOrDeactivateSuccess: Boolean = false,

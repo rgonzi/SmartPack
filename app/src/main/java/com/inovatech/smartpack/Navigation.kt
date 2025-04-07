@@ -18,10 +18,10 @@ import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHome
 import com.inovatech.smartpack.ui.screens.admin.AdminHome
 import com.inovatech.smartpack.ui.screens.admin.AdminHomeScreen
 import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHomeScreen
-import com.inovatech.smartpack.ui.screens.user.ChangePassword
-import com.inovatech.smartpack.ui.screens.user.ChangePasswordScreen
-import com.inovatech.smartpack.ui.screens.user.UserConfig
-import com.inovatech.smartpack.ui.screens.user.UserConfigScreen
+import com.inovatech.smartpack.ui.screens.userConfig.ChangePassword
+import com.inovatech.smartpack.ui.screens.userConfig.ChangePasswordScreen
+import com.inovatech.smartpack.ui.screens.userConfig.UserConfig
+import com.inovatech.smartpack.ui.screens.userConfig.UserConfigScreen
 import com.inovatech.smartpack.ui.screens.user.UserHome
 import com.inovatech.smartpack.ui.screens.user.UserHomeScreen
 import kotlinx.coroutines.delay
@@ -99,12 +99,6 @@ fun Navigation(
                     UserHomeScreen(
                         navToConfig = {
                             navController.navigate(UserConfig)
-                        },
-                        backToLogin = {
-                            navController.navigate(Login) {
-                                popUpTo(UserHome) { inclusive = true }
-                                launchSingleTop = true
-                            }
                         })
                 }
                 composable<UserConfig> {
@@ -129,11 +123,8 @@ fun Navigation(
                 }
                 composable<DeliverymanHome> {
                     DeliverymanHomeScreen(
-                        backToLogin = {
-                            navController.navigate(Login) {
-                                popUpTo(DeliverymanHome) { inclusive = true }
-                                launchSingleTop = true
-                            }
+                        navToConfig = {
+                            navController.navigate(UserConfig)
                         })
                 }
                 composable<AdminHome> {

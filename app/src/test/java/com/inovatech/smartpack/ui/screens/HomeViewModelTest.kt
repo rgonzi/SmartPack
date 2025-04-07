@@ -1,7 +1,7 @@
 package com.inovatech.smartpack.ui.screens
 
 import com.inovatech.smartpack.data.TokenRepository
-import com.inovatech.smartpack.ui.screens.user.UserConfigViewModel
+import com.inovatech.smartpack.ui.screens.userConfig.UserConfigViewModel
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

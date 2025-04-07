@@ -1,15 +1,14 @@
-package com.inovatech.smartpack.ui.screens.user
+package com.inovatech.smartpack.ui.screens.userConfig
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.data.TokenRepository
-import com.inovatech.smartpack.model.UserConfigUiState
+import com.inovatech.smartpack.model.api.toUser
 import com.inovatech.smartpack.model.toUserRequest
-import com.inovatech.smartpack.model.toUser
+import com.inovatech.smartpack.model.uiState.UserConfigUiState
 import com.inovatech.smartpack.utils.Settings
-import com.inovatech.smartpack.utils.isValidPassword
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,7 +60,7 @@ class UserConfigViewModel @Inject constructor(
         _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
         viewModelScope.launch {
-            delay(300)
+//            delay(300)
             try {
                 val response = smartPackRepository.getUserDetails()
 

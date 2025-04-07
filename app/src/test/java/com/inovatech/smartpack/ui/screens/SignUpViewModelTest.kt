@@ -1,7 +1,7 @@
 package com.inovatech.smartpack.ui.screens
 
 import com.inovatech.smartpack.data.SmartPackRepository
-import com.inovatech.smartpack.model.UserRequest
+import com.inovatech.smartpack.model.api.UserRequest
 import com.inovatech.smartpack.model.User
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword

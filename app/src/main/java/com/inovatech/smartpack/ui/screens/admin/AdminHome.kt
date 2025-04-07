@@ -41,11 +41,9 @@ data object AdminHome
 @Composable
 fun AdminHomeScreen(
     viewModel: AdminHomeViewModel = hiltViewModel(),
-    backToLogin: () -> Unit,
     onSettingsClick: () -> Unit = {} //TODO Implementar pantalla Settings
     ) {
-        val uiState by viewModel.uiState.collectAsState()
-        //TODO Refer tota la pantalla que s'assembli a la del Usuari
+    //TODO Refer tota la pantalla que s'assembli a la del Usuari
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -56,12 +54,6 @@ fun AdminHomeScreen(
                 containerColor = Color.Transparent,
                 topBar = { HomeTopAppBar(onSettingsClick) }
             ) {
-                LaunchedEffect(uiState.isLogoutSuccess) {
-                    if (uiState.isLogoutSuccess) {
-                        backToLogin()
-                    }
-                }
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
