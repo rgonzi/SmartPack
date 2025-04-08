@@ -18,7 +18,7 @@ fun CommonTextField(
     onValueChange: (String) -> Unit,
     label: String? = null,
     enabled: Boolean = true,
-    trailingIcon: ImageVector,
+    trailingIcon: ImageVector?,
     imeAction: ImeAction,
     isError: Boolean,
     modifier: Modifier = Modifier
@@ -33,7 +33,7 @@ fun CommonTextField(
         label = { Text(label ?: "") },
         maxLines = 1,
         enabled = enabled,
-        trailingIcon = { Icon(trailingIcon, contentDescription = "") },
+        trailingIcon = {if (trailingIcon != null) { Icon(trailingIcon, contentDescription = "") } else null},
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Email,
             imeAction = imeAction

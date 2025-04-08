@@ -4,7 +4,6 @@ import com.inovatech.smartpack.model.User
 
 data class UserConfigUiState(
     val isLogoutOrDeactivateSuccess: Boolean = false,
-    val isUserModifiedSuccess: Boolean = false,
     val user: User? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,

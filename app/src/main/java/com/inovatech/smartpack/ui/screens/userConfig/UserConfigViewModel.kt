@@ -102,7 +102,6 @@ class UserConfigViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 user = newUserData,
-                                isUserModifiedSuccess = true,
                                 msg = "Canvis realitzats correctament"
                             )
                         }

@@ -38,7 +38,7 @@ data object UserHome
  */
 @Composable
 fun UserHomeScreen(
-//    viewModel: UserHomeViewModel = hiltViewModel(),
+    viewModel: UserHomeViewModel = hiltViewModel(),
     navToConfig: () -> Unit,
 ) {
 

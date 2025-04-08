@@ -1,10 +1,17 @@
 package com.inovatech.smartpack.model
 
+import com.inovatech.smartpack.model.api.VehicleDTO
+
 data class Vehicle(
-    val id: Int = 0,
-    val color: String = "",
+    val id: Long = 0,
     val brand: String = "",
-    val plate: String = "",
     val model: String = "",
-    val type: String = ""
+    val plate: String = ""
+)
+
+fun Vehicle.toVehicleDTO() = VehicleDTO(
+    id = id,
+    brand = brand,
+    model = model,
+    plate = plate
 )

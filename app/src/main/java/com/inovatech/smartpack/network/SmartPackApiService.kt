@@ -3,11 +3,13 @@ package com.inovatech.smartpack.network
 import com.inovatech.smartpack.model.api.ApiResponse
 import com.inovatech.smartpack.model.api.ForgotPasswordRequest
 import com.inovatech.smartpack.model.api.ForgotPasswordResponse
+import com.inovatech.smartpack.model.api.DeliverymanResponse
 import com.inovatech.smartpack.model.api.LoginResponse
 import com.inovatech.smartpack.model.api.LoginRequest
 import com.inovatech.smartpack.model.api.UserRequest
 import com.inovatech.smartpack.model.api.ResetPasswordRequest
 import com.inovatech.smartpack.model.api.UserResponse
+import com.inovatech.smartpack.model.api.VehicleDTO
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -67,4 +69,29 @@ interface SmartPackApiService {
     @PATCH("/usuari/{id}/desactivate")
     suspend fun deactivateUser(@Path("id") id: Int): Response<ApiResponse>
 
+    //Transportista
+    @GET("/transportista/usuari/{userId}")
+    suspend fun getDeliverymanByUserId(@Path("userId") userId: Int): Response<DeliverymanResponse>
+
+    @POST("/transportista/{transportistaId}/assignar-vehicle/{vehicleId}")
+    suspend fun assignVehicleToDeliveryman(
+        @Path("transportistaId") transportistaId: Long,
+        @Path("vehicleId") vehicleId: Long
+    ): Response<ApiResponse>
+
+    @PATCH("/transportista/desassignar-vehicle/{id}")
+    suspend fun desassignVehicleFromDeliveryman(@Path("id") id: Long): Response<ApiResponse>
+
+    //Vehicle
+    @GET("/vehicle/{id}")
+    suspend fun getVehicleById(@Path("id") id: Long): Response<VehicleDTO>
+
+    @POST("/vehicle/crear")
+    suspend fun createVehicle(@Body vehicle: VehicleDTO): Response<VehicleDTO>
+
+    @PUT("/vehicle/{id}")
+    suspend fun updateVehicle(@Path("id") id: Long, @Body vehicle: VehicleDTO): Response<VehicleDTO>
+
+    @PATCH("/vehicle/{id}/desactivate")
+    suspend fun deactivateVehicle(@Path("id") id: Long): Response<ApiResponse>
 }

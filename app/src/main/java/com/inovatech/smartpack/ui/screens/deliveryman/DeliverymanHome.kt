@@ -2,43 +2,12 @@ package com.inovatech.smartpack.ui.screens.deliveryman
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -46,18 +15,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.inovatech.smartpack.R
-import com.inovatech.smartpack.ui.screens.user.ActiveServices
-import com.inovatech.smartpack.ui.screens.user.ActiveServicesTab
-import com.inovatech.smartpack.ui.screens.user.MoreOptions
-import com.inovatech.smartpack.ui.screens.user.MoreOptionsTab
-import com.inovatech.smartpack.ui.screens.user.OldServices
-import com.inovatech.smartpack.ui.screens.user.OldServicesTab
 import com.inovatech.smartpack.ui.theme.Background
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -69,15 +32,15 @@ fun DeliverymanHomeScreen(
     navToConfig: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val navController = rememberNavController()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Background)
     ) {
-        val navController = rememberNavController()
-        val snackbarHostState = remember { SnackbarHostState() }
-
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             containerColor = Color.Transparent,
@@ -114,15 +77,6 @@ fun DeliverymanHomeScreen(
                 )
             }
         ) {
-//            LaunchedEffect(uiState.msg) {
-//                if (!uiState.isLoading) {
-//                    if (uiState.msg != null) {
-//                        snackbarHostState.showSnackbar(uiState.msg!!)
-//                        viewModel.resetMsg()
-//                    }
-//                }
-//            }
-
             NavHost(
                 navController = navController,
                 startDestination = AssignedServices,
@@ -140,7 +94,12 @@ fun DeliverymanHomeScreen(
                 composable<Vehicles> {
                     VehiclesTab(
                         viewModel = viewModel,
-                        uiState = uiState
+                        uiState = uiState,
+                        launchSnackbar = { msg ->
+                            scope.launch {
+                                snackbarHostState.showSnackbar(msg)
+                            }
+                        }
                     )
                 }
             }
