@@ -1,6 +1,7 @@
 package com.inovatech.smartpack.network
 
 import com.inovatech.smartpack.model.api.ApiResponse
+import com.inovatech.smartpack.model.api.DeliverymanRequest
 import com.inovatech.smartpack.model.api.ForgotPasswordRequest
 import com.inovatech.smartpack.model.api.ForgotPasswordResponse
 import com.inovatech.smartpack.model.api.DeliverymanResponse
@@ -54,7 +55,6 @@ interface SmartPackApiService {
     //Usuaris
     /**
      * Petició per obtenir les dades d'un usuari
-     * @param token: El token actual obtingut del login
      * @return Un usuari amb totes les seves dades
      */
     @GET("/usuari/me")
@@ -72,6 +72,12 @@ interface SmartPackApiService {
     //Transportista
     @GET("/transportista/usuari/{userId}")
     suspend fun getDeliverymanByUserId(@Path("userId") userId: Int): Response<DeliverymanResponse>
+
+    @POST("/transportista/crear")
+    suspend fun createDeliveryman(@Body transportista: DeliverymanRequest): Response<DeliverymanResponse>
+
+    @PUT("transportista/{id}")
+    suspend fun updateDeliveryman(@Path("id") id: Long, @Body transportista: DeliverymanRequest): Response<DeliverymanResponse>
 
     @POST("/transportista/{transportistaId}/assignar-vehicle/{vehicleId}")
     suspend fun assignVehicleToDeliveryman(

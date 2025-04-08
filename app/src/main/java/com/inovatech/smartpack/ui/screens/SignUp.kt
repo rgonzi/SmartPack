@@ -142,7 +142,7 @@ fun SignUpScreen(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ){
-            Text("Sou transportista?", fontSize = 14.sp)
+            Text("Transportista?", fontSize = 12.sp)
             Spacer(modifier = Modifier.width(8.dp))
             Switch(
                 checked = checked,
@@ -158,9 +158,16 @@ fun SignUpScreen(
                     }
                 }
             )
-        }
-        if (checked) {
-            //TODO Mostrar camps per demanar llicència de conduïr
+            if (checked) {
+                CommonTextField(
+                    value = uiState.license,
+                    onValueChange = { viewModel.updateField("license", it) },
+                    label = "Permís de conduïr",
+                    trailingIcon = null,
+                    imeAction = ImeAction.Next,
+                    isError = uiState.hasTriedRegister && uiState.license.isEmpty()
+                )
+            }
         }
 
         //Name

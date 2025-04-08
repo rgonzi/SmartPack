@@ -7,9 +7,11 @@ import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.model.Deliveryman
 import com.inovatech.smartpack.model.User
 import com.inovatech.smartpack.model.Vehicle
+import com.inovatech.smartpack.model.api.DeliverymanRequest
 import com.inovatech.smartpack.model.api.toDeliveryman
 import com.inovatech.smartpack.model.api.toUser
 import com.inovatech.smartpack.model.api.toVehicle
+import com.inovatech.smartpack.model.toDeliverymanRequest
 import com.inovatech.smartpack.model.toVehicleDTO
 import com.inovatech.smartpack.model.uiState.DeliveryManUiState
 import com.inovatech.smartpack.utils.Settings
@@ -51,8 +53,12 @@ class DeliveryManHomeViewModel @Inject constructor(
         _uiState.update { it.copy(deliveryman = it.deliveryman!!.copy(licence = licence)) }
     }
 
-    fun itHasChanges(hasChanges: Boolean) {
-        _uiState.update { it.copy(hasChanges = hasChanges) }
+    fun vehicleHasChanged(hasChanged: Boolean) {
+        _uiState.update { it.copy(vehicleHasChanged = hasChanged) }
+    }
+
+    fun licenceHasChanged(hasChanged: Boolean) {
+        _uiState.update { it.copy(licenseHasChanged = hasChanged) }
     }
 
     fun resetMsg() {
@@ -74,6 +80,9 @@ class DeliveryManHomeViewModel @Inject constructor(
                 }
 
                 val deliveryman = getDeliverymanDetails(user.id)
+                if (deliveryman == null) {
+                    createNewDeliveryman(user)
+                }
 
                 if (deliveryman?.vehicleId != null) {
                     getVehicleById(deliveryman.vehicleId)
@@ -103,7 +112,26 @@ class DeliveryManHomeViewModel @Inject constructor(
             }
         } else {
             _uiState.update {
-                it.copy(msg = "2Error ${response.code()}: No s'han pogut obtenir les dades")
+                it.copy(msg = "Error ${response.code()}: No s'han pogut obtenir les dades")
+            }
+            null
+        }
+    }
+
+    private suspend fun createNewDeliveryman(user: User): Deliveryman? {
+        val newDeliveryman = DeliverymanRequest(
+            userId = user.id,
+            licence = ""
+        )
+        val response =
+            smartPackRepository.createDeliveryman(newDeliveryman)
+        return if (response.isSuccessful) {
+            response.body()?.toDeliveryman()?.also { deliveryman ->
+                _uiState.update { it.copy(deliveryman = deliveryman) }
+            }
+        } else {
+            _uiState.update {
+                it.copy(msg = "Error ${response.code()}: No s'ha pogut crear el transportista")
             }
             null
         }
@@ -202,7 +230,7 @@ class DeliveryManHomeViewModel @Inject constructor(
         }
     }
 
-    fun saveVehicleChanges() {
+    fun updateVehicle() {
         val vehicle = uiState.value.vehicle
 
         _uiState.update { it.copy(isLoading = true, msg = null) }
@@ -235,6 +263,41 @@ class DeliveryManHomeViewModel @Inject constructor(
                 Log.d(Settings.LOG_TAG, e.message.toString())
             }
 
+            _uiState.update { it.copy(isLoading = false) }
+        }
+    }
+
+    fun updateDeliveryman() {
+        val deliveryman = uiState.value.deliveryman!!
+
+        _uiState.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            delay(500)
+            try {
+                val response = smartPackRepository.updateDeliveryman(
+                    deliveryman.id,
+                    deliveryman.toDeliverymanRequest()
+                )
+
+                if (response.isSuccessful) {
+                    if (response.body() != null) {
+                        _uiState.update {
+                            it.copy(msg = "Canvis realitzats correctament")
+                        }
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Error ${response.code()}: No s'ha pogut fer la modificació"
+                        )
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
             _uiState.update { it.copy(isLoading = false) }
         }
     }

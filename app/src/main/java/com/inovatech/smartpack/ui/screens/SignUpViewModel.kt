@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.model.api.UserRequest
 import com.inovatech.smartpack.model.Role
+import com.inovatech.smartpack.model.api.DeliverymanRequest
 import com.inovatech.smartpack.model.uiState.SignUpUiState
 import com.inovatech.smartpack.utils.Settings
 import com.inovatech.smartpack.utils.Settings.TIMEOUT
@@ -45,6 +46,7 @@ class SignUpViewModel @Inject constructor(
             "tel" -> _uiState.update { it.copy(tel = value) }
             "addressType" -> _uiState.update { it.copy(addressType = value) }
             "address" -> _uiState.update { it.copy(address = value) }
+            "license" -> _uiState.update { it.copy(license = value) }
 
         }
     }
@@ -67,9 +69,11 @@ class SignUpViewModel @Inject constructor(
         val address = _uiState.value.address
         val addressType = _uiState.value.addressType
         val secretWord = _uiState.value.secretWord
+        val license = _uiState.value.license
 
         return when {
-            name.isEmpty() || surname.isEmpty() || tel.isEmpty() || address.isEmpty() || addressType.isEmpty() || secretWord.isEmpty() -> {
+            name.isEmpty() || surname.isEmpty() || tel.isEmpty() || address.isEmpty() ||
+                    addressType.isEmpty() || secretWord.isEmpty() || license.isEmpty() -> {
                 _uiState.update { it.copy(error = "Tots els camps són obligatoris") }
                 false
             }
@@ -130,7 +134,6 @@ class SignUpViewModel @Inject constructor(
             val result = withTimeoutOrNull(TIMEOUT) {
                 try {
                     val response = smartPackRepository.register(usuariPerRegistrar)
-//TODO Si ha marcat transportista, crear també un transportista
                     if (response.isSuccessful) {
                         if (response.body() != null) {
                             _uiState.update {

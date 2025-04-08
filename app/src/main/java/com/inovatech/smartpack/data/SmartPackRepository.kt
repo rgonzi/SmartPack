@@ -1,6 +1,7 @@
 package com.inovatech.smartpack.data
 
 import com.inovatech.smartpack.model.api.ApiResponse
+import com.inovatech.smartpack.model.api.DeliverymanRequest
 import com.inovatech.smartpack.model.api.DeliverymanResponse
 import com.inovatech.smartpack.model.api.ForgotPasswordRequest
 import com.inovatech.smartpack.model.api.ForgotPasswordResponse
@@ -27,6 +28,8 @@ interface SmartPackRepository {
     suspend fun deactivateUser(id:Int): Response<ApiResponse>
 
     suspend fun getDeliverymanByUserId(userId: Int): Response<DeliverymanResponse>
+    suspend fun updateDeliveryman(id: Long, transportista: DeliverymanRequest): Response<DeliverymanResponse>
+    suspend fun createDeliveryman(transportista: DeliverymanRequest): Response<DeliverymanResponse>
     suspend fun assignVehicleToDeliveryman(transportistaId: Long, vehicleId: Long): Response<ApiResponse>
     suspend fun desassignVehicleFromDeliveryman(id: Long): Response<ApiResponse>
 
@@ -78,6 +81,17 @@ interface SmartPackRepository {
 
     override suspend fun getDeliverymanByUserId(userId: Int): Response<DeliverymanResponse> {
         return smartPackApiService.getDeliverymanByUserId(userId)
+    }
+
+    override suspend fun updateDeliveryman(
+        id: Long,
+        transportista: DeliverymanRequest,
+    ): Response<DeliverymanResponse> {
+        return smartPackApiService.updateDeliveryman(id, transportista)
+    }
+
+    override suspend fun createDeliveryman(transportista: DeliverymanRequest): Response<DeliverymanResponse> {
+        return smartPackApiService.createDeliveryman(transportista)
     }
 
     override suspend fun assignVehicleToDeliveryman(

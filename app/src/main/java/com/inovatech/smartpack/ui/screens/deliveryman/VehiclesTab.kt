@@ -1,7 +1,6 @@
 package com.inovatech.smartpack.ui.screens.deliveryman
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -28,14 +27,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.inovatech.smartpack.model.uiState.DeliveryManUiState
 import com.inovatech.smartpack.ui.CommonTextField
-import com.inovatech.smartpack.ui.LoadingScreen
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -78,14 +73,14 @@ fun VehiclesTab(
                     if (uiState.deliveryman.vehicleId == null) {
                         viewModel.createVehicle()
                     } else {
-                        viewModel.saveVehicleChanges()
+                        viewModel.updateVehicle()
                     }
-                    viewModel.itHasChanges(false)
+                    viewModel.vehicleHasChanged(false)
                 },
-                enabled = uiState.hasChanges,
+                enabled = uiState.vehicleHasChanged,
                 modifier = Modifier.fillMaxWidth(0.6f)
             ) {
-                Text(if (uiState.deliveryman.vehicleId == null) "Crear vehicle" else "Guardar canvis")
+                Text(if (uiState.deliveryman.vehicleId == null) "Crear vehicle" else "Desar canvis")
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -94,6 +89,19 @@ fun VehiclesTab(
                 uiState = uiState,
                 viewModel = viewModel
             )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botó per guardar canvis en la llicència
+            Button(
+                onClick = {
+                    viewModel.updateDeliveryman()
+                    viewModel.licenceHasChanged(false)
+                },
+                enabled = uiState.licenseHasChanged,
+                modifier = Modifier.fillMaxWidth(0.6f)
+            ) {
+                Text("Desar canvis")
+            }
 
             if (uiState.deliveryman.vehicleId != null) {
                 Spacer(modifier = Modifier.height(16.dp))
@@ -179,7 +187,7 @@ fun VehicleCard(
                 value = uiState.vehicle.brand,
                 onValueChange = {
                     viewModel.updateVehicleBrand(it)
-                    viewModel.itHasChanges(true)
+                    viewModel.vehicleHasChanged(true)
                 },
                 label = "Marca",
                 trailingIcon = null,
@@ -193,7 +201,7 @@ fun VehicleCard(
                 value = uiState.vehicle.model,
                 onValueChange = {
                     viewModel.updateVehicleModel(it)
-                    viewModel.itHasChanges(true)
+                    viewModel.vehicleHasChanged(true)
                 },
                 label = "Model",
                 trailingIcon = null,
@@ -207,7 +215,7 @@ fun VehicleCard(
                 value = uiState.vehicle.plate,
                 onValueChange = {
                     viewModel.updateVehiclePlate(it)
-                    viewModel.itHasChanges(true)
+                    viewModel.vehicleHasChanged(true)
                 },
                 label = "Matrícula",
                 trailingIcon = null,
@@ -245,11 +253,11 @@ fun LicencesCard(
                 value = uiState.deliveryman!!.licence,
                 onValueChange = {
                     viewModel.updateLicences(it)
+                    viewModel.licenceHasChanged(true)
                 },
                 label = { Text("Permisos de conducció") },
                 maxLines = 1,
                 enabled = true,
-                readOnly = true,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Done

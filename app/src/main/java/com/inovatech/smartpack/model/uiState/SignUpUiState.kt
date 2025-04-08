@@ -13,6 +13,7 @@ data class SignUpUiState(
     val tel: String = "",
     val addressType: String = "",
     val address: String = "",
+    val license: String = "",
 
     val isLoading: Boolean = false,
     val error: String? = null,
