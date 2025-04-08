@@ -47,6 +47,10 @@ class DeliveryManHomeViewModel @Inject constructor(
         _uiState.update { it.copy(vehicle = it.vehicle.copy(plate = plate)) }
     }
 
+    fun updateLicences(licence: String) {
+        _uiState.update { it.copy(deliveryman = it.deliveryman!!.copy(licence = licence)) }
+    }
+
     fun itHasChanges(hasChanges: Boolean) {
         _uiState.update { it.copy(hasChanges = hasChanges) }
     }
