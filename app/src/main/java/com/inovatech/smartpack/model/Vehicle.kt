@@ -9,9 +9,11 @@ data class Vehicle(
     val plate: String = ""
 )
 
-fun Vehicle.toVehicleDTO() = VehicleDTO(
-    id = id,
-    brand = brand,
-    model = model,
-    plate = plate
-)
+fun Vehicle.toVehicleDTO(): VehicleDTO {
+    return VehicleDTO(
+        id = id,
+        brand = brand,
+        model = model,
+        plate = plate
+    )
+}

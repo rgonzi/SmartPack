@@ -45,18 +45,15 @@ fun VehiclesTab(
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(uiState.msg) {
-        if (!uiState.isLoading) {
-            if (uiState.msg != null) {
-                launchSnackbar(uiState.msg)
-                viewModel.resetMsg()
-            }
+        if (!uiState.isLoading && uiState.msg != null) {
+            launchSnackbar(uiState.msg)
+            viewModel.resetMsg()
         }
     }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         if (uiState.deliveryman != null) {
 
@@ -70,7 +67,7 @@ fun VehiclesTab(
             // Botó per crear vehicle o guardar canvis
             Button(
                 onClick = {
-                    if (uiState.deliveryman.vehicleId == null) {
+                    if (uiState.deliveryman.vehicle.id == 0L) {
                         viewModel.createVehicle()
                     } else {
                         viewModel.updateVehicle()
@@ -80,7 +77,7 @@ fun VehiclesTab(
                 enabled = uiState.vehicleHasChanged,
                 modifier = Modifier.fillMaxWidth(0.6f)
             ) {
-                Text(if (uiState.deliveryman.vehicleId == null) "Crear vehicle" else "Desar canvis")
+                Text(if (uiState.deliveryman.vehicle.id == 0L) "Crear vehicle" else "Desar canvis")
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -103,7 +100,7 @@ fun VehiclesTab(
                 Text("Desar canvis")
             }
 
-            if (uiState.deliveryman.vehicleId != null) {
+            if (uiState.deliveryman.vehicle.id != 0L) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 //Botó per eliminar el vehicle
@@ -143,7 +140,11 @@ fun VehiclesTab(
                             Text("Cancel·lar")
                         }
 
-                    })
+                    },
+                    icon = {
+                        Icon(imageVector = Icons.Default.Warning, contentDescription = null)
+                    }
+                )
             }
         } else {
             if (!uiState.isLoading) {
@@ -178,13 +179,13 @@ fun VehicleCard(
                 fontWeight = FontWeight.Bold
             )
 
-            if (uiState.deliveryman?.vehicleId == null) {
+            if (uiState.deliveryman!!.vehicle.id == 0L) {
                 Text("No tens cap vehicle assignat")
                 Text("Pots crear-ne un ara: ")
             }
             //Marca
             CommonTextField(
-                value = uiState.vehicle.brand,
+                value = uiState.deliveryman.vehicle.brand,
                 onValueChange = {
                     viewModel.updateVehicleBrand(it)
                     viewModel.vehicleHasChanged(true)
@@ -198,7 +199,7 @@ fun VehicleCard(
             Spacer(modifier = Modifier.height(8.dp))
             //Model
             CommonTextField(
-                value = uiState.vehicle.model,
+                value = uiState.deliveryman.vehicle.model,
                 onValueChange = {
                     viewModel.updateVehicleModel(it)
                     viewModel.vehicleHasChanged(true)
@@ -212,7 +213,7 @@ fun VehicleCard(
             Spacer(modifier = Modifier.height(8.dp))
             //Matrícula
             CommonTextField(
-                value = uiState.vehicle.plate,
+                value = uiState.deliveryman.vehicle.plate,
                 onValueChange = {
                     viewModel.updateVehiclePlate(it)
                     viewModel.vehicleHasChanged(true)

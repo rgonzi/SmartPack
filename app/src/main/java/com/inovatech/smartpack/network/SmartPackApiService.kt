@@ -86,7 +86,7 @@ interface SmartPackApiService {
     ): Response<ApiResponse>
 
     @PATCH("/transportista/desassignar-vehicle/{id}")
-    suspend fun desassignVehicleFromDeliveryman(@Path("id") id: Long): Response<ApiResponse>
+    suspend fun desassignVehicleFromDeliveryman(@Path("id") deliverymanId: Long): Response<ApiResponse>
 
     //Vehicle
     @GET("/vehicle/{id}")

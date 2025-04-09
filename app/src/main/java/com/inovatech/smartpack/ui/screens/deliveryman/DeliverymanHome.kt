@@ -19,6 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.inovatech.smartpack.R
+import com.inovatech.smartpack.ui.LoadingScreen
 import com.inovatech.smartpack.ui.theme.Background
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -106,6 +107,7 @@ fun DeliverymanHomeScreen(
 
         }
     }
+    LoadingScreen(uiState.isLoading)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

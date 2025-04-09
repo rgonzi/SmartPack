@@ -31,7 +31,7 @@ interface SmartPackRepository {
     suspend fun updateDeliveryman(id: Long, transportista: DeliverymanRequest): Response<DeliverymanResponse>
     suspend fun createDeliveryman(transportista: DeliverymanRequest): Response<DeliverymanResponse>
     suspend fun assignVehicleToDeliveryman(transportistaId: Long, vehicleId: Long): Response<ApiResponse>
-    suspend fun desassignVehicleFromDeliveryman(id: Long): Response<ApiResponse>
+    suspend fun desassignVehicleFromDeliveryman(deliverymanId: Long): Response<ApiResponse>
 
     suspend fun getVehicleById(vehicleId: Long): Response<VehicleDTO>
     suspend fun createVehicle(vehicle: VehicleDTO): Response<VehicleDTO>
@@ -101,8 +101,8 @@ interface SmartPackRepository {
         return smartPackApiService.assignVehicleToDeliveryman(transportistaId, vehicleId)
     }
 
-    override suspend fun desassignVehicleFromDeliveryman(id: Long): Response<ApiResponse> {
-        return smartPackApiService.desassignVehicleFromDeliveryman(id)
+    override suspend fun desassignVehicleFromDeliveryman(deliverymanId: Long): Response<ApiResponse> {
+        return smartPackApiService.desassignVehicleFromDeliveryman(deliverymanId)
     }
 
     override suspend fun getVehicleById(vehicleId: Long): Response<VehicleDTO> {

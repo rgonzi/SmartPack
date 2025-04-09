@@ -11,6 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
+/**
+ * @Composable que mostra un LoadingScreen quan isLoading és true.
+ * Està embolcallat amb un Box clicable per a que no es pugui interectuar
+ * amb la pantalla mentre s'executa.
+ */
 @Composable
 fun LoadingScreen(
     isLoading: Boolean

@@ -38,15 +38,33 @@ class DeliveryManHomeViewModel @Inject constructor(
     }
 
     fun updateVehicleBrand(brand: String) {
-        _uiState.update { it.copy(vehicle = it.vehicle.copy(brand = brand)) }
+        _uiState.update {
+            it.copy(
+                deliveryman = it.deliveryman!!.copy(
+                    vehicle = it.deliveryman.vehicle.copy(brand = brand)
+                )
+            )
+        }
     }
 
     fun updateVehicleModel(model: String) {
-        _uiState.update { it.copy(vehicle = it.vehicle.copy(model = model)) }
+        _uiState.update {
+            it.copy(
+                deliveryman = it.deliveryman!!.copy(
+                    vehicle = it.deliveryman.vehicle.copy(model = model)
+                )
+            )
+        }
     }
 
     fun updateVehiclePlate(plate: String) {
-        _uiState.update { it.copy(vehicle = it.vehicle.copy(plate = plate)) }
+        _uiState.update {
+            it.copy(
+                deliveryman = it.deliveryman!!.copy(
+                    vehicle = it.deliveryman.vehicle.copy(plate = plate)
+                )
+            )
+        }
     }
 
     fun updateLicences(licence: String) {
@@ -84,9 +102,7 @@ class DeliveryManHomeViewModel @Inject constructor(
                     createNewDeliveryman(user)
                 }
 
-                if (deliveryman?.vehicleId != null) {
-                    getVehicleById(deliveryman.vehicleId)
-                } else {
+                if (deliveryman?.vehicle == null) {
                     _uiState.update {
                         it.copy(msg = "No hi ha cap vehicle assignat")
                     }
@@ -108,7 +124,11 @@ class DeliveryManHomeViewModel @Inject constructor(
 
         return if (response.isSuccessful) {
             response.body()?.toDeliveryman()?.also { deliveryman ->
-                _uiState.update { it.copy(deliveryman = deliveryman) }
+                _uiState.update {
+                    it.copy(
+                        deliveryman = deliveryman
+                    )
+                }
             }
         } else {
             _uiState.update {
@@ -120,11 +140,9 @@ class DeliveryManHomeViewModel @Inject constructor(
 
     private suspend fun createNewDeliveryman(user: User): Deliveryman? {
         val newDeliveryman = DeliverymanRequest(
-            userId = user.id,
-            licence = ""
+            userId = user.id, licence = ""
         )
-        val response =
-            smartPackRepository.createDeliveryman(newDeliveryman)
+        val response = smartPackRepository.createDeliveryman(newDeliveryman)
         return if (response.isSuccessful) {
             response.body()?.toDeliveryman()?.also { deliveryman ->
                 _uiState.update { it.copy(deliveryman = deliveryman) }
@@ -150,120 +168,132 @@ class DeliveryManHomeViewModel @Inject constructor(
             }
         } else {
             _uiState.update {
-                it.copy(msg = "3Error ${response.code()}: No s'han pogut obtenir les dades")
+                it.copy(msg = "Error ${response.code()}: No s'han pogut obtenir les dades")
             }
             null
         }
     }
 
-    private suspend fun getVehicleById(vehicleId: Long): Vehicle? {
-        val response = smartPackRepository.getVehicleById(vehicleId)
+//    private suspend fun getVehicleById(vehicleId: Long): Vehicle? {
+//        val response = smartPackRepository.getVehicleById(vehicleId)
+//
+//        return if (response.isSuccessful) {
+//            response.body()?.toVehicle()?.also { vehicle ->
+//                _uiState.update { it.copy(vehicle = vehicle) }
+//            }
+//        } else {
+//            _uiState.update {
+//                it.copy(msg = "Error ${response.code()}: No s'han pogut obtenir les dades")
+//            }
+//            null
+//        }
+//    }
 
-        return if (response.isSuccessful) {
-            response.body()?.toVehicle()?.also { vehicle ->
-                _uiState.update { it.copy(vehicle = vehicle) }
-            }
-        } else {
-            _uiState.update {
-                it.copy(msg = "4Error ${response.code()}: No s'han pogut obtenir les dades")
-            }
-            null
-        }
-    }
-
-    fun createVehicle() {
-        _uiState.update { it.copy(isLoading = true, msg = null) }
-        val vehicle = uiState.value.vehicle
+    private fun validateVehicleInput(): Boolean {
+        val vehicle = uiState.value.deliveryman!!.vehicle
 
         if (vehicle.brand.isBlank() || vehicle.model.isBlank() || vehicle.plate.isBlank()) {
             _uiState.update {
                 it.copy(
-                    msg = "Si us plau, ompliu tots els camps del vehicle.",
-                    isLoading = false
+                    msg = "Si us plau, ompliu tots els camps del vehicle.", isLoading = false
                 )
             }
-            return
+            return false
         }
+        return true
+    }
 
-        viewModelScope.launch {
-            delay(500)
-            try {
-                val response = smartPackRepository.createVehicle(vehicle.toVehicleDTO())
+    fun createVehicle() {
+        _uiState.update { it.copy(isLoading = true, msg = null) }
+
+        val vehicle = uiState.value.deliveryman!!.vehicle
+
+        if (validateVehicleInput()) {
+            viewModelScope.launch {
+                delay(500)
+                try {
+                    val response = smartPackRepository.createVehicle(vehicle.toVehicleDTO())
 
 
-                if (response.isSuccessful) {
-                    if (response.body() != null) {
-                        val newVehicleData = response.body()!!.toVehicle()
-                        _uiState.update {
-                            it.copy(
-                                vehicle = newVehicleData
-                            )
-                        }
-                        val response2 = smartPackRepository.assignVehicleToDeliveryman(
-                            uiState.value.deliveryman!!.id,
-                            newVehicleData.id
-                        )
-                        if (response2.isSuccessful) {
+                    if (response.isSuccessful) {
+                        if (response.body() != null) {
+                            val newVehicleData = response.body()!!.toVehicle()
                             _uiState.update {
                                 it.copy(
-                                    deliveryman = it.deliveryman!!.copy(vehicleId = newVehicleData.id),
-                                    msg = "Vehicle creat i assignat correctament"
+                                    deliveryman = it.deliveryman!!.copy(vehicle = newVehicleData)
                                 )
                             }
+                            val response2 = smartPackRepository.assignVehicleToDeliveryman(
+                                uiState.value.deliveryman!!.id, newVehicleData.id
+                            )
+                            if (response2.isSuccessful) {
+                                _uiState.update {
+                                    it.copy(
+                                        deliveryman = it.deliveryman!!.copy(vehicle = newVehicleData),
+                                        msg = "Vehicle creat i assignat correctament"
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        _uiState.update {
+                            it.copy(
+                                msg = "Error ${response.code()}: No s'ha pogut crear el vehicle"
+                            )
                         }
                     }
-                } else {
+                } catch (e: IOException) {
                     _uiState.update {
-                        it.copy(
-                            msg = "Error ${response.code()}: No s'ha pogut crear el vehicle"
-                        )
+                        it.copy(msg = "No s'ha pogut connectar amb el servidor")
                     }
+                    Log.d(Settings.LOG_TAG, e.message.toString())
                 }
-            } catch (e: IOException) {
-                _uiState.update {
-                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
-                }
-                Log.d(Settings.LOG_TAG, e.message.toString())
-            }
 
-            _uiState.update { it.copy(isLoading = false) }
+                _uiState.update { it.copy(isLoading = false) }
+            }
         }
     }
 
     fun updateVehicle() {
-        val vehicle = uiState.value.vehicle
+        val vehicle = uiState.value.deliveryman!!.vehicle
 
         _uiState.update { it.copy(isLoading = true, msg = null) }
 
-        viewModelScope.launch {
-            delay(500)
-            try {
-                val response = smartPackRepository.updateVehicle(vehicle.id, vehicle.toVehicleDTO())
+        if (validateVehicleInput()) {
+            viewModelScope.launch {
+                delay(500)
+                try {
+                    val response =
+                        smartPackRepository.updateVehicle(vehicle.id, vehicle.toVehicleDTO())
 
-                if (response.isSuccessful) {
-                    if (response.body() != null) {
-                        val newVehicleData = response.body()!!.toVehicle()
+                    if (response.isSuccessful) {
+                        if (response.body() != null) {
+                            val newVehicleData = response.body()!!.toVehicle()
+                            _uiState.update {
+                                it.copy(
+                                    deliveryman = it.deliveryman!!.copy(
+                                        vehicle = newVehicleData
+                                    ),
+                                    msg = "Canvis realitzats correctament"
+                                )
+                            }
+                        }
+                    } else {
                         _uiState.update {
                             it.copy(
-                                vehicle = newVehicleData, msg = "Canvis realitzats correctament"
+                                msg = "Error ${response.code()}: No s'ha pogut fer la modificació"
                             )
                         }
                     }
-                } else {
+                } catch (e: IOException) {
                     _uiState.update {
-                        it.copy(
-                            msg = "Error ${response.code()}: No s'ha pogut fer la modificació"
-                        )
+                        it.copy(msg = "No s'ha pogut connectar amb el servidor")
                     }
+                    Log.d(Settings.LOG_TAG, e.message.toString())
                 }
-            } catch (e: IOException) {
-                _uiState.update {
-                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
-                }
-                Log.d(Settings.LOG_TAG, e.message.toString())
-            }
 
-            _uiState.update { it.copy(isLoading = false) }
+                _uiState.update { it.copy(isLoading = false) }
+            }
         }
     }
 
@@ -275,8 +305,7 @@ class DeliveryManHomeViewModel @Inject constructor(
             delay(500)
             try {
                 val response = smartPackRepository.updateDeliveryman(
-                    deliveryman.id,
-                    deliveryman.toDeliverymanRequest()
+                    deliveryman.id, deliveryman.toDeliverymanRequest()
                 )
 
                 if (response.isSuccessful) {
@@ -303,13 +332,14 @@ class DeliveryManHomeViewModel @Inject constructor(
     }
 
     fun deactivateVehicle() {
-        val vehicleId = uiState.value.deliveryman!!.vehicleId!!
+        val deliveryman = uiState.value.deliveryman!!
+        val vehicleId = deliveryman.vehicle.id
         _uiState.update { it.copy(isLoading = true, msg = null) }
 
         viewModelScope.launch {
             try {
                 val response = smartPackRepository.deactivateVehicle(vehicleId)
-                val response2 = smartPackRepository.desassignVehicleFromDeliveryman(vehicleId)
+                val response2 = smartPackRepository.desassignVehicleFromDeliveryman(deliveryman.id)
 
                 if (response.isSuccessful && response2.isSuccessful) {
                     resetVehicleTextFields()
@@ -328,6 +358,6 @@ class DeliveryManHomeViewModel @Inject constructor(
     }
 
     private fun resetVehicleTextFields() {
-        _uiState.update { it.copy(vehicle = Vehicle()) }
+        _uiState.update { it.copy(deliveryman = it.deliveryman!!.copy(vehicle = Vehicle())) }
     }
 }
