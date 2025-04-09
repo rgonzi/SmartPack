@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.inovatech.smartpack.model.User
 
 data class UserResponse(
-    val id: Int = 0,
+    val id: Long = 0,
     val email: String = "",
     @SerializedName("nom") val name: String = "",
     @SerializedName("cognom") val surname: String = "",

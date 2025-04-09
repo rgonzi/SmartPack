@@ -27,7 +27,7 @@ class ChangePasswordViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ChangePasswordUiState())
     val uiState: StateFlow<ChangePasswordUiState> = _uiState.asStateFlow()
 
-    fun updateUserId(userId: Int) {
+    fun updateUserId(userId: Long) {
         _uiState.update { it.copy(user = User(id = userId)) }
     }
 

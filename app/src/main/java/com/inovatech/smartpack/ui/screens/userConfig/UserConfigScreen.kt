@@ -52,7 +52,7 @@ fun UserConfigScreen(
     viewModel: UserConfigViewModel = hiltViewModel(),
     onBackPressed: () -> Unit,
     backToLogin: () -> Unit,
-    onChangePassword: (Int) -> Unit,
+    onChangePassword: (Long) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showDeleteDialog by remember { mutableStateOf(false) }

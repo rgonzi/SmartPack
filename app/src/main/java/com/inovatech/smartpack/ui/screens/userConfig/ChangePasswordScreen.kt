@@ -50,11 +50,11 @@ import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
 
 @Serializable
-data class ChangePassword(val id: Int)
+data class ChangePassword(val id: Long)
 
 @Composable
 fun ChangePasswordScreen(
-    userId: Int,
+    userId: Long,
     onBackPressed: () -> Unit,
     viewModel: ChangePasswordViewModel = hiltViewModel(),
 ) {
