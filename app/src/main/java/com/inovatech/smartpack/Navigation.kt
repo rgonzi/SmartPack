@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,16 +14,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.inovatech.smartpack.data.TokenRepository
 import com.inovatech.smartpack.ui.screens.*
-import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHome
 import com.inovatech.smartpack.ui.screens.admin.AdminHome
 import com.inovatech.smartpack.ui.screens.admin.AdminHomeScreen
+import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHome
 import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHomeScreen
-import com.inovatech.smartpack.ui.screens.userConfig.ChangePassword
-import com.inovatech.smartpack.ui.screens.userConfig.ChangePasswordScreen
-import com.inovatech.smartpack.ui.screens.userConfig.UserConfig
-import com.inovatech.smartpack.ui.screens.userConfig.UserConfigScreen
 import com.inovatech.smartpack.ui.screens.user.UserHome
 import com.inovatech.smartpack.ui.screens.user.UserHomeScreen
+import com.inovatech.smartpack.ui.screens.userConfig.*
 import kotlinx.coroutines.delay
 
 /**
@@ -104,7 +100,7 @@ fun Navigation(
                 }
                 composable<UserConfig> {
                     UserConfigScreen(
-                        onBackPressed = { navController.popBackStack() },
+                        onBackPressed = { navController.navigateUp() },
                         backToLogin = {
                             navController.navigate(Login) {
                                 popUpTo(0) { inclusive = true }
@@ -119,7 +115,7 @@ fun Navigation(
                     val changePasswordStack: ChangePassword = backStackEntry.toRoute()
                     ChangePasswordScreen(
                         userId = changePasswordStack.id,
-                        onBackPressed = { navController.popBackStack() }
+                        onBackPressed = { navController.navigateUp() }
                     )
                 }
                 composable<DeliverymanHome> {
