@@ -22,3 +22,7 @@ val BlueTertiary = Color(0xFF004BA0)
 val DarkOrangePrimary = Color(0xFFF6D051)
 val DarkBlueSecondary = Color(0xFF1A73E8)
 val DarkBlueTertiary = Color(0xFF004BA0)
+
+val StatusDelivered = Color(0xFF4CAF50)
+val StatusNotDelivered = Color(0xFFFF9800)
+val StatusReturned = Color(0xFFF44336)

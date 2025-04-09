@@ -1,12 +1,12 @@
 package com.inovatech.smartpack.model
 
-import com.inovatech.smartpack.model.api.PackageDTO
 
 data class Service(
+    val id: Long = 0,
     val status: ServiceStatus = ServiceStatus.ORDENAT,
     val userId: Int = 0,
     val deliverymanId: Long = 0,
-    val packageRequest: PackageDTO = PackageDTO()
+    val packageToDeliver: Package = Package()
 )
 
 enum class ServiceStatus {

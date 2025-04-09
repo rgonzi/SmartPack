@@ -1,10 +1,12 @@
 package com.inovatech.smartpack.model.uiState
 
 import com.inovatech.smartpack.model.Deliveryman
+import com.inovatech.smartpack.model.Service
 import com.inovatech.smartpack.model.User
 
 data class DeliveryManUiState(
-    val assignedServicesList: List<String> = emptyList(), //TODO Canviar tipus de llista de serveis
+    val assignedServices: List<Service> = emptyList(),
+    val finalizedServices: List<Service> = emptyList(),
     val isLoading: Boolean = false,
     val vehicleHasChanged: Boolean = false,
     val licenseHasChanged: Boolean = false,

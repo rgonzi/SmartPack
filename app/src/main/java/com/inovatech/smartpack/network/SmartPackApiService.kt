@@ -1,5 +1,6 @@
 package com.inovatech.smartpack.network
 
+import com.inovatech.smartpack.model.ServiceStatus
 import com.inovatech.smartpack.model.api.ApiResponse
 import com.inovatech.smartpack.model.api.DeliverymanRequest
 import com.inovatech.smartpack.model.api.ForgotPasswordRequest
@@ -9,6 +10,7 @@ import com.inovatech.smartpack.model.api.LoginResponse
 import com.inovatech.smartpack.model.api.LoginRequest
 import com.inovatech.smartpack.model.api.UserRequest
 import com.inovatech.smartpack.model.api.ResetPasswordRequest
+import com.inovatech.smartpack.model.api.ServiceDTO
 import com.inovatech.smartpack.model.api.UserResponse
 import com.inovatech.smartpack.model.api.VehicleDTO
 import retrofit2.Response
@@ -64,25 +66,28 @@ interface SmartPackApiService {
     suspend fun loadUser(@Path("id") id: Int): Response<UserResponse>
 
     @PUT("/usuari/{id}")
-    suspend fun updateUser(@Path("id") id: Int, @Body usuari: UserRequest): Response<UserResponse>
+    suspend fun updateUser(@Path("id") id: Long, @Body usuari: UserRequest): Response<UserResponse>
 
     @PATCH("/usuari/{id}/desactivate")
-    suspend fun deactivateUser(@Path("id") id: Int): Response<ApiResponse>
+    suspend fun deactivateUser(@Path("id") id: Long): Response<ApiResponse>
 
     //Transportista
     @GET("/transportista/usuari/{userId}")
-    suspend fun getDeliverymanByUserId(@Path("userId") userId: Int): Response<DeliverymanResponse>
+    suspend fun getDeliverymanByUserId(@Path("userId") userId: Long): Response<DeliverymanResponse>
 
     @POST("/transportista/crear")
     suspend fun createDeliveryman(@Body transportista: DeliverymanRequest): Response<DeliverymanResponse>
 
     @PUT("transportista/{id}")
-    suspend fun updateDeliveryman(@Path("id") id: Long, @Body transportista: DeliverymanRequest): Response<DeliverymanResponse>
+    suspend fun updateDeliveryman(
+        @Path("id") id: Long,
+        @Body transportista: DeliverymanRequest,
+    ): Response<DeliverymanResponse>
 
     @POST("/transportista/{transportistaId}/assignar-vehicle/{vehicleId}")
     suspend fun assignVehicleToDeliveryman(
         @Path("transportistaId") transportistaId: Long,
-        @Path("vehicleId") vehicleId: Long
+        @Path("vehicleId") vehicleId: Long,
     ): Response<ApiResponse>
 
     @PATCH("/transportista/desassignar-vehicle/{id}")
@@ -100,4 +105,28 @@ interface SmartPackApiService {
 
     @PATCH("/vehicle/{id}/desactivate")
     suspend fun deactivateVehicle(@Path("id") id: Long): Response<ApiResponse>
+
+
+    //Serveis
+    @POST("/servei/crear")
+    suspend fun createService(@Body service: ServiceDTO): Response<ServiceDTO>
+
+    @PUT("/servei/{id}")
+    suspend fun modifyService(
+        @Path("id") serviceId: Long,
+        @Body newService: ServiceDTO,
+    ): Response<ServiceDTO>
+
+    @PATCH("/servei/{serveiId}/estat")
+    suspend fun changeServiceStatus(
+        @Path("serveiId") serviceId: Long,
+        @Body status: ServiceStatus,
+    ): Response<ServiceDTO>
+
+    @GET("/servei/usuari/{usuariId}")
+    suspend fun getServicesPerUser(@Path("usuariId") userId: Long): Response<List<ServiceDTO>>
+
+    @GET("/servei/transportista/{transportistaId}")
+    suspend fun getServicesPerDeliveryman(@Path("transportistaId") deliverymanId: Long): Response<List<ServiceDTO>>
+
 }

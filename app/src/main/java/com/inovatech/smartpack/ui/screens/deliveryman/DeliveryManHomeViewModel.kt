@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.model.Deliveryman
+import com.inovatech.smartpack.model.Service
+import com.inovatech.smartpack.model.ServiceStatus
 import com.inovatech.smartpack.model.User
 import com.inovatech.smartpack.model.Vehicle
 import com.inovatech.smartpack.model.api.DeliverymanRequest
@@ -23,6 +25,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
+import java.net.IDN
 import javax.inject.Inject
 
 @HiltViewModel
@@ -119,7 +122,7 @@ class DeliveryManHomeViewModel @Inject constructor(
     }
 
 
-    private suspend fun getDeliverymanDetails(userId: Int): Deliveryman? {
+    private suspend fun getDeliverymanDetails(userId: Long): Deliveryman? {
         val response = smartPackRepository.getDeliverymanByUserId(userId)
 
         return if (response.isSuccessful) {
@@ -273,8 +276,7 @@ class DeliveryManHomeViewModel @Inject constructor(
                                 it.copy(
                                     deliveryman = it.deliveryman!!.copy(
                                         vehicle = newVehicleData
-                                    ),
-                                    msg = "Canvis realitzats correctament"
+                                    ), msg = "Canvis realitzats correctament"
                                 )
                             }
                         }
@@ -334,7 +336,7 @@ class DeliveryManHomeViewModel @Inject constructor(
     fun deactivateVehicle() {
         val deliveryman = uiState.value.deliveryman!!
         val vehicleId = deliveryman.vehicle.id
-        _uiState.update { it.copy(isLoading = true, msg = null) }
+        _uiState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
             try {
@@ -348,9 +350,7 @@ class DeliveryManHomeViewModel @Inject constructor(
                     it.copy(msg = response.body()!!.msg)
                 }
             } catch (e: IOException) {
-                _uiState.update {
-                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
-                }
+                _uiState.update { it.copy(msg = "No s'ha pogut connectar amb el servidor") }
                 Log.d(Settings.LOG_TAG, e.message.toString())
             }
             _uiState.update { it.copy(isLoading = false) }
@@ -359,5 +359,35 @@ class DeliveryManHomeViewModel @Inject constructor(
 
     private fun resetVehicleTextFields() {
         _uiState.update { it.copy(deliveryman = it.deliveryman!!.copy(vehicle = Vehicle())) }
+    }
+
+    fun changeStatus(serviceId: Long, status: ServiceStatus) {
+        _uiState.update { it.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            try {
+                val response = smartPackRepository.changeServiceStatus(serviceId, status)
+
+                if (response.isSuccessful) {
+                    _uiState.update {
+                        val serviceToMove = it.assignedServices.find { it.id == serviceId }!!
+                        it.copy(
+                            assignedServices = it.assignedServices.filterNot { it == serviceToMove },
+                            finalizedServices = it.finalizedServices + serviceToMove,
+                            msg = "Servei modificat correctament")
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Error ${response.code()}: No s'ha pogut modificar l'estat del servei"
+                        )
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update { it.copy(msg = "No s'ha pogut connectar amb el servidor") }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+            _uiState.update { it.copy(isLoading = false) }
+        }
     }
 }

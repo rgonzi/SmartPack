@@ -4,12 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -84,10 +86,19 @@ fun DeliverymanHomeScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(it)
-                    .padding(32.dp)
+                    .padding(16.dp)
             ) {
                 composable<AssignedServices> {
-                    AssignedServicesTab()
+                    AssignedServicesTab(
+                        viewModel = viewModel,
+                        uiState = uiState,
+                        launchSnackbar = { msg ->
+                            scope.launch {
+                                snackbarHostState.showSnackbar(msg)
+                            }
+                        },
+                        onNavToDetail = {}
+                    )
                 }
                 composable<ConfirmDelivery> {
                     ConfirmDeliveryTab()
@@ -146,8 +157,12 @@ fun HomeBottomBar(
     navToVehicles: () -> Unit,
 ) {
     var selectedItem by remember { mutableIntStateOf(0) }
-    val items = listOf("Serveis assignats", "Confirmar entrega", "Vehicle i llicències")
-    val icons = listOf(Icons.Default.Email, Icons.Default.CheckCircle, Icons.Default.Star)
+    val items = listOf("Serveis per entregar", "Serveis realitzats", "Vehicle i llicències")
+    val icons = listOf(
+        painterResource(id = R.drawable.ic_package_box),
+        painterResource(id = R.drawable.ic_check),
+        painterResource(id = R.drawable.ic_delivery_truck)
+    )
 
     NavigationBar {
         items.forEachIndexed { index, item ->
@@ -161,7 +176,13 @@ fun HomeBottomBar(
                         2 -> navToVehicles()
                     }
                 },
-                icon = { Icon(icons[index], contentDescription = "") },
+                icon = {
+                    Icon(
+                        painter = icons[index],
+                        contentDescription = "",
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
                 label = { Text(items[index]) }
             )
         }
