@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -106,7 +107,7 @@ fun Navigation(
                         onBackPressed = { navController.popBackStack() },
                         backToLogin = {
                             navController.navigate(Login) {
-                                popUpTo(UserHome) { inclusive = true }
+                                popUpTo(0) { inclusive = true }
                             }
                         },
                         onChangePassword = {id ->
