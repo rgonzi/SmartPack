@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,9 +18,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.inovatech.smartpack.R
 import com.inovatech.smartpack.ui.LoadingScreen
 import com.inovatech.smartpack.ui.theme.Background
@@ -49,37 +53,34 @@ fun DeliverymanHomeScreen(
             containerColor = Color.Transparent,
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
             topBar = {
-                HomeTopAppBar(navToConfig = navToConfig)
+                HomeTopAppBar(
+                    navToConfig = navToConfig
+                )
             },
             bottomBar = {
-                HomeBottomBar(
-                    navToAssignedServices = {
-                        navController.navigate(AssignedServices) {
-                            popUpTo(navController.graph.startDestinationId) {
-                                inclusive = false
-                            }
-                            launchSingleTop = true
+                HomeBottomBar(navToAssignedServices = {
+                    navController.navigate(AssignedServices) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = false
                         }
-                    },
-                    navToConfirmDelivery = {
-                        navController.navigate(ConfirmedDelivery) {
-                            popUpTo(navController.graph.startDestinationId) {
-                                inclusive = false
-                            }
-                            launchSingleTop = true
-                        }
-                    },
-                    navToVehicles = {
-                        navController.navigate(Vehicles) {
-                            popUpTo(navController.graph.startDestinationId) {
-                                inclusive = false
-                            }
-                            launchSingleTop = true
-                        }
+                        launchSingleTop = true
                     }
-                )
-            }
-        ) {
+                }, navToConfirmDelivery = {
+                    navController.navigate(ConfirmedDelivery) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = false
+                        }
+                        launchSingleTop = true
+                    }
+                }, navToVehicles = {
+                    navController.navigate(Vehicles) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = false
+                        }
+                        launchSingleTop = true
+                    }
+                })
+            }) {
             NavHost(
                 navController = navController,
                 startDestination = AssignedServices,
@@ -97,30 +98,40 @@ fun DeliverymanHomeScreen(
                                 snackbarHostState.showSnackbar(msg)
                             }
                         },
-                        onNavToDetail = {}
+                        onNavToDetail = {serviceId ->
+                            navController.navigate(ServiceItemDetail(serviceId))
+                        }
                     )
+                }
+                composable<ServiceItemDetail> { backStackEntry ->
+                    val args: ServiceItemDetail = backStackEntry.toRoute()
+                    ServiceItemDetailScreen(
+                        viewModel = viewModel,
+                        uiState = uiState,
+                        serviceId = args.serviceId,
+                        launchSnackbar = { msg ->
+                            scope.launch {
+                                snackbarHostState.showSnackbar(msg)
+                            }
+                        },
+                        onBackPressed = { navController.navigateUp() }
+                        )
                 }
                 composable<ConfirmedDelivery> {
                     ConfirmedDeliveryTab(
-                        viewModel = viewModel,
-                        uiState = uiState,
-                        launchSnackbar = { msg ->
+                        viewModel = viewModel, uiState = uiState, launchSnackbar = { msg ->
                             scope.launch {
                                 snackbarHostState.showSnackbar(msg)
                             }
-                        }
-                    )
+                        })
                 }
                 composable<Vehicles> {
                     VehiclesTab(
-                        viewModel = viewModel,
-                        uiState = uiState,
-                        launchSnackbar = { msg ->
+                        viewModel = viewModel, uiState = uiState, launchSnackbar = { msg ->
                             scope.launch {
                                 snackbarHostState.showSnackbar(msg)
                             }
-                        }
-                    )
+                        })
                 }
             }
 
@@ -132,7 +143,7 @@ fun DeliverymanHomeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeTopAppBar(
-    navToConfig: () -> Unit,
+    navToConfig: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -141,13 +152,10 @@ fun HomeTopAppBar(
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.SansSerif
             )
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent,
-            titleContentColor = Color.Black
-        ),
-        actions = {
-            IconButton(onClick = { navToConfig() }) {
+        }, colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent, titleContentColor = Color.Black
+        ), actions = {
+            IconButton(onClick = navToConfig) {
                 Icon(
                     Icons.Default.AccountCircle,
                     contentDescription = "Configuració del compte",
@@ -174,25 +182,18 @@ fun HomeBottomBar(
 
     NavigationBar {
         items.forEachIndexed { index, item ->
-            NavigationBarItem(
-                selected = selectedItem == index,
-                onClick = {
-                    selectedItem = index
-                    when (index) {
-                        0 -> navToAssignedServices()
-                        1 -> navToConfirmDelivery()
-                        2 -> navToVehicles()
-                    }
-                },
-                icon = {
-                    Icon(
-                        painter = icons[index],
-                        contentDescription = "",
-                        modifier = Modifier.size(24.dp)
-                    )
-                },
-                label = { Text(items[index]) }
-            )
+            NavigationBarItem(selected = selectedItem == index, onClick = {
+                selectedItem = index
+                when (index) {
+                    0 -> navToAssignedServices()
+                    1 -> navToConfirmDelivery()
+                    2 -> navToVehicles()
+                }
+            }, icon = {
+                Icon(
+                    painter = icons[index], contentDescription = "", modifier = Modifier.size(24.dp)
+                )
+            }, label = { Text(items[index]) })
         }
     }
 }

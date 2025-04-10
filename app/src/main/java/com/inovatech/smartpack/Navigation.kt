@@ -112,9 +112,9 @@ fun Navigation(
                     )
                 }
                 composable<ChangePassword> { backStackEntry ->
-                    val changePasswordStack: ChangePassword = backStackEntry.toRoute()
+                    val args: ChangePassword = backStackEntry.toRoute()
                     ChangePasswordScreen(
-                        userId = changePasswordStack.id,
+                        userId = args.id,
                         onBackPressed = { navController.navigateUp() }
                     )
                 }

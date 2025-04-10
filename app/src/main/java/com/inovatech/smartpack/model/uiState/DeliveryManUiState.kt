@@ -8,6 +8,7 @@ data class DeliveryManUiState(
     val assignedServices: List<Service> = emptyList(),
     val finalizedServices: List<Service> = emptyList(),
     val isLoading: Boolean = false,
+    val isRefreshing: Boolean = false,
     val vehicleHasChanged: Boolean = false,
     val licenseHasChanged: Boolean = false,
     val msg: String? = null,

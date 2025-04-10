@@ -43,21 +43,23 @@ fun CommonInitScreen(
             topBar = {
                 CenterAlignedTopAppBar(
                     title = {
-                    Text(
-                        stringResource(R.string.app_name),
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.SansSerif
-                    )
-                }, navigationIcon = {
-                    IconButton(onClick = onBackClick, content = {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = "Back"
+                        Text(
+                            stringResource(R.string.app_name),
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.SansSerif
                         )
-                    })
-                }, colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent, titleContentColor = Color.Black
-                )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBackClick, content = {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        })
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent, titleContentColor = Color.Black
+                    )
                 )
             },
             bottomBar = {

@@ -12,10 +12,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,6 +47,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 object AssignedServices
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AssignedServicesTab(
     viewModel: DeliveryManHomeViewModel,
@@ -62,31 +65,35 @@ fun AssignedServicesTab(
         }
     }
 
-
-    LazyColumn(
-        horizontalAlignment = Alignment.CenterHorizontally
+    PullToRefreshBox(
+        isRefreshing = uiState.isRefreshing,
+        onRefresh = { viewModel.refreshServices()}
     ) {
-        item {
-            Text(
-                "Serveis per entregar",
-                fontSize = 24.sp,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-        }
+        LazyColumn(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
+                Text(
+                    "Serveis per entregar",
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
 
-        items(services) { service ->
-            ServiceItemDelivery(
-                service = service,
-                isExpanded = expandedItemId == service.id,
-                onClick = {
-                    expandedItemId = if (expandedItemId == service.id) null else service.id
-                },
-                onNavToDetail = { onNavToDetail(service.id) },
-                onStatusChange = { status -> viewModel.changeStatus(service.id, status) }
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+            items(services) { service ->
+                ServiceItemDelivery(
+                    service = service,
+                    isExpanded = expandedItemId == service.id,
+                    onClick = {
+                        expandedItemId = if (expandedItemId == service.id) null else service.id
+                    },
+                    onNavToDetail = { onNavToDetail(service.id) },
+                    onStatusChange = { status -> viewModel.changeStatus(service.id, status) }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
         }
     }
 }

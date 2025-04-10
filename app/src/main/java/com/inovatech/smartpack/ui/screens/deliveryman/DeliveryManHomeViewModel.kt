@@ -201,22 +201,22 @@ class DeliveryManHomeViewModel @Inject constructor(
 
     private fun getDeliverymanServices(deliverymanId: Long) {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
             try {
                 val response = smartPackRepository.getServicesPerDeliveryman(deliverymanId)
 
-                if (response.isSuccessful) {
-                    if (response.body() != null) {
-                        _uiState.update {
-                            it.copy(
-                                assignedServices = response.body()!!
-                                    .map { it.toService() }
-                                    .filter { it.status == ServiceStatus.TRANSIT }
-                            )
-                        }
-                    } else {
-                        _uiState.update {
-                            it.copy(msg = "No s'han pogut obtenir els serveis")
-                        }
+                if (response.isSuccessful && response.body() != null) {
+                    _uiState.update {
+                        it.copy(
+                            assignedServices = response.body()!!
+                                .map { it.toService() }
+                                .filter { it.status == ServiceStatus.TRANSIT }
+                        )
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(msg = "No s'han pogut obtenir els serveis")
                     }
                 }
             } catch (e: IOException) {
@@ -225,7 +225,14 @@ class DeliveryManHomeViewModel @Inject constructor(
                 }
                 Log.d(Settings.LOG_TAG, e.message.toString())
             }
+            _uiState.update { it.copy(isLoading = false, isRefreshing = false) }
         }
+    }
+
+    fun refreshServices() {
+        _uiState.update { it.copy(isRefreshing = true) }
+        getDeliverymanServices(uiState.value.deliveryman!!.id)
+        //La funció privada getDeliverymanServices ja s'encarrega de canviar isRefreshing = false
     }
 
     fun createVehicle() {
