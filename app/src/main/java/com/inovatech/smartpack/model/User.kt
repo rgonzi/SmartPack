@@ -13,7 +13,7 @@ data class User(
     val tel: String? = null,
     val address: String? = null,
     val observations: String? = null,
-    val role: Role = Role.ROLE_USER,
+    val role: Role? = null,
 )
 
 enum class Role {

@@ -73,7 +73,12 @@ class SignUpViewModel @Inject constructor(
 
         return when {
             name.isEmpty() || surname.isEmpty() || tel.isEmpty() || address.isEmpty() ||
-                    addressType.isEmpty() || secretWord.isEmpty() || license.isEmpty() -> {
+                    addressType.isEmpty() || secretWord.isEmpty() -> {
+                _uiState.update { it.copy(error = "Tots els camps són obligatoris") }
+                false
+            }
+
+            license.isEmpty() && _uiState.value.role == Role.ROLE_DELIVERYMAN -> {
                 _uiState.update { it.copy(error = "Tots els camps són obligatoris") }
                 false
             }

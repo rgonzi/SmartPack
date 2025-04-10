@@ -81,6 +81,7 @@ fun ConfirmedServiceItemDelivery(
     service: Service
 ) {
     Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .clip(RoundedCornerShape(24.dp))
             .background(color = BlueSecondary)
@@ -121,11 +122,11 @@ fun ConfirmedServiceItemDelivery(
                 HorizontalDivider(color = Color.White.copy(alpha = 0.4f))
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Row {
-                    Text(text = "Estat: ", fontWeight = FontWeight.Bold, color = Color.White)
-                    Text(text = service.status.toString(), color = Color.White.copy(alpha = 0.9f))
-                }
             }
+        }
+        Row {
+            Text(text = "Estat: ", fontWeight = FontWeight.Bold, color = Color.White)
+            Text(text = service.status.toString(), color = Color.White.copy(alpha = 0.9f))
         }
     }
 }

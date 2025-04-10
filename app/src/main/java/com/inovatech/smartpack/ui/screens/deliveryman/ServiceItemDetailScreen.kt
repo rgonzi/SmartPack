@@ -66,11 +66,8 @@ fun ServiceItemDetailScreen(
 
         Button(
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.DarkGray,
-                contentColor = Color.White
-            ),
-            onClick = { onBackPressed() }
-        ) {
+                containerColor = Color.DarkGray, contentColor = Color.White
+            ), onClick = { onBackPressed() }) {
             Text("Tornar")
         }
 
@@ -112,7 +109,9 @@ fun ServiceItemDetailDelivery(
                         Column(modifier = Modifier.weight(1f)) {
                             Text("Destinatari:", fontWeight = FontWeight.Bold, color = Color.White)
                             Text(
-                                text = service.packageToDeliver.recipientName, color = Color.White
+                                text = service.packageToDeliver.recipientName,
+                                color = Color.White,
+                                fontSize = 13.sp
                             )
                             Spacer(modifier = Modifier.height(8.dp))
 
@@ -120,6 +119,7 @@ fun ServiceItemDetailDelivery(
                             Text(
                                 text = service.packageToDeliver.recipientPhone,
                                 color = Color.White.copy(alpha = 0.9f),
+                                fontSize = 13.sp
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             //Pes
@@ -140,10 +140,10 @@ fun ServiceItemDetailDelivery(
                             Text("Detalls:", fontWeight = FontWeight.Bold, color = Color.White)
                             Text(
                                 text = if (service.packageToDeliver.details.isEmpty()) {
-                                    "- No hi ha detalls -"
+                                    "No hi ha detalls"
                                 } else {
                                     service.packageToDeliver.details
-                                }, color = Color.White.copy(alpha = 0.9f)
+                                }, color = Color.White.copy(alpha = 0.9f), fontSize = 13.sp
                             )
                         }
                     }
@@ -151,6 +151,7 @@ fun ServiceItemDetailDelivery(
                     Text(
                         text = service.packageToDeliver.recipientAddress,
                         color = Color.White.copy(alpha = 0.9f),
+                        fontSize = 13.sp
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -161,13 +162,11 @@ fun ServiceItemDetailDelivery(
                 }
             }
             Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth()
+                horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Estat: ", fontWeight = FontWeight.Bold, color = Color.White)
                 Text(
-                    text = service.status.toString(),
-                    color = Color.White.copy(alpha = 0.9f)
+                    text = service.status.toString(), color = Color.White.copy(alpha = 0.9f)
                 )
             }
         }

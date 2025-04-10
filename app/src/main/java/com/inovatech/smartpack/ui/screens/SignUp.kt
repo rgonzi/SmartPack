@@ -155,6 +155,8 @@ fun SignUpScreen(
                             contentDescription = "",
                             modifier = Modifier.size(SwitchDefaults.IconSize)
                         )
+                    } else {
+                        viewModel.updateRole(Role.ROLE_USER)
                     }
                 }
             )

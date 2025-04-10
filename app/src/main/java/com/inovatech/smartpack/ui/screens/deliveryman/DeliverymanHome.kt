@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
@@ -180,7 +181,7 @@ fun HomeBottomBar(
         painterResource(id = R.drawable.ic_delivery_truck)
     )
 
-    NavigationBar {
+    NavigationBar() {
         items.forEachIndexed { index, item ->
             NavigationBarItem(selected = selectedItem == index, onClick = {
                 selectedItem = index
@@ -193,7 +194,7 @@ fun HomeBottomBar(
                 Icon(
                     painter = icons[index], contentDescription = "", modifier = Modifier.size(24.dp)
                 )
-            }, label = { Text(items[index]) })
+            }, label = { Text(items[index], textAlign = TextAlign.Center) })
         }
     }
 }
