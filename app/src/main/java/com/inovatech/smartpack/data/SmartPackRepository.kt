@@ -2,6 +2,7 @@ package com.inovatech.smartpack.data
 
 import com.inovatech.smartpack.model.ServiceStatus
 import com.inovatech.smartpack.model.api.ApiResponse
+import com.inovatech.smartpack.model.api.ChangeStatusRequest
 import com.inovatech.smartpack.model.api.DeliverymanRequest
 import com.inovatech.smartpack.model.api.DeliverymanResponse
 import com.inovatech.smartpack.model.api.ForgotPasswordRequest
@@ -42,7 +43,7 @@ interface SmartPackRepository {
 
     suspend fun createService(service: ServiceDTO): Response<ServiceDTO>
     suspend fun modifyService(serviceId: Long, newService: ServiceDTO): Response<ServiceDTO>
-    suspend fun changeServiceStatus(serviceId: Long, status: ServiceStatus): Response<ServiceDTO>
+    suspend fun changeServiceStatus(serviceId: Long, statusRequest: ChangeStatusRequest): Response<ServiceDTO>
     suspend fun getServicesPerUser(userId: Long): Response<List<ServiceDTO>>
     suspend fun getServicesPerDeliveryman(deliverymanId: Long): Response<List<ServiceDTO>>
 }
@@ -142,9 +143,9 @@ interface SmartPackRepository {
 
     override suspend fun changeServiceStatus(
         serviceId: Long,
-        status: ServiceStatus,
+        statusRequest: ChangeStatusRequest,
     ): Response<ServiceDTO> {
-        return smartPackApiService.changeServiceStatus(serviceId, status)
+        return smartPackApiService.changeServiceStatus(serviceId, statusRequest)
     }
 
     override suspend fun getServicesPerUser(userId: Long): Response<List<ServiceDTO>> {

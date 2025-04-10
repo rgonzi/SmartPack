@@ -14,12 +14,12 @@ data class PackageDTO(
     @SerializedName("codiqr") val qrCode: String = ""
 )
 
-fun PackageDTO.toPackage() = Package(
-    details = details,
-    weight = weight,
-    dimensions = dimensions,
-    recipientName = recipientName,
-    recipientAddress = recipientAddress,
-    recipientPhone = recipientPhone,
-    qrCode = qrCode
+fun PackageDTO?.toPackage() = Package(
+    details = this?.details.orEmpty(),
+    weight = this?.weight ?: 0,
+    dimensions = this?.dimensions.orEmpty(),
+    recipientName = this?.recipientName.orEmpty(),
+    recipientAddress = this?.recipientAddress.orEmpty(),
+    recipientPhone = this?.recipientPhone.orEmpty(),
+    qrCode = this?.qrCode.orEmpty()
 )

@@ -2,6 +2,7 @@ package com.inovatech.smartpack.network
 
 import com.inovatech.smartpack.model.ServiceStatus
 import com.inovatech.smartpack.model.api.ApiResponse
+import com.inovatech.smartpack.model.api.ChangeStatusRequest
 import com.inovatech.smartpack.model.api.DeliverymanRequest
 import com.inovatech.smartpack.model.api.ForgotPasswordRequest
 import com.inovatech.smartpack.model.api.ForgotPasswordResponse
@@ -120,7 +121,7 @@ interface SmartPackApiService {
     @PATCH("/servei/{serveiId}/estat")
     suspend fun changeServiceStatus(
         @Path("serveiId") serviceId: Long,
-        @Body status: ServiceStatus,
+        @Body statusRequest: ChangeStatusRequest,
     ): Response<ServiceDTO>
 
     @GET("/servei/usuari/{usuariId}")

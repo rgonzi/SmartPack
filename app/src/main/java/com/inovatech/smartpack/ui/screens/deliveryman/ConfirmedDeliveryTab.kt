@@ -1,27 +1,26 @@
 package com.inovatech.smartpack.ui.screens.deliveryman
 
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,28 +31,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.inovatech.smartpack.R
-import com.inovatech.smartpack.model.Package
 import com.inovatech.smartpack.model.Service
-import com.inovatech.smartpack.model.ServiceStatus
 import com.inovatech.smartpack.model.uiState.DeliveryManUiState
 import com.inovatech.smartpack.ui.theme.BlueSecondary
-import com.inovatech.smartpack.ui.theme.StatusDelivered
-import com.inovatech.smartpack.ui.theme.StatusNotDelivered
-import com.inovatech.smartpack.ui.theme.StatusReturned
 import kotlinx.serialization.Serializable
 
 @Serializable
-object AssignedServices
+object ConfirmedDelivery
 
 @Composable
-fun AssignedServicesTab(
+fun ConfirmedDeliveryTab(
     viewModel: DeliveryManHomeViewModel,
     uiState: DeliveryManUiState,
     launchSnackbar: (String) -> Unit,
-    onNavToDetail: (Long) -> Unit,
 ) {
-    var expandedItemId by remember { mutableStateOf<Long?>(null) }
-    val services = uiState.assignedServices
+    val services = uiState.finalizedServices
 
     LaunchedEffect(uiState.msg) {
         if (!uiState.isLoading && uiState.msg != null) {
@@ -62,13 +54,12 @@ fun AssignedServicesTab(
         }
     }
 
-
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
             Text(
-                "Serveis per entregar",
+                "Serveis realitzats",
                 fontSize = 24.sp,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold
@@ -77,28 +68,17 @@ fun AssignedServicesTab(
         }
 
         items(services) { service ->
-            ServiceItemDelivery(
-                service = service,
-                isExpanded = expandedItemId == service.id,
-                onClick = {
-                    expandedItemId = if (expandedItemId == service.id) null else service.id
-                },
-                onNavToDetail = { onNavToDetail(service.id) },
-                onStatusChange = { status -> viewModel.changeStatus(service.id, status) }
+            ConfirmedServiceItemDelivery(
+                service = service
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
 
-
 @Composable
-fun ServiceItemDelivery(
-    service: Service,
-    isExpanded: Boolean,
-    onClick: () -> Unit,
-    onNavToDetail: () -> Unit,
-    onStatusChange: (ServiceStatus) -> Unit,
+fun ConfirmedServiceItemDelivery(
+    service: Service
 ) {
     Column(
         modifier = Modifier
@@ -106,7 +86,6 @@ fun ServiceItemDelivery(
             .background(color = BlueSecondary)
             .border(1.dp, Color.Black, RoundedCornerShape(24.dp))
             .fillMaxWidth()
-            .clickable(onClick = onClick)
             .padding(16.dp)
     ) {
         Row(
@@ -135,50 +114,19 @@ fun ServiceItemDelivery(
                 Text(
                     text = service.packageToDeliver.recipientAddress,
                     color = Color.White.copy(alpha = 0.9f),
-                    fontSize = 13.sp,
+                    fontSize = 14.sp,
                     maxLines = 2
                 )
-            }
+                Spacer(modifier = Modifier.height(8.dp))
+                HorizontalDivider(color = Color.White.copy(alpha = 0.4f))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            IconButton(onClick = onNavToDetail) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                    contentDescription = null,
-                    tint = Color.White
-                )
-            }
-        }
-
-        if (isExpanded) {
-            Spacer(modifier = Modifier.height(12.dp))
-            HorizontalDivider(color = Color.White.copy(alpha = 0.4f))
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                StatusButton("Entregat", color = StatusDelivered) {
-                    onStatusChange(ServiceStatus.ENTREGAT)
-                }
-                StatusButton("Absent", color = StatusNotDelivered) {
-                    onStatusChange(ServiceStatus.NO_ENTREGAT)
-                }
-                StatusButton("Retornat", color = StatusReturned) {
-                    onStatusChange(ServiceStatus.RETORNAT)
+                Row {
+                    Text(text = "Estat: ", fontWeight = FontWeight.Bold, color = Color.White)
+                    Text(text = service.status.toString(), color = Color.White.copy(alpha = 0.9f))
                 }
             }
         }
-    }
-}
-@Composable
-fun StatusButton(text: String, color: Color, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = color),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Text(text, color = Color.White, fontSize = 13.sp)
     }
 }
 

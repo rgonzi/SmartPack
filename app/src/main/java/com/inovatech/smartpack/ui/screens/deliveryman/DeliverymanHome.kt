@@ -62,7 +62,7 @@ fun DeliverymanHomeScreen(
                         }
                     },
                     navToConfirmDelivery = {
-                        navController.navigate(ConfirmDelivery) {
+                        navController.navigate(ConfirmedDelivery) {
                             popUpTo(navController.graph.startDestinationId) {
                                 inclusive = false
                             }
@@ -100,8 +100,16 @@ fun DeliverymanHomeScreen(
                         onNavToDetail = {}
                     )
                 }
-                composable<ConfirmDelivery> {
-                    ConfirmDeliveryTab()
+                composable<ConfirmedDelivery> {
+                    ConfirmedDeliveryTab(
+                        viewModel = viewModel,
+                        uiState = uiState,
+                        launchSnackbar = { msg ->
+                            scope.launch {
+                                snackbarHostState.showSnackbar(msg)
+                            }
+                        }
+                    )
                 }
                 composable<Vehicles> {
                     VehiclesTab(

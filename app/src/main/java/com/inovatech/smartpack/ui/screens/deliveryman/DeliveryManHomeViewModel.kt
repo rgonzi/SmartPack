@@ -5,12 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.model.Deliveryman
-import com.inovatech.smartpack.model.Service
 import com.inovatech.smartpack.model.ServiceStatus
 import com.inovatech.smartpack.model.User
 import com.inovatech.smartpack.model.Vehicle
+import com.inovatech.smartpack.model.api.ChangeStatusRequest
 import com.inovatech.smartpack.model.api.DeliverymanRequest
 import com.inovatech.smartpack.model.api.toDeliveryman
+import com.inovatech.smartpack.model.api.toService
 import com.inovatech.smartpack.model.api.toUser
 import com.inovatech.smartpack.model.api.toVehicle
 import com.inovatech.smartpack.model.toDeliverymanRequest
@@ -25,7 +26,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
-import java.net.IDN
 import javax.inject.Inject
 
 @HiltViewModel
@@ -91,6 +91,7 @@ class DeliveryManHomeViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
 
             try {
+                //Obtenim les dades de l'usuari per obtenir el seu userId
                 val user = getUser()
 
                 if (user == null) {
@@ -100,16 +101,23 @@ class DeliveryManHomeViewModel @Inject constructor(
                     return@launch
                 }
 
+                //Ara otenim el transportista associat amb el seu userId
                 val deliveryman = getDeliverymanDetails(user.id)
+                //Si no existeix, en creem un
                 if (deliveryman == null) {
                     createNewDeliveryman(user)
                 }
-
+                //Si no existeix un vehicle associat mostrem missatge
                 if (deliveryman?.vehicle == null) {
                     _uiState.update {
                         it.copy(msg = "No hi ha cap vehicle assignat")
                     }
+                } else {
+                    //Si tenim vehicle, obtenim el llistat de serveis a repartir
+                    getDeliverymanServices(deliveryman.id)
                 }
+
+
             } catch (e: IOException) {
                 _uiState.update {
                     it.copy(msg = "No s'ha pogut connectar amb el servidor")
@@ -177,21 +185,6 @@ class DeliveryManHomeViewModel @Inject constructor(
         }
     }
 
-//    private suspend fun getVehicleById(vehicleId: Long): Vehicle? {
-//        val response = smartPackRepository.getVehicleById(vehicleId)
-//
-//        return if (response.isSuccessful) {
-//            response.body()?.toVehicle()?.also { vehicle ->
-//                _uiState.update { it.copy(vehicle = vehicle) }
-//            }
-//        } else {
-//            _uiState.update {
-//                it.copy(msg = "Error ${response.code()}: No s'han pogut obtenir les dades")
-//            }
-//            null
-//        }
-//    }
-
     private fun validateVehicleInput(): Boolean {
         val vehicle = uiState.value.deliveryman!!.vehicle
 
@@ -206,8 +199,37 @@ class DeliveryManHomeViewModel @Inject constructor(
         return true
     }
 
+    private fun getDeliverymanServices(deliverymanId: Long) {
+        viewModelScope.launch {
+            try {
+                val response = smartPackRepository.getServicesPerDeliveryman(deliverymanId)
+
+                if (response.isSuccessful) {
+                    if (response.body() != null) {
+                        _uiState.update {
+                            it.copy(
+                                assignedServices = response.body()!!
+                                    .map { it.toService() }
+                                    .filter { it.status == ServiceStatus.TRANSIT }
+                            )
+                        }
+                    } else {
+                        _uiState.update {
+                            it.copy(msg = "No s'han pogut obtenir els serveis")
+                        }
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+        }
+    }
+
     fun createVehicle() {
-        _uiState.update { it.copy(isLoading = true, msg = null) }
+        _uiState.update { it.copy(isLoading = true) }
 
         val vehicle = uiState.value.deliveryman!!.vehicle
 
@@ -251,9 +273,8 @@ class DeliveryManHomeViewModel @Inject constructor(
                     }
                     Log.d(Settings.LOG_TAG, e.message.toString())
                 }
-
-                _uiState.update { it.copy(isLoading = false) }
             }
+            _uiState.update { it.copy(isLoading = false) }
         }
     }
 
@@ -294,8 +315,8 @@ class DeliveryManHomeViewModel @Inject constructor(
                     Log.d(Settings.LOG_TAG, e.message.toString())
                 }
 
-                _uiState.update { it.copy(isLoading = false) }
             }
+            _uiState.update { it.copy(isLoading = false) }
         }
     }
 
@@ -366,15 +387,20 @@ class DeliveryManHomeViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val response = smartPackRepository.changeServiceStatus(serviceId, status)
+                val statusRequest = ChangeStatusRequest(status)
+                val response = smartPackRepository.changeServiceStatus(serviceId, statusRequest)
 
                 if (response.isSuccessful) {
-                    _uiState.update {
-                        val serviceToMove = it.assignedServices.find { it.id == serviceId }!!
-                        it.copy(
-                            assignedServices = it.assignedServices.filterNot { it == serviceToMove },
-                            finalizedServices = it.finalizedServices + serviceToMove,
-                            msg = "Servei modificat correctament")
+                    if (response.body() != null) {
+                        _uiState.update {
+                            val serviceToRemove = it.assignedServices.find { it.id == serviceId }!!
+                            val newService = response.body()!!.toService()
+                            it.copy(
+                                assignedServices = it.assignedServices.filterNot { it == serviceToRemove },
+                                finalizedServices = it.finalizedServices + newService,
+                                msg = "Servei modificat correctament"
+                            )
+                        }
                     }
                 } else {
                     _uiState.update {
