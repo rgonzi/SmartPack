@@ -19,6 +19,7 @@
         tools:targetApi="33">
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true"
             android:theme="@style/Theme.SmartPack">
             <intent-filter>
