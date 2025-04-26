@@ -18,6 +18,8 @@ import com.inovatech.smartpack.ui.screens.admin.AdminHome
 import com.inovatech.smartpack.ui.screens.admin.AdminHomeScreen
 import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHome
 import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHomeScreen
+import com.inovatech.smartpack.ui.screens.user.NewService
+import com.inovatech.smartpack.ui.screens.user.NewServiceScreen
 import com.inovatech.smartpack.ui.screens.user.UserHome
 import com.inovatech.smartpack.ui.screens.user.UserHomeScreen
 import com.inovatech.smartpack.ui.screens.userConfig.*
@@ -96,7 +98,17 @@ fun Navigation(
                     UserHomeScreen(
                         navToConfig = {
                             navController.navigate(UserConfig)
-                        })
+                        },
+                        navToNewService = {
+                            navController.navigate(NewService)
+                        }
+                    )
+                }
+                composable<NewService> {
+                    NewServiceScreen(
+                        navigateUp = { navController.navigateUp() }
+                    )
+
                 }
                 composable<UserConfig> {
                     UserConfigScreen(
@@ -106,7 +118,7 @@ fun Navigation(
                                 popUpTo(0) { inclusive = true }
                             }
                         },
-                        onChangePassword = {id ->
+                        onChangePassword = { id ->
                             navController.navigate(ChangePassword(id))
                         }
                     )
