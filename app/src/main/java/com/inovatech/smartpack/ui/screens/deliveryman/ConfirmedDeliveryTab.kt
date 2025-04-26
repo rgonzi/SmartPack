@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,12 +34,16 @@ import androidx.compose.ui.unit.sp
 import com.inovatech.smartpack.R
 import com.inovatech.smartpack.model.Service
 import com.inovatech.smartpack.model.uiState.DeliveryManUiState
+import com.inovatech.smartpack.ui.items.ConfirmedServiceItemDelivery
 import com.inovatech.smartpack.ui.theme.BlueSecondary
 import kotlinx.serialization.Serializable
 
 @Serializable
 object ConfirmedDelivery
 
+/**
+ * Composable que defineix la pestanya de serveis finalitzats dins la pantalla d'inici del transportista
+ */
 @Composable
 fun ConfirmedDeliveryTab(
     viewModel: DeliveryManHomeViewModel,
@@ -55,6 +60,7 @@ fun ConfirmedDeliveryTab(
     }
 
     LazyColumn(
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
@@ -72,61 +78,6 @@ fun ConfirmedDeliveryTab(
                 service = service
             )
             Spacer(modifier = Modifier.height(8.dp))
-        }
-    }
-}
-
-@Composable
-fun ConfirmedServiceItemDelivery(
-    service: Service
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .clip(RoundedCornerShape(24.dp))
-            .background(color = BlueSecondary)
-            .border(1.dp, Color.Black, RoundedCornerShape(24.dp))
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_package_box),
-                contentDescription = "Paquet",
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.1f))
-                    .padding(4.dp),
-                tint = Color.White
-            )
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = service.packageToDeliver.recipientName,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-                Text(
-                    text = service.packageToDeliver.recipientAddress,
-                    color = Color.White.copy(alpha = 0.9f),
-                    fontSize = 14.sp,
-                    maxLines = 2
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                HorizontalDivider(color = Color.White.copy(alpha = 0.4f))
-                Spacer(modifier = Modifier.height(8.dp))
-
-            }
-        }
-        Row {
-            Text(text = "Estat: ", fontWeight = FontWeight.Bold, color = Color.White)
-            Text(text = service.status.toString(), color = Color.White.copy(alpha = 0.9f))
         }
     }
 }
