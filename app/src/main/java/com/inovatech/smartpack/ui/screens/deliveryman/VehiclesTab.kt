@@ -36,6 +36,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 object Vehicles
 
+/**
+ * Composable que defineix la pestanya de vehicle i llicències dins la pantalla d'inici del transportista
+ */
 @Composable
 fun VehiclesTab(
     viewModel: DeliveryManHomeViewModel,

@@ -7,6 +7,9 @@ import androidx.compose.material3.Text
 @Serializable
 object MoreOptions
 
+/**
+ * Composable que defineix la pestanya d'altres opcions dins la pantalla d'inici de l'usuari
+ */
 @Composable
 fun MoreOptionsTab() {
     Text("Més opcions")

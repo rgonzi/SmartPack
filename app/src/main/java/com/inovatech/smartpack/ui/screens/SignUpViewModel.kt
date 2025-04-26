@@ -178,6 +178,7 @@ class SignUpViewModel @Inject constructor(
                 surname = "",
                 tel = "",
                 address = "",
+                license = "",
                 addressType = "",
                 hasTriedRegister = false,
                 signUpSuccess = false,

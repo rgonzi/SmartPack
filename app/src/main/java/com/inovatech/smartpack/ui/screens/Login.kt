@@ -37,7 +37,9 @@ object Login
  * Composable que defineix el disseny de la pantalla de Login
  *
  * @param viewModel: El seu viewModel associat
- * @param onLoginSuccess: Destí de navegació si s'ha produït un login amb èxit
+ * @param onNavigateUserHome: Destí de navegació per anar a la pantalla de UserHome
+ * @param onNavigateDeliveryManHome: Destí de navegació per anar a la pantalla de DeliveryManHome
+ * @param onNavigateAdminHome: Destí de navegació per anar a la pantalla de AdminHome
  * @param onForgotPasswordClick: Destí de navegació per anar a la pantalla de RememberPassword
  * @param onRegisterClick: Destí de navegació per anar a la pantalla de SignUp
  */

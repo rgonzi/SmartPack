@@ -3,6 +3,9 @@ package com.inovatech.smartpack.model.api
 import com.google.gson.annotations.SerializedName
 import com.inovatech.smartpack.model.Vehicle
 
+/**
+ * Classe que representa una petició i una resposta de l'API quan realitzem accions sobre l'entitat Vehicle
+ */
 data class VehicleDTO(
     @SerializedName("id") val id: Long? = null,
     @SerializedName("marca") val brand: String? = null,

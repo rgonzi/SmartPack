@@ -1,19 +1,6 @@
 package com.inovatech.smartpack.data
 
-import com.inovatech.smartpack.model.ServiceStatus
-import com.inovatech.smartpack.model.api.ApiResponse
-import com.inovatech.smartpack.model.api.ChangeStatusRequest
-import com.inovatech.smartpack.model.api.DeliverymanRequest
-import com.inovatech.smartpack.model.api.DeliverymanResponse
-import com.inovatech.smartpack.model.api.ForgotPasswordRequest
-import com.inovatech.smartpack.model.api.ForgotPasswordResponse
-import com.inovatech.smartpack.model.api.LoginResponse
-import com.inovatech.smartpack.model.api.LoginRequest
-import com.inovatech.smartpack.model.api.UserRequest
-import com.inovatech.smartpack.model.api.ResetPasswordRequest
-import com.inovatech.smartpack.model.api.ServiceDTO
-import com.inovatech.smartpack.model.api.UserResponse
-import com.inovatech.smartpack.model.api.VehicleDTO
+import com.inovatech.smartpack.model.api.*
 import com.inovatech.smartpack.network.SmartPackApiService
 import retrofit2.Response
 import javax.inject.Inject

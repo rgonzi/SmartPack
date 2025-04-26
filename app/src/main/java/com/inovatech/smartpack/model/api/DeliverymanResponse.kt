@@ -3,6 +3,9 @@ package com.inovatech.smartpack.model.api
 import com.google.gson.annotations.SerializedName
 import com.inovatech.smartpack.model.Deliveryman
 
+/**
+ * Classe que representa una resposta de l'API per un transportista.
+ */
 data class DeliverymanResponse(
     @SerializedName("id") val id: Long,
     @SerializedName("usuariId") val userId: Long,

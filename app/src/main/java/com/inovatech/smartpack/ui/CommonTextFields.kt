@@ -12,13 +12,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.*
 
+/**
+ * Composable que defineix un nou element OutlinedTextField per mantenir certes opcions de disseny
+ */
 @Composable
 fun CommonTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String? = null,
     enabled: Boolean = true,
-    trailingIcon: ImageVector?,
+    trailingIcon: ImageVector? = null,
     imeAction: ImeAction,
     isError: Boolean,
     modifier: Modifier = Modifier
@@ -35,7 +38,7 @@ fun CommonTextField(
         enabled = enabled,
         trailingIcon = {if (trailingIcon != null) { Icon(trailingIcon, contentDescription = "") } else null},
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Email,
+            keyboardType = KeyboardType.Text,
             imeAction = imeAction
         ),
         isError = isError,

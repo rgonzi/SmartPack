@@ -3,6 +3,9 @@ package com.inovatech.smartpack.model.api
 import com.google.gson.annotations.SerializedName
 import com.inovatech.smartpack.model.Role
 
+/**
+ * Classe que representa una petició per enviar un nou usuari o modificar-lo a l'API.
+ */
 data class UserRequest(
     val email: String? = null,
     val password: String? = null,
@@ -14,3 +17,5 @@ data class UserRequest(
     @SerializedName("observacio") val observations: String? = null,
     @SerializedName("secret") val secretWord: String? = null
 )
+
+//TODO Posar camp DNI

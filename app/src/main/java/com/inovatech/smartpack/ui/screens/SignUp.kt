@@ -56,6 +56,8 @@ fun SignUpScreen(
     val coroutineScope = rememberCoroutineScope()
     var checked by remember { mutableStateOf(false) }
 
+
+    //TODO Afegir camp DNI al registrar usuari
     CommonInitScreen(
         title = "Introdueix les teves dades",
         nomBotoPrincipal = "Registrar-me",
@@ -68,8 +70,7 @@ fun SignUpScreen(
                 viewModel.clearFields()
                 coroutineScope.launch {
                     snackbarHostState.showSnackbar(
-                        message = "S'ha registrat correctament",
-                        duration = SnackbarDuration.Short
+                        message = "S'ha registrat correctament"
                     )
                 }
             }
@@ -167,7 +168,7 @@ fun SignUpScreen(
                     label = "Permís de conduïr",
                     trailingIcon = null,
                     imeAction = ImeAction.Next,
-                    isError = uiState.hasTriedRegister && uiState.license.isEmpty()
+                    isError = uiState.hasTriedRegister && uiState.license.isEmpty() && uiState.role == Role.ROLE_DELIVERYMAN,
                 )
             }
         }
@@ -213,7 +214,6 @@ fun SignUpScreen(
                 value = uiState.addressType,
                 onValueChange = { viewModel.updateField("addressType", it) },
                 label = "Via",
-                trailingIcon = Icons.Default.Place,
                 imeAction = ImeAction.Next,
                 isError = uiState.hasTriedRegister && uiState.addressType.isEmpty(),
                 modifier = Modifier.fillMaxWidth(0.3f)

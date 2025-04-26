@@ -15,7 +15,7 @@ val Background = Brush.verticalGradient(
     colors = listOf(Color(0xFFF6D051), Color(0xFFF3871A))
 )
 val BlueApp = Color(0xFF303f9f)
-val OrangePrimary = Color(0xFFF3871A)
+val OrangePrimary = Color(0xFFFF9800)
 val BlueSecondary = Color(0xFF1A73E8)
 val BlueTertiary = Color(0xFF004BA0)
 

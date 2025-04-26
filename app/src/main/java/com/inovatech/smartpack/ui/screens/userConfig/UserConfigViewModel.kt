@@ -56,11 +56,10 @@ class UserConfigViewModel @Inject constructor(
      * Mètode que obté les dades de l'usuari a partir del token generat al fer
      * login. S'executarà només iniciar aquest ViewModel
      */
-    fun getUserId() {
+    private fun getUserId() {
         _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
         viewModelScope.launch {
-//            delay(300)
             try {
                 val response = smartPackRepository.getUserDetails()
 
@@ -72,7 +71,7 @@ class UserConfigViewModel @Inject constructor(
                 } else {
                     _uiState.update {
                         it.copy(
-                            errorMessage = "Error ${response.code()}: No s'han pogut obtenir les dades"
+                            errorMessage = "Error ${response.code()}: No s'han pogut obtenir les dades de l'usuari"
                         )
                     }
                 }

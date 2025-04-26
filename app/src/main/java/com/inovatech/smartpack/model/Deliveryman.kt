@@ -2,6 +2,9 @@ package com.inovatech.smartpack.model
 
 import com.inovatech.smartpack.model.api.DeliverymanRequest
 
+/**
+ * Classe que defineix la entitat Transportista.
+ */
 data class Deliveryman(
     val id: Long = 0,
     val userId: Long = 0,

@@ -47,11 +47,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.inovatech.smartpack.ui.items.BasicTopAppBar
 import kotlinx.coroutines.delay
 
 @Serializable
 data class ChangePassword(val id: Long)
 
+/**
+ * Composable que defineix la pantalla de canvi de contrasenya de l'usuari
+ */
 @Composable
 fun ChangePasswordScreen(
     userId: Long,
@@ -69,7 +73,7 @@ fun ChangePasswordScreen(
             .background(Background)
     ) {
         Scaffold(
-            topBar = { UserConfigTopAppBar(onBackPressed = onBackPressed) },
+            topBar = { BasicTopAppBar(onBackPressed = onBackPressed, title = "Canviar contrasenya") },
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
             containerColor = Color.Transparent,
             modifier = Modifier.fillMaxSize()

@@ -38,6 +38,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object AdminHome
 
+/**
+ * Composable que defineix el disseny de la pantalla d'inici d'usuari admin.
+ */
 @Composable
 fun AdminHomeScreen(
     viewModel: AdminHomeViewModel = hiltViewModel(),

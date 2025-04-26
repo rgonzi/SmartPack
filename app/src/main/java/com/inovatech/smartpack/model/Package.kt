@@ -2,6 +2,9 @@ package com.inovatech.smartpack.model
 
 import com.inovatech.smartpack.model.api.PackageDTO
 
+/**
+ * Classe que defineix la entitat Paquet.
+ */
 data class Package(
     val id: Long = 0,
     val details: String = "",

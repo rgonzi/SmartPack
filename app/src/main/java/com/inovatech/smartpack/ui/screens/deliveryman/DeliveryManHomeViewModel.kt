@@ -168,7 +168,7 @@ class DeliveryManHomeViewModel @Inject constructor(
 
     /**
      * Mètode que obté les dades de l'usuari a partir del token generat al fer
-     * login. S'executarà només iniciar aquest ViewModel
+     * login.
      */
     private suspend fun getUser(): User? {
         val response = smartPackRepository.getUserDetails()

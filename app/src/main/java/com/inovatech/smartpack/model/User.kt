@@ -3,6 +3,9 @@ package com.inovatech.smartpack.model
 import com.inovatech.smartpack.model.api.UserRequest
 import kotlinx.serialization.Serializable
 
+/**
+ * Classe que defineix la entitat Usuari.
+ */
 @Serializable
 data class User(
     val id: Long = 0,

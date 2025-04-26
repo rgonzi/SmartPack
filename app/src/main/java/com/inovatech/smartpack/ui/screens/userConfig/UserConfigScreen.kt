@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -40,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.inovatech.smartpack.ui.CommonTextField
 import com.inovatech.smartpack.ui.LoadingScreen
+import com.inovatech.smartpack.ui.items.BasicTopAppBar
 import com.inovatech.smartpack.ui.theme.Background
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -47,6 +47,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 object UserConfig
 
+/**
+ * Composable que defineix la pantalla per visualitzar, modificar i eliminar les dades d'un usuari
+ */
 @Composable
 fun UserConfigScreen(
     viewModel: UserConfigViewModel = hiltViewModel(),
@@ -66,7 +69,7 @@ fun UserConfigScreen(
             .background(Background)
     ) {
         Scaffold(
-            topBar = { UserConfigTopAppBar(onBackPressed = onBackPressed) },
+            topBar = { BasicTopAppBar(onBackPressed = onBackPressed, title = "Configuració de l'usuari") },
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
             containerColor = Color.Transparent,
             modifier = Modifier.fillMaxSize()
@@ -107,7 +110,6 @@ fun UserConfigScreen(
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
-
 
                             Text("Edita les dades que vulguis: ")
 
@@ -287,26 +289,4 @@ fun UserConfigScreen(
         }
         LoadingScreen(uiState.isLoading)
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun UserConfigTopAppBar(
-    onBackPressed: () -> Unit,
-) {
-    TopAppBar(
-        title = { Text("Configuració de l'usuari") },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent
-        ),
-        navigationIcon = {
-            IconButton(
-                onClick = { onBackPressed() }
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = ""
-                )
-            }
-        }
-    )
 }

@@ -3,6 +3,7 @@ package com.inovatech.smartpack.ui.screens
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.model.api.UserRequest
 import com.inovatech.smartpack.model.User
+import com.inovatech.smartpack.model.api.UserResponse
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
 import kotlinx.coroutines.Dispatchers
@@ -53,7 +54,7 @@ class SignUpViewModelTest {
     @Test
     fun testInvalidEmail() = runTest {
         val email = "email"
-        signUpViewModel.updateField("email", "email")
+        signUpViewModel.updateField("email", email)
         signUpViewModel.updateField("password", "1234567A")
         signUpViewModel.updateField("repeatedPassword", "1234567A")
         signUpViewModel.updateField("name", "Test")
@@ -140,7 +141,7 @@ class SignUpViewModelTest {
             address = "some address"
         )
 
-        val mockResponse = Response.success(User(email = "test@test.com", password = "1234567A"))
+        val mockResponse = Response.success(UserResponse(email = "test@test.com"))
 
         whenever(mockRepository.register(request)).thenReturn(mockResponse)
 

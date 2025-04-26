@@ -3,6 +3,9 @@ package com.inovatech.smartpack.model.api
 import com.google.gson.annotations.SerializedName
 import com.inovatech.smartpack.model.Package
 
+/**
+ * Classe que representa una petició i una resposta per realitzar accions sobre l'entitat Paquet
+ */
 data class PackageDTO(
     @SerializedName("id") val id: Long = 0,
     @SerializedName("detalls") val details: String = "",

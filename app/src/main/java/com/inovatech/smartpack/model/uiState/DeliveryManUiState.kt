@@ -4,6 +4,9 @@ import com.inovatech.smartpack.model.Deliveryman
 import com.inovatech.smartpack.model.Service
 import com.inovatech.smartpack.model.User
 
+/**
+ * Classe que defineix l'estat de la UI de la pantalla del transportista.
+ */
 data class DeliveryManUiState(
     val assignedServices: List<Service> = emptyList(),
     val finalizedServices: List<Service> = emptyList(),

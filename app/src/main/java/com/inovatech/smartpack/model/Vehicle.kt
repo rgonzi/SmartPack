@@ -2,6 +2,9 @@ package com.inovatech.smartpack.model
 
 import com.inovatech.smartpack.model.api.VehicleDTO
 
+/**
+ * Classe que defineix l'entitat Vehicle.
+ */
 data class Vehicle(
     val id: Long = 0,
     val brand: String = "",

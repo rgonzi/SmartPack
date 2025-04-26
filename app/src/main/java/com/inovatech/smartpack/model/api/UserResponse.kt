@@ -3,6 +3,9 @@ package com.inovatech.smartpack.model.api
 import com.google.gson.annotations.SerializedName
 import com.inovatech.smartpack.model.User
 
+/**
+ * Classe que representa una resposta de l'API quan hem realitzat una petició sobre una entitat Usuari
+ */
 data class UserResponse(
     val id: Long = 0,
     val email: String = "",
@@ -12,6 +15,9 @@ data class UserResponse(
     @SerializedName("adreça") val address: String = "",
     @SerializedName("observacio") val observations: String = "",
 )
+
+
+//TODO Posar camp DNI
 
 fun UserResponse.toUser() = User(
     id = id,

@@ -2,6 +2,9 @@ package com.inovatech.smartpack.model.uiState
 
 import com.inovatech.smartpack.model.Role
 
+/**
+ * Classe que defineix l'estat de la UI de la pantalla d'alta dels usuaris.
+ */
 data class SignUpUiState(
     val email: String = "",
     val password: String = "",

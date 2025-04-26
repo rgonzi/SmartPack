@@ -66,8 +66,7 @@ fun CommonInitScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 32.dp),
+                        .padding(horizontal = 16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Button(
@@ -86,7 +85,7 @@ fun CommonInitScreen(
                     ) {
                         Text("Tornar")
                     }
-                    Spacer(modifier = Modifier.height(48.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }) { innerPadding ->
             Column(
@@ -103,7 +102,7 @@ fun CommonInitScreen(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 content()
             }
         }
