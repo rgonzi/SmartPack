@@ -145,8 +145,8 @@ fun ServiceItemDeliveryPreview() {
                 recipientPhone = "666555444"
             ), status = ServiceStatus.ORDENAT
         ), isExpanded = true,
-        onClick = { TODO() },
-        onNavToDetail = { TODO() },
-        onStatusChange = { TODO() }
+        onClick = { },
+        onNavToDetail = { },
+        onStatusChange = { }
     )
 }

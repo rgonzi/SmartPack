@@ -160,7 +160,7 @@ fun NewServiceScreen(
                             else uiState.newPackage.weight.toString(),
                             onValueChange = {
                                 if (it.isEmpty()) {
-                                    viewModel.updateWeight(0)
+                                    viewModel.updateWeight(1)
                                 } else if (it.all { char -> char.isDigit() }) {
                                     viewModel.updateWeight(it.toInt())
                                 }
@@ -192,6 +192,7 @@ fun NewServiceScreen(
                             modifier = Modifier.fillMaxWidth(),
                             label = { Text("Detalls") },
                             minLines = 2,
+                            maxLines = 2,
                             trailingIcon = {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_info),

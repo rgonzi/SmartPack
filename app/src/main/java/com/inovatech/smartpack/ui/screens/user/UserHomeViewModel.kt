@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
+import com.inovatech.smartpack.model.Service
 import com.inovatech.smartpack.model.ServiceStatus
 import com.inovatech.smartpack.model.User
 import com.inovatech.smartpack.model.api.toService
@@ -126,6 +127,11 @@ class UserHomeViewModel @Inject constructor(
             }
             _uiState.update { it.copy(isLoading = false, isRefreshing = false) }
         }
+    }
+
+    fun updateService(newService: Service) {
+        //TODO Comprovar camps vàlids
+        //TODO Modificar el servei
     }
 
     fun refreshServices() {
