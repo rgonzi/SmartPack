@@ -4,11 +4,14 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -17,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.inovatech.smartpack.R
 import com.inovatech.smartpack.model.Service
 import com.inovatech.smartpack.model.uiState.UserHomeUiState
+import com.inovatech.smartpack.ui.LoadingScreen
 import com.inovatech.smartpack.ui.items.ServiceItem
 import kotlinx.serialization.Serializable
 
@@ -40,6 +44,8 @@ fun ActiveServicesTab(
     val activeServices = uiState.activeServices
     //Controla si s'ha de mostrar un diàleg per modificar un servei o no (null)
     var serviceToModify by remember { mutableStateOf<Service?>(null) }
+    //Controla el servei a eliminar
+    var serviceToDelete by remember { mutableStateOf<Service?>(null) }
 
     LaunchedEffect(uiState.msg) {
         if (!uiState.isLoading && uiState.msg != null) {
@@ -54,10 +60,9 @@ fun ActiveServicesTab(
         modifier = Modifier.fillMaxSize()
     ) {
         LazyColumn(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
+            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()
         ) {
-            if (activeServices.isNotEmpty()) {
+            if (activeServices.isNotEmpty() && !uiState.isLoading) {
                 item {
                     Text(
                         "Serveis actius",
@@ -72,16 +77,14 @@ fun ActiveServicesTab(
                         service = service,
                         isExpanded = expandedItemId == service.id,
                         onClick = {
-                            expandedItemId =
-                                if (expandedItemId == service.id) null else service.id
+                            expandedItemId = if (expandedItemId == service.id) null else service.id
                         },
-                        onDeleteClick = { viewModel.deleteService(service.id) },
+                        onDeleteClick = { serviceToDelete = service },
                         onModifyServiceClick = { serviceToModify = service },
-                        onNavToDetail = { onNavToDetail(service.id) }
-                    )
+                        onNavToDetail = { onNavToDetail(service.id) })
                     Spacer(modifier = Modifier.height(8.dp))
                 }
-            } else {
+            } else if (!uiState.isLoading && uiState.hasLoadedOnce) {
                 item {
                     Text(
                         "No hi ha cap servei actiu",
@@ -141,34 +144,26 @@ fun ActiveServicesTab(
                     Spacer(Modifier.height(8.dp))
 
                     OutlinedTextField(
-                        value = newDimensions,
-                        onValueChange = {
+                        value = newDimensions, onValueChange = {
                             if (it.all { char -> char.isDigit() }) {
                                 newDimensions = it
                             }
-                        },
-                        label = { Text("Dimesions totals") },
-                        trailingIcon = {
+                        }, label = { Text("Dimesions totals") }, trailingIcon = {
                             Text(text = "cm", style = MaterialTheme.typography.bodyMedium)
-                        },
-                        singleLine = true
+                        }, singleLine = true
                     )
                     Spacer(Modifier.height(8.dp))
 
                     OutlinedTextField(
-                        value = newWeight.toString(),
-                        onValueChange = {
+                        value = newWeight.toString(), onValueChange = {
                             if (it.isEmpty()) {
                                 newWeight = 1
                             } else if (it.all { char -> char.isDigit() }) {
                                 newWeight = it.toInt()
                             }
-                        },
-                        label = { Text("Pes") },
-                        trailingIcon = {
+                        }, label = { Text("Pes") }, trailingIcon = {
                             Text(text = "kg", style = MaterialTheme.typography.bodyMedium)
-                        },
-                        singleLine = true
+                        }, singleLine = true
                     )
                     Spacer(Modifier.height(8.dp))
 
@@ -195,10 +190,9 @@ fun ActiveServicesTab(
                                 )
                             )
                         )
-                        //TODO Si s'ha modificat correctament, llançar una snackbar
                         serviceToModify = null
-                    }
-                ) {
+                        expandedItemId = null
+                    }) {
                     Text("Guardar")
                 }
             },
@@ -206,6 +200,35 @@ fun ActiveServicesTab(
                 TextButton(onClick = { serviceToModify = null }) {
                     Text("Cancel·lar")
                 }
+            })
+    }
+
+    //AlertDialog per confirmar la eliminació del servei
+    serviceToDelete?.let { service ->
+        AlertDialog(
+            onDismissRequest = { serviceToDelete = null },
+            text = {
+                Text("Segur que vols eliminar el servei? Aquesta acció és irreversible")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.deleteService(service.id)
+                        serviceToDelete = null
+                        expandedItemId = null
+                    }) {
+                    Text("Eliminar", color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { serviceToDelete = null },
+                ) {
+                    Text("Cancel·lar")
+                }
+            },
+            icon = {
+                Icon(imageVector = Icons.Default.Warning, contentDescription = null)
             }
         )
     }

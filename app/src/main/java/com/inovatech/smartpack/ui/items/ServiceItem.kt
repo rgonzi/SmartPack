@@ -48,7 +48,6 @@ fun ServiceItem(
     onDeleteClick: () -> Unit = {},
     onModifyServiceClick: () -> Unit = {},
 ) {
-    //TODO Fer que també es pugui modificar el servei quan està en ORDENAT o TRANSIT
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(24.dp))

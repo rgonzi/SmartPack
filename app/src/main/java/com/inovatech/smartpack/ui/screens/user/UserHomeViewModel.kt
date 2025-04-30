@@ -4,18 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
-import com.inovatech.smartpack.model.Service
-import com.inovatech.smartpack.model.ServiceStatus
-import com.inovatech.smartpack.model.User
+import com.inovatech.smartpack.model.*
 import com.inovatech.smartpack.model.api.toService
+import com.inovatech.smartpack.model.api.toServiceHistoric
 import com.inovatech.smartpack.model.api.toUser
 import com.inovatech.smartpack.model.uiState.UserHomeUiState
 import com.inovatech.smartpack.utils.Settings
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
@@ -111,8 +107,7 @@ class UserHomeViewModel @Inject constructor(
                                 it.toService()
                             }.filter {
                                 it.status == ServiceStatus.ENTREGAT || it.status == ServiceStatus.NO_ENTREGAT || it.status == ServiceStatus.RETORNAT
-                            }
-                        )
+                            })
                     }
                 } else {
                     _uiState.update {
@@ -125,22 +120,133 @@ class UserHomeViewModel @Inject constructor(
                 }
                 Log.d(Settings.LOG_TAG, e.message.toString())
             }
+            _uiState.update {
+                it.copy(
+                    isLoading = false, isRefreshing = false, hasLoadedOnce = true
+                )
+            }
+        }
+    }
+
+    fun getServiceHistoryDetail(serviceId: Long) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            try {
+                val response = smartPackRepository.getServiceHistoric(serviceId)
+
+                if (response.isSuccessful && response.body() != null) {
+                    _uiState.update {
+                        it.copy(
+                            serviceHistory = response.body()!!.map {
+                                it.toServiceHistoric()
+                            })
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(msg = "No s'ha pogut obtenir l'historial de seguiment")
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
             _uiState.update { it.copy(isLoading = false, isRefreshing = false) }
         }
     }
 
-    fun updateService(newService: Service) {
-        //TODO Comprovar camps vàlids
-        //TODO Modificar el servei
+    private fun validateFields(modifiedService: Service): Boolean {
+
+        val modifiedPackage = modifiedService.packageToDeliver
+
+        val textFields = listOf(
+            modifiedPackage.recipientName,
+            modifiedPackage.recipientAddress,
+            modifiedPackage.recipientPhone,
+            modifiedPackage.dimensions,
+            modifiedPackage.weight.toString()
+        )
+
+        if (textFields.any { it.isBlank() }) {
+            _uiState.update { it.copy(msg = "No s'han introduït totes les dades") }
+            return false
+        }
+
+        if (modifiedPackage.weight < 1) {
+            _uiState.update { it.copy(msg = "El pes ha de ser superior a 0kg") }
+            return false
+        }
+        return true
+    }
+
+    fun updateService(modifiedService: Service) {
+        //Validem primer que els camps no estiguins buits ni s'hagi introduït un pes erroni
+        if (!validateFields(modifiedService)) return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            try {
+                val response = smartPackRepository.modifyService(
+                    modifiedService.id, modifiedService.toServiceDTO()
+                )
+
+                if (response.isSuccessful && response.body() != null) {
+                    _uiState.update {
+                        it.copy(msg = "Servei modificat correctament")
+                    }
+                    getServices(uiState.value.user!!.id)
+                } else {
+                    _uiState.update {
+                        it.copy(msg = "Error ${response.code()}: No s'ha pogut modificar el servei")
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+            _uiState.update { it.copy(isLoading = false) }
+        }
     }
 
     fun refreshServices() {
         _uiState.update { it.copy(isRefreshing = true) }
+        //La funció getServices ja s'encarrega de canviar isRefreshing = false
         getServices(uiState.value.user!!.id)
-        //La funció getActiveServices ja s'encarrega de canviar isRefreshing = false
     }
 
     fun deleteService(serviceId: Long) {
-        //TODO Eliminar un servei
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            try {
+                val response = smartPackRepository.deactivateService(serviceId)
+
+                if (response.isSuccessful) {
+                    _uiState.update {
+                        it.copy(
+                            msg = response.body()?.msg ?: "Servei desactivat correctament",
+                            //Eliminem també el servei del llistat de serveis actius
+                            activeServices = it.activeServices.filter { it.id != serviceId },
+                        )
+                    }
+                    getServices(uiState.value.user!!.id)
+                } else {
+                    _uiState.update {
+                        it.copy(msg = "Error ${response.code()}: ")
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+            _uiState.update { it.copy(isLoading = false) }
+        }
     }
 }

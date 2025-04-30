@@ -19,6 +19,6 @@ fun ServiceDTO?.toService() = Service(
     id = this?.id ?: 0,
     status = this?.status ?: ServiceStatus.ORDENAT,
     userId = this?.userId ?: 0,
-    deliverymanId = this?.deliverymanId ?: 0,
+    deliverymanId = this?.deliverymanId,
     packageToDeliver = this?.packageRequest.toPackage()
 )

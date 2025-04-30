@@ -12,6 +12,7 @@ import com.inovatech.smartpack.model.api.ChangeStatusRequest
 import com.inovatech.smartpack.model.api.DeliverymanRequest
 import com.inovatech.smartpack.model.api.toDeliveryman
 import com.inovatech.smartpack.model.api.toService
+import com.inovatech.smartpack.model.api.toServiceHistoric
 import com.inovatech.smartpack.model.api.toUser
 import com.inovatech.smartpack.model.api.toVehicle
 import com.inovatech.smartpack.model.toDeliverymanRequest
@@ -233,6 +234,35 @@ class DeliveryManHomeViewModel @Inject constructor(
         _uiState.update { it.copy(isRefreshing = true) }
         getDeliverymanServices(uiState.value.deliveryman!!.id)
         //La funció privada getDeliverymanServices ja s'encarrega de canviar isRefreshing = false
+    }
+
+    fun getServiceHistoryDetail(serviceId: Long) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            try {
+                val response = smartPackRepository.getServiceHistoric(serviceId)
+
+                if (response.isSuccessful && response.body() != null) {
+                    _uiState.update {
+                        it.copy(
+                            serviceHistory = response.body()!!.map {
+                                it.toServiceHistoric()
+                            })
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(msg = "No s'ha pogut obtenir l'historial de seguiment")
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+            _uiState.update { it.copy(isLoading = false, isRefreshing = false) }
+        }
     }
 
     fun createVehicle() {

@@ -12,6 +12,7 @@ import com.inovatech.smartpack.model.api.LoginRequest
 import com.inovatech.smartpack.model.api.UserRequest
 import com.inovatech.smartpack.model.api.ResetPasswordRequest
 import com.inovatech.smartpack.model.api.ServiceDTO
+import com.inovatech.smartpack.model.api.ServiceHistoricDTO
 import com.inovatech.smartpack.model.api.UserResponse
 import com.inovatech.smartpack.model.api.VehicleDTO
 import retrofit2.Response
@@ -230,4 +231,19 @@ interface SmartPackApiService {
     @GET("/servei/transportista/{transportistaId}")
     suspend fun getServicesPerDeliveryman(@Path("transportistaId") deliverymanId: Long): Response<List<ServiceDTO>>
 
+    /**
+     * Petició per obtenir tot l'històric d'estats d'un servei en concret
+     * @param serviceId: La id del servei
+     * @return Una llista de tots els canvis d'estat d'un servei
+     */
+    @GET("/servei/{serveiId}/historial")
+    suspend fun getServiceHistoric(@Path("serveiId") serviceId: Long): Response<List<ServiceHistoricDTO>>
+
+    /**
+     * Petició per desactivar un servei
+     * @param serviceId: La id del servei a esborrar
+     * @return Retorna una resposta de l'API del tipus ApiResponse
+     */
+    @PATCH("/servei/{id}/desactivar")
+    suspend fun deactivateService(@Path("id") serviceId: Long): Response<ApiResponse>
 }
