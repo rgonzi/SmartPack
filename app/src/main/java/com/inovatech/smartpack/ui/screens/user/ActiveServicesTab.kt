@@ -25,7 +25,7 @@ import com.inovatech.smartpack.ui.items.ServiceItem
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object ActiveServices
+object ActiveServices
 
 /**
  * Composable que defineix la pestanya de serveis assignats dins la pantalla d'inici de l'usuari

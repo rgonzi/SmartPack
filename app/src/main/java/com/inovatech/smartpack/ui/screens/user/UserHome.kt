@@ -25,6 +25,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.inovatech.smartpack.ui.LoadingScreen
+import com.inovatech.smartpack.ui.screens.deliveryman.HomeBottomBar
 import kotlinx.coroutines.launch
 
 @Serializable
@@ -47,6 +48,8 @@ fun UserHomeScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
+    var currentTab by remember { mutableStateOf<HomeTab>(HomeTab.ActiveServicesTabDest) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -61,34 +64,40 @@ fun UserHomeScreen(
                 HomeTopAppBar(navToConfig = navToConfig)
             },
             floatingActionButton = {
-                //TODO Amagar FAB quan no estiguem a la pantalla de serveis actius
-                Fab(onFabClick = navToNewService)
+                if (currentTab is HomeTab.ActiveServicesTabDest) {
+                    Fab(onFabClick = navToNewService)
+                }
             },
             bottomBar = {
-                HomeBottomBar(navToActiveServices = {
-                    navController.navigate(ActiveServices) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            inclusive = false
+                HomeBottomBar(
+                    currentTab = currentTab,
+                    onTabSelected = { tab ->
+                        currentTab = tab
+                        when (tab) {
+                            HomeTab.ActiveServicesTabDest -> navController.navigate(ActiveServices) {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    inclusive = false
+                                }
+                                launchSingleTop = true
+                            }
+
+                            HomeTab.OldServicesTabDest -> navController.navigate(OldServices) {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    inclusive = false
+                                }
+                                launchSingleTop = true
+                            }
+
+                            HomeTab.MoreOptionsTabDest -> navController.navigate(MoreOptions) {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    inclusive = false
+                                }
+                                launchSingleTop = true
+                            }
                         }
-                        launchSingleTop = true
                     }
-                }, navToOldServices = {
-                    navController.navigate(OldServices) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            inclusive = false
-                        }
-                        launchSingleTop = true
-                    }
-                }, navToMoreOptions = {
-                    navController.navigate(MoreOptions) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            inclusive = false
-                        }
-                        launchSingleTop = true
-                    }
-                })
-            }
-        ) {
+                )
+            }) {
             NavHost(
                 navController = navController,
                 startDestination = ActiveServices,
@@ -99,27 +108,29 @@ fun UserHomeScreen(
             ) {
                 composable<ActiveServices> {
                     ActiveServicesTab(
-                        viewModel = viewModel, uiState = uiState, launchSnackbar = { msg ->
+                        viewModel = viewModel,
+                        uiState = uiState,
+                        launchSnackbar = { msg ->
                             scope.launch {
                                 snackbarHostState.showSnackbar(msg)
                             }
                         },
                         onNavToDetail = { serviceId ->
                             navController.navigate(ServiceItemDetailUser(serviceId))
-                        }
-                    )
+                        })
                 }
                 composable<OldServices> {
                     OldServicesTab(
-                        viewModel = viewModel, uiState = uiState, launchSnackbar = { msg ->
+                        viewModel = viewModel,
+                        uiState = uiState,
+                        launchSnackbar = { msg ->
                             scope.launch {
                                 snackbarHostState.showSnackbar(msg)
                             }
                         },
                         onNavToDetail = { serviceId ->
                             navController.navigate(ServiceItemDetailUser(serviceId))
-                        }
-                    )
+                        })
                 }
                 composable<ServiceItemDetailUser> { backStackEntry ->
                     val args: ServiceItemDetailUser = backStackEntry.toRoute()
@@ -183,32 +194,34 @@ fun Fab(
 
 @Composable
 fun HomeBottomBar(
-    navToActiveServices: () -> Unit,
-    navToOldServices: () -> Unit,
-    navToMoreOptions: () -> Unit,
+    currentTab: HomeTab,
+    onTabSelected: (HomeTab) -> Unit
 ) {
-    var selectedItem by remember { mutableIntStateOf(0) }
-    val items = listOf("Seguiment", "Finalitzats", "Més opcions")
-    val icons = listOf(
-        painterResource(id = R.drawable.ic_package_box),
-        painterResource(id = R.drawable.ic_historic_services),
-        painterResource(id = R.drawable.ic_more_options_hor)
+    val items = listOf(
+        Triple(HomeTab.ActiveServicesTabDest, painterResource(R.drawable.ic_package_box), "Seguiment"),
+        Triple(HomeTab.OldServicesTabDest,    painterResource(R.drawable.ic_historic_services), "Finalitzats"),
+        Triple(HomeTab.MoreOptionsTabDest,    painterResource(R.drawable.ic_more_options_hor), "Més opcions")
     )
 
     NavigationBar {
-        items.forEachIndexed { index, item ->
-            NavigationBarItem(selected = selectedItem == index, onClick = {
-                selectedItem = index
-                when (index) {
-                    0 -> navToActiveServices()
-                    1 -> navToOldServices()
-                    2 -> navToMoreOptions()
-                }
-            }, icon = {
-                Icon(
-                    icons[index], contentDescription = "", modifier = Modifier.size(24.dp)
-                )
-            }, label = { Text(items[index], textAlign = TextAlign.Center) })
+        items.forEach { (tab, icon, label) ->
+            NavigationBarItem(
+                selected = currentTab == tab,
+                onClick = { onTabSelected(tab) },
+                icon    = { Icon(icon, contentDescription = null, Modifier.size(24.dp)) },
+                label   = { Text(label, textAlign = TextAlign.Center) }
+            )
         }
     }
+}
+
+sealed interface HomeTab {
+    @Serializable
+    object ActiveServicesTabDest : HomeTab
+
+    @Serializable
+    object OldServicesTabDest : HomeTab
+
+    @Serializable
+    object MoreOptionsTabDest : HomeTab
 }
