@@ -87,7 +87,8 @@ fun UserHomeScreen(
                         launchSingleTop = true
                     }
                 })
-            }) {
+            }
+        ) {
             NavHost(
                 navController = navController,
                 startDestination = ActiveServices,
@@ -138,8 +139,8 @@ fun UserHomeScreen(
                 }
             }
         }
+        LoadingScreen(uiState.isLoading)
     }
-    LoadingScreen(uiState.isLoading)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -187,7 +188,7 @@ fun HomeBottomBar(
     navToMoreOptions: () -> Unit,
 ) {
     var selectedItem by remember { mutableIntStateOf(0) }
-    val items = listOf("Seguiment", "Històric", "Més opcions")
+    val items = listOf("Seguiment", "Finalitzats", "Més opcions")
     val icons = listOf(
         painterResource(id = R.drawable.ic_package_box),
         painterResource(id = R.drawable.ic_historic_services),
