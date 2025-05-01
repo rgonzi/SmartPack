@@ -21,7 +21,7 @@ fun MoreOptionItem(title: String, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable(
                 onClick = onClick
-            ), shape = RoundedCornerShape(4.dp)
+            ), shape = RoundedCornerShape(16.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,

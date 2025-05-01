@@ -6,27 +6,25 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import com.inovatech.smartpack.R
-import com.inovatech.smartpack.ui.theme.Background
-import kotlinx.serialization.Serializable
-import androidx.compose.runtime.*
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.inovatech.smartpack.R
 import com.inovatech.smartpack.ui.LoadingScreen
-import com.inovatech.smartpack.ui.screens.deliveryman.HomeBottomBar
+import com.inovatech.smartpack.ui.theme.Background
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 
 @Serializable
 data object UserHome
@@ -146,7 +144,15 @@ fun UserHomeScreen(
                         onBackPressed = { navController.navigateUp() })
                 }
                 composable<MoreOptions> {
-                    MoreOptionsTab()
+                    MoreOptionsTab(
+                        viewModel = viewModel,
+                        uiState = uiState,
+                        launchSnackbar = { msg ->
+                            scope.launch {
+                                snackbarHostState.showSnackbar(msg)
+                            }
+                        }
+                    )
                 }
             }
         }
@@ -188,7 +194,7 @@ fun Fab(
     ) {
         Icon(Icons.Default.Add, contentDescription = "Crear nou servei")
         Spacer(modifier = Modifier.width(8.dp))
-        Text("Enviar un paquet")
+        Text("Crear un nou servei")
     }
 }
 

@@ -1,6 +1,6 @@
 package com.inovatech.smartpack.ui.screens.user
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.sp
 import com.inovatech.smartpack.R
 import com.inovatech.smartpack.model.Service
 import com.inovatech.smartpack.model.uiState.UserHomeUiState
-import com.inovatech.smartpack.ui.LoadingScreen
 import com.inovatech.smartpack.ui.items.ServiceItem
 import kotlinx.serialization.Serializable
 
@@ -52,6 +51,10 @@ fun ActiveServicesTab(
             launchSnackbar(uiState.msg)
             viewModel.resetMsg()
         }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.refreshServices()
     }
 
     PullToRefreshBox(

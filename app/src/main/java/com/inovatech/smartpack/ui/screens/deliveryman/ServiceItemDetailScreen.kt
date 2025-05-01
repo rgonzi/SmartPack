@@ -1,15 +1,10 @@
 package com.inovatech.smartpack.ui.screens.deliveryman
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -44,6 +39,11 @@ fun ServiceItemDetailDeliverymanScreen(
         }
     }
 
+    //Al composar la pantalla, obtindrem l'historic dels canvis d'estat del servei en qüestió
+    LaunchedEffect(Unit) {
+        viewModel.getServiceHistoryDetail(serviceId)
+    }
+
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -69,20 +69,12 @@ fun ServiceItemDetailDeliverymanScreen(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        if (uiState.isLoading) {
-            item {
-                CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        } else {
-            items(historic) { event ->
-                ServiceHistoricItem(
-                    event = event,
-                    historic = historic
-                )
+        items(historic) { event ->
+            ServiceHistoricItem(
+                event = event,
+                historic = historic
+            )
 
-            }
         }
         item {
             Button(

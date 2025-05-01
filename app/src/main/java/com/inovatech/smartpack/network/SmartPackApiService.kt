@@ -1,27 +1,8 @@
 package com.inovatech.smartpack.network
 
-import com.inovatech.smartpack.model.ServiceStatus
-import com.inovatech.smartpack.model.api.ApiResponse
-import com.inovatech.smartpack.model.api.ChangeStatusRequest
-import com.inovatech.smartpack.model.api.DeliverymanRequest
-import com.inovatech.smartpack.model.api.ForgotPasswordRequest
-import com.inovatech.smartpack.model.api.ForgotPasswordResponse
-import com.inovatech.smartpack.model.api.DeliverymanResponse
-import com.inovatech.smartpack.model.api.LoginResponse
-import com.inovatech.smartpack.model.api.LoginRequest
-import com.inovatech.smartpack.model.api.UserRequest
-import com.inovatech.smartpack.model.api.ResetPasswordRequest
-import com.inovatech.smartpack.model.api.ServiceDTO
-import com.inovatech.smartpack.model.api.ServiceHistoricDTO
-import com.inovatech.smartpack.model.api.UserResponse
-import com.inovatech.smartpack.model.api.VehicleDTO
+import com.inovatech.smartpack.model.api.*
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.PATCH
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Path
+import retrofit2.http.*
 
 /**
  * Interfície necessària per Retrofit per definir els endpoints de l'API a l'hora de fer les

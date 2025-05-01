@@ -214,9 +214,14 @@ class UserHomeViewModel @Inject constructor(
     }
 
     fun refreshServices() {
+        val userId = uiState.value.user?.id
+
+        if (userId == null) return
+
         _uiState.update { it.copy(isRefreshing = true) }
+
         //La funció getServices ja s'encarrega de canviar isRefreshing = false
-        getServices(uiState.value.user!!.id)
+        getServices(userId)
     }
 
     fun deleteService(serviceId: Long) {
