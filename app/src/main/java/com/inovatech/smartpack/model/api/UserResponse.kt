@@ -14,6 +14,7 @@ data class UserResponse(
     @SerializedName("telefon") val tel: String = "",
     @SerializedName("adreça") val address: String = "",
     @SerializedName("observacio") val observations: String = "",
+    @SerializedName("empresaID") val companyId: Long? = null
 )
 
 
@@ -26,5 +27,6 @@ fun UserResponse.toUser() = User(
     surname = surname,
     tel = tel,
     address = address,
-    observations = observations
+    observations = observations,
+    companyId = companyId
 )

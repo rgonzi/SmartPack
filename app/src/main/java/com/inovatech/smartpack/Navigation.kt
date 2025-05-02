@@ -39,12 +39,9 @@ fun Navigation(
     var startDestination by remember { mutableStateOf<Any>(Splash) }
 
     //Per quan poguem validar si el token és vàlid al servidor
+    //TODO: Posar una SplashScreen de debò
     LaunchedEffect(Unit) {
-
-        //Posem 1s de retard per si la petició és molt ràpida que
-        //tinguem temps de mostrar la SplashScreen
         delay(1000)
-        //startDestination = if (tokenRepository.isTokenValid()) Home else Login
         startDestination = Login
     }
     AnimatedVisibility(
@@ -137,7 +134,11 @@ fun Navigation(
                         })
                 }
                 composable<AdminHome> {
-                    AdminHomeScreen()
+                    AdminHomeScreen(
+                        navToConfig = {
+                            navController.navigate(UserConfig)
+                        }
+                    )
                 }
             }
         }

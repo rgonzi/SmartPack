@@ -9,17 +9,20 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.inovatech.smartpack.R
 import com.inovatech.smartpack.model.Service
 import com.inovatech.smartpack.model.uiState.UserHomeUiState
+import com.inovatech.smartpack.ui.items.DeleteDialog
 import com.inovatech.smartpack.ui.items.ServiceItem
 import kotlinx.serialization.Serializable
 
@@ -87,6 +90,7 @@ fun ActiveServicesTab(
                         onNavToDetail = { onNavToDetail(service.id) })
                     Spacer(modifier = Modifier.height(8.dp))
                 }
+                //TODO: Afegir botó per pagar el servei
             } else if (!uiState.isLoading && uiState.hasLoadedOnce) {
                 item {
                     Text(
@@ -108,131 +112,130 @@ fun ActiveServicesTab(
 
     //AlertDialog que mostra i modifica les dades del servei en qüestió
     serviceToModify?.let { service ->
-        var newRecipientName by remember { mutableStateOf(service.packageToDeliver.recipientName) }
-        var newRecipientAddress by remember { mutableStateOf(service.packageToDeliver.recipientAddress) }
-        var newRecipientPhone by remember { mutableStateOf(service.packageToDeliver.recipientPhone) }
-        var newDimensions by remember { mutableStateOf(service.packageToDeliver.dimensions) }
-        var newWeight by remember { mutableIntStateOf(service.packageToDeliver.weight) }
-        var newDetails by remember { mutableStateOf(service.packageToDeliver.details) }
-
-        AlertDialog(
-            onDismissRequest = { serviceToModify = null },
-            title = { Text("Modificar servei") },
-            text = {
-                Column {
-                    OutlinedTextField(
-                        value = newRecipientName,
-                        onValueChange = { newRecipientName = it },
-                        label = { Text("Nom destinatari") },
-                        singleLine = true
-                    )
-                    Spacer(Modifier.height(8.dp))
-
-                    OutlinedTextField(
-                        value = newRecipientAddress,
-                        onValueChange = { newRecipientAddress = it },
-                        label = { Text("Adreça destinatari") },
-                        minLines = 2,
-                        maxLines = 2,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(Modifier.height(8.dp))
-
-                    OutlinedTextField(
-                        value = newRecipientPhone,
-                        onValueChange = { newRecipientPhone = it },
-                        label = { Text("Telèfon destinatari") },
-                        singleLine = true
-                    )
-                    Spacer(Modifier.height(8.dp))
-
-                    OutlinedTextField(
-                        value = newDimensions, onValueChange = {
-                            if (it.all { char -> char.isDigit() }) {
-                                newDimensions = it
-                            }
-                        }, label = { Text("Dimesions totals") }, trailingIcon = {
-                            Text(text = "cm", style = MaterialTheme.typography.bodyMedium)
-                        }, singleLine = true
-                    )
-                    Spacer(Modifier.height(8.dp))
-
-                    OutlinedTextField(
-                        value = newWeight.toString(), onValueChange = {
-                            if (it.isEmpty()) {
-                                newWeight = 1
-                            } else if (it.all { char -> char.isDigit() }) {
-                                newWeight = it.toInt()
-                            }
-                        }, label = { Text("Pes") }, trailingIcon = {
-                            Text(text = "kg", style = MaterialTheme.typography.bodyMedium)
-                        }, singleLine = true
-                    )
-                    Spacer(Modifier.height(8.dp))
-
-                    OutlinedTextField(
-                        value = newDetails,
-                        onValueChange = { newDetails = it },
-                        label = { Text("Detalls") },
-                        minLines = 2,
-                        maxLines = 2,
-                    )
-                }
+        ServiceDetailsDialog(
+            service = service,
+            onDismiss = {
+                serviceToModify = null
+                expandedItemId = null
             },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        viewModel.updateService(
-                            service.copy(
-                                packageToDeliver = service.packageToDeliver.copy(
-                                    recipientName = newRecipientName,
-                                    recipientAddress = newRecipientAddress,
-                                    recipientPhone = newRecipientPhone,
-                                    weight = newWeight,
-                                    dimensions = newDimensions,
-                                )
-                            )
-                        )
-                        serviceToModify = null
-                        expandedItemId = null
-                    }) {
-                    Text("Guardar")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { serviceToModify = null }) {
-                    Text("Cancel·lar")
-                }
-            })
+            onUpdate = { viewModel.updateService(it) }
+        )
     }
 
     //AlertDialog per confirmar la eliminació del servei
     serviceToDelete?.let { service ->
-        AlertDialog(
-            onDismissRequest = { serviceToDelete = null },
-            text = {
-                Text("Segur que vols eliminar el servei? Aquesta acció és irreversible")
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        viewModel.deleteService(service.id)
-                        serviceToDelete = null
-                        expandedItemId = null
-                    }) {
-                    Text("Eliminar", color = Color.Red)
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { serviceToDelete = null },
-                ) {
-                    Text("Cancel·lar")
-                }
-            },
-            icon = {
-                Icon(imageVector = Icons.Default.Warning, contentDescription = null)
+        DeleteDialog(
+            onDismiss = { serviceToDelete = null },
+            text = "Segur que vols eliminar el servei? Aquesta acció és irreversible",
+            onConfirm = {
+                viewModel.deleteService(service.id)
+                serviceToDelete = null
+                expandedItemId = null
             }
         )
     }
+}
+
+@Composable
+fun ServiceDetailsDialog(
+    service: Service,
+    onDismiss: () -> Unit,
+    onUpdate: (Service) -> Unit,
+) {
+    var newRecipientName by remember { mutableStateOf(service.packageToDeliver.recipientName) }
+    var newRecipientAddress by remember { mutableStateOf(service.packageToDeliver.recipientAddress) }
+    var newRecipientPhone by remember { mutableStateOf(service.packageToDeliver.recipientPhone) }
+    var newDimensions by remember { mutableStateOf(service.packageToDeliver.dimensions) }
+    var newWeight by remember { mutableIntStateOf(service.packageToDeliver.weight) }
+    var newDetails by remember { mutableStateOf(service.packageToDeliver.details) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Modificar servei") },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = newRecipientName,
+                    onValueChange = { newRecipientName = it },
+                    label = { Text("Nom destinatari") },
+                    singleLine = true
+                )
+                OutlinedTextField(
+                    value = newRecipientAddress,
+                    onValueChange = { newRecipientAddress = it },
+                    label = { Text("Adreça destinatari") },
+                    minLines = 2,
+                    maxLines = 2,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                )
+                OutlinedTextField(
+                    value = newRecipientPhone,
+                    onValueChange = { newRecipientPhone = it },
+                    label = { Text("Telèfon destinatari") },
+                    singleLine = true
+                )
+                OutlinedTextField(
+                    value = newDimensions, onValueChange = {
+                        if (it.all { char -> char.isDigit() }) {
+                            newDimensions = it
+                        }
+                    }, label = { Text("Dimesions totals") }, trailingIcon = {
+                        Text(text = "cm", style = MaterialTheme.typography.bodyMedium)
+                    }, singleLine = true
+                )
+                OutlinedTextField(
+                    value = newWeight.toString(), onValueChange = {
+                        if (it.isEmpty()) {
+                            newWeight = 1
+                        } else if (it.all { char -> char.isDigit() }) {
+                            newWeight = it.toInt()
+                        }
+                    }, label = { Text("Pes") }, trailingIcon = {
+                        Text(text = "kg", style = MaterialTheme.typography.bodyMedium)
+                    }, singleLine = true
+                )
+                OutlinedTextField(
+                    value = newDetails,
+                    onValueChange = { newDetails = it },
+                    label = { Text("Detalls") },
+                    minLines = 2,
+                    maxLines = 2,
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onUpdate(
+                        service.copy(
+                            packageToDeliver = service.packageToDeliver.copy(
+                                recipientName = newRecipientName,
+                                recipientAddress = newRecipientAddress,
+                                recipientPhone = newRecipientPhone,
+                                weight = newWeight,
+                                dimensions = newDimensions,
+                            )
+                        )
+                    )
+                    onDismiss()
+                }
+            ) { Text("Modificar") }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel·lar")
+            }
+        })
+}
+
+@Preview
+@Composable
+fun ServiceDetailsDialogPreview() {
+    ServiceDetailsDialog(
+        service = Service(),
+        onDismiss = { },
+        onUpdate = { }
+    )
 }

@@ -34,6 +34,8 @@ data object UserHome
  *
  * @param viewModel: El seu viewModel associat
  * a la pantalla de Login
+ * @param navToConfig: Navega a la pantalla de configuració d'usuari
+ * @param navToNewService: Navega a la pantalla per crear un nou servei
  */
 @Composable
 fun UserHomeScreen(
@@ -46,7 +48,7 @@ fun UserHomeScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    var currentTab by remember { mutableStateOf<HomeTab>(HomeTab.ActiveServicesTabDest) }
+    var currentTab by remember { mutableStateOf<UserHomeTab>(UserHomeTab.ActiveServicesTabDestUser) }
 
     Box(
         modifier = Modifier
@@ -62,39 +64,39 @@ fun UserHomeScreen(
                 HomeTopAppBar(navToConfig = navToConfig)
             },
             floatingActionButton = {
-                if (currentTab is HomeTab.ActiveServicesTabDest) {
+                if (currentTab is UserHomeTab.ActiveServicesTabDestUser) {
                     Fab(onFabClick = navToNewService)
                 }
             },
             bottomBar = {
                 HomeBottomBar(
-                    currentTab = currentTab,
-                    onTabSelected = { tab ->
+                    currentTab = currentTab, onTabSelected = { tab ->
                         currentTab = tab
                         when (tab) {
-                            HomeTab.ActiveServicesTabDest -> navController.navigate(ActiveServices) {
+                            UserHomeTab.ActiveServicesTabDestUser -> navController.navigate(
+                                ActiveServices
+                            ) {
                                 popUpTo(navController.graph.startDestinationId) {
                                     inclusive = false
                                 }
                                 launchSingleTop = true
                             }
 
-                            HomeTab.OldServicesTabDest -> navController.navigate(OldServices) {
+                            UserHomeTab.OldServicesTabDestUser -> navController.navigate(OldServices) {
                                 popUpTo(navController.graph.startDestinationId) {
                                     inclusive = false
                                 }
                                 launchSingleTop = true
                             }
 
-                            HomeTab.MoreOptionsTabDest -> navController.navigate(MoreOptions) {
+                            UserHomeTab.MoreOptionsTabDestUser -> navController.navigate(MoreOptions) {
                                 popUpTo(navController.graph.startDestinationId) {
                                     inclusive = false
                                 }
                                 launchSingleTop = true
                             }
                         }
-                    }
-                )
+                    })
             }) {
             NavHost(
                 navController = navController,
@@ -145,14 +147,11 @@ fun UserHomeScreen(
                 }
                 composable<MoreOptions> {
                     MoreOptionsTab(
-                        viewModel = viewModel,
-                        uiState = uiState,
-                        launchSnackbar = { msg ->
+                        viewModel = viewModel, uiState = uiState, launchSnackbar = { msg ->
                             scope.launch {
                                 snackbarHostState.showSnackbar(msg)
                             }
-                        }
-                    )
+                        })
                 }
             }
         }
@@ -200,13 +199,23 @@ fun Fab(
 
 @Composable
 fun HomeBottomBar(
-    currentTab: HomeTab,
-    onTabSelected: (HomeTab) -> Unit
+    currentTab: UserHomeTab,
+    onTabSelected: (UserHomeTab) -> Unit,
 ) {
     val items = listOf(
-        Triple(HomeTab.ActiveServicesTabDest, painterResource(R.drawable.ic_package_box), "Seguiment"),
-        Triple(HomeTab.OldServicesTabDest,    painterResource(R.drawable.ic_historic_services), "Finalitzats"),
-        Triple(HomeTab.MoreOptionsTabDest,    painterResource(R.drawable.ic_more_options_hor), "Més opcions")
+        Triple(
+            UserHomeTab.ActiveServicesTabDestUser,
+            painterResource(R.drawable.ic_package_box),
+            "Seguiment"
+        ), Triple(
+            UserHomeTab.OldServicesTabDestUser,
+            painterResource(R.drawable.ic_historic_services),
+            "Finalitzats"
+        ), Triple(
+            UserHomeTab.MoreOptionsTabDestUser,
+            painterResource(R.drawable.ic_more_options_hor),
+            "Més opcions"
+        )
     )
 
     NavigationBar {
@@ -214,20 +223,19 @@ fun HomeBottomBar(
             NavigationBarItem(
                 selected = currentTab == tab,
                 onClick = { onTabSelected(tab) },
-                icon    = { Icon(icon, contentDescription = null, Modifier.size(24.dp)) },
-                label   = { Text(label, textAlign = TextAlign.Center) }
-            )
+                icon = { Icon(icon, contentDescription = null, Modifier.size(24.dp)) },
+                label = { Text(label, textAlign = TextAlign.Center) })
         }
     }
 }
 
-sealed interface HomeTab {
+sealed interface UserHomeTab {
     @Serializable
-    object ActiveServicesTabDest : HomeTab
+    object ActiveServicesTabDestUser : UserHomeTab
 
     @Serializable
-    object OldServicesTabDest : HomeTab
+    object OldServicesTabDestUser : UserHomeTab
 
     @Serializable
-    object MoreOptionsTabDest : HomeTab
+    object MoreOptionsTabDestUser : UserHomeTab
 }

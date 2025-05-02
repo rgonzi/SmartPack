@@ -17,6 +17,7 @@ data class User(
     val address: String? = null,
     val observations: String? = null,
     val role: Role? = null,
+    val companyId: Long? = null
 )
 
 enum class Role {
