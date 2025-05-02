@@ -79,6 +79,9 @@ interface SmartPackApiService {
     @PATCH("/usuari/{id}/desactivate")
     suspend fun deactivateUser(@Path("id") id: Long): Response<ApiResponse>
 
+    @GET("/usuari/list")
+    suspend fun getAllUsers(): Response<List<UserResponse>>
+
     //Transportista
     /**
      * Petició per obtenir totes les dades d'un transportista a partir del id d'usuari

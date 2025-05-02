@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.inovatech.smartpack.model.uiState.DeliveryManUiState
 import com.inovatech.smartpack.ui.CommonTextField
+import com.inovatech.smartpack.ui.items.DeleteDialog
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -55,14 +56,12 @@ fun VehiclesTab(
     }
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
+        horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()
     ) {
         if (uiState.deliveryman != null) {
 
             VehicleCard(
-                uiState = uiState,
-                viewModel = viewModel
+                uiState = uiState, viewModel = viewModel
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -76,9 +75,7 @@ fun VehiclesTab(
                         viewModel.updateVehicle()
                     }
                     viewModel.vehicleHasChanged(false)
-                },
-                enabled = uiState.vehicleHasChanged,
-                modifier = Modifier.fillMaxWidth(0.6f)
+                }, enabled = uiState.vehicleHasChanged, modifier = Modifier.fillMaxWidth(0.6f)
             ) {
                 Text(if (uiState.deliveryman.vehicle.id == 0L) "Crear vehicle" else "Desar canvis")
             }
@@ -86,8 +83,7 @@ fun VehiclesTab(
             Spacer(modifier = Modifier.height(32.dp))
 
             LicencesCard(
-                uiState = uiState,
-                viewModel = viewModel
+                uiState = uiState, viewModel = viewModel
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -96,9 +92,7 @@ fun VehiclesTab(
                 onClick = {
                     viewModel.updateDeliveryman()
                     viewModel.licenceHasChanged(false)
-                },
-                enabled = uiState.licenseHasChanged,
-                modifier = Modifier.fillMaxWidth(0.6f)
+                }, enabled = uiState.licenseHasChanged, modifier = Modifier.fillMaxWidth(0.6f)
             ) {
                 Text("Desar canvis")
             }
@@ -110,9 +104,7 @@ fun VehiclesTab(
                 OutlinedButton(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Red
-                    ),
-                    onClick = { showDeleteDialog = true },
-                    modifier = Modifier.fillMaxWidth(0.6f)
+                    ), onClick = { showDeleteDialog = true }, modifier = Modifier.fillMaxWidth(0.6f)
                 ) {
                     Text("Eliminar vehicle", fontWeight = FontWeight.Bold)
                 }
@@ -121,31 +113,12 @@ fun VehiclesTab(
 
 
             if (showDeleteDialog) {
-                AlertDialog(
-                    onDismissRequest = { showDeleteDialog = false },
-                    text = {
-                        Text("Segur que vols eliminar el teu vehicle? Aquesta acció és irreversible")
-                    },
-                    confirmButton = {
-                        TextButton(
-                            onClick = {
-                                viewModel.deactivateVehicle()
-                                showDeleteDialog = false
-                            }
-                        ) {
-                            Text("Eliminar", color = Color.Red)
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(
-                            onClick = { showDeleteDialog = false },
-                        ) {
-                            Text("Cancel·lar")
-                        }
-
-                    },
-                    icon = {
-                        Icon(imageVector = Icons.Default.Warning, contentDescription = null)
+                DeleteDialog(
+                    onDismiss = { showDeleteDialog = false },
+                    text = "Segur que vols eliminar el teu vehicle? Aquesta acció és irreversible",
+                    onConfirm = {
+                        viewModel.deactivateVehicle()
+                        showDeleteDialog = false
                     }
                 )
             }
@@ -171,15 +144,12 @@ fun VehicleCard(
 ) {
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp)
+        modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
 
             Text(
-                "Vehicle assignat",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+                "Vehicle assignat", fontSize = 20.sp, fontWeight = FontWeight.Bold
             )
 
             if (uiState.deliveryman!!.vehicle.id == 0L) {
@@ -188,29 +158,19 @@ fun VehicleCard(
             }
             //Marca
             CommonTextField(
-                value = uiState.deliveryman.vehicle.brand,
-                onValueChange = {
+                value = uiState.deliveryman.vehicle.brand, onValueChange = {
                     viewModel.updateVehicleBrand(it)
                     viewModel.vehicleHasChanged(true)
-                },
-                label = "Marca",
-                trailingIcon = null,
-                imeAction = ImeAction.Next,
-                isError = false
+                }, label = "Marca", trailingIcon = null, imeAction = ImeAction.Next, isError = false
             )
 
             Spacer(modifier = Modifier.height(8.dp))
             //Model
             CommonTextField(
-                value = uiState.deliveryman.vehicle.model,
-                onValueChange = {
+                value = uiState.deliveryman.vehicle.model, onValueChange = {
                     viewModel.updateVehicleModel(it)
                     viewModel.vehicleHasChanged(true)
-                },
-                label = "Model",
-                trailingIcon = null,
-                imeAction = ImeAction.Next,
-                isError = false
+                }, label = "Model", trailingIcon = null, imeAction = ImeAction.Next, isError = false
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -238,22 +198,18 @@ fun LicencesCard(
     uiState: DeliveryManUiState,
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp)
+        modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
 
             Text(
-                "Permisos de conducció",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+                "Permisos de conducció", fontSize = 20.sp, fontWeight = FontWeight.Bold
             )
             //Llicències
             OutlinedTextField(
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
-                ),
+                focusedContainerColor = Color.White, unfocusedContainerColor = Color.White
+            ),
                 value = uiState.deliveryman!!.licence,
                 onValueChange = {
                     viewModel.updateLicences(it)
@@ -263,11 +219,9 @@ fun LicencesCard(
                 maxLines = 1,
                 enabled = true,
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Done
+                    keyboardType = KeyboardType.Email, imeAction = ImeAction.Done
                 ),
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }

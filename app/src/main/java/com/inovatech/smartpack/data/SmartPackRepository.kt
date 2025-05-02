@@ -16,6 +16,7 @@ interface SmartPackRepository {
     suspend fun loadUser(id: Int): Response<UserResponse>
     suspend fun updateUser(id: Long, usuari: UserRequest): Response<UserResponse>
     suspend fun deactivateUser(id: Long): Response<ApiResponse>
+    suspend fun getAllUsers(): Response<List<UserResponse>>
 
     suspend fun getDeliverymanByUserId(userId: Long): Response<DeliverymanResponse>
     suspend fun updateDeliveryman(id: Long, transportista: DeliverymanRequest): Response<DeliverymanResponse>
@@ -75,6 +76,10 @@ interface SmartPackRepository {
 
     override suspend fun deactivateUser(id: Long): Response<ApiResponse> {
         return smartPackApiService.deactivateUser(id)
+    }
+
+    override suspend fun getAllUsers(): Response<List<UserResponse>> {
+        return smartPackApiService.getAllUsers()
     }
 
     override suspend fun getDeliverymanByUserId(userId: Long): Response<DeliverymanResponse> {
