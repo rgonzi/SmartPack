@@ -8,6 +8,5 @@ data class NewServiceUiState(
     val newPackage: Package = Package(),
     val hasTriedToCreateService: Boolean = false,
     val isLoading: Boolean = false,
-    val newServiceCreatedSuccessfully: Boolean = false,
     val msg: String? = null
 )

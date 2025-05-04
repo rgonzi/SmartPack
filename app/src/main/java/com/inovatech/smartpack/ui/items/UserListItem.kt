@@ -52,23 +52,5 @@ fun UserListItem(
             //Email
             Text(text = user.email!!, color = Color.White)
         }
-        //TODO: Mostrar botons de modificar i eliminar si es selecciona l'usuari
     }
-}
-
-@Preview
-@Composable
-fun UserListItemPreview() {
-    UserListItem(
-        user = User(
-            id = 13,
-            email = "test@test.com",
-            name = "UserTest",
-            surname = "TestOnly",
-            tel = "666666666",
-            address = "blablabla",
-            role = Role.ROLE_DELIVERYMAN
-        ),
-        onClick = {}
-    )
 }

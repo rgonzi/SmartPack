@@ -46,6 +46,5 @@ class AuthTokenService @Inject constructor(
     fun isTokenValid(): Boolean {
         val token = this.getAuthToken()
         return token != null
-        //TODO Implementar peticio al servidor per si el token és valid o no
     }
 }

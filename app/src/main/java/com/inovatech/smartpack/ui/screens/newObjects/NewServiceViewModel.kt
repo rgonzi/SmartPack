@@ -1,4 +1,4 @@
-package com.inovatech.smartpack.ui.screens.user
+package com.inovatech.smartpack.ui.screens.newObjects
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -130,10 +130,7 @@ class NewServiceViewModel @Inject constructor(
                     )
                     if (response.isSuccessful) {
                         _uiState.update {
-                            it.copy(
-                                msg = "Servei creat correctament",
-                                newServiceCreatedSuccessfully = true
-                            )
+                            it.copy(msg = "Servei creat correctament")
                         }
                         clearFields()
                     } else {
@@ -158,7 +155,6 @@ class NewServiceViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 newPackage = Package(),
-                newServiceCreatedSuccessfully = false,
                 hasTriedToCreateService = false
             )
         }

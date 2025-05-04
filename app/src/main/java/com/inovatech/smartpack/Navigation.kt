@@ -40,7 +40,6 @@ fun Navigation(
     val navController: NavHostController = rememberNavController()
     var startDestination by remember { mutableStateOf<Any>(Splash) }
 
-    //Per quan poguem validar si el token és vàlid al servidor
     //TODO: Posar una SplashScreen de debò
     LaunchedEffect(Unit) {
         delay(1000)

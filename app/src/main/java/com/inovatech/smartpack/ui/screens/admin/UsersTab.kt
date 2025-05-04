@@ -3,9 +3,6 @@ package com.inovatech.smartpack.ui.screens.admin
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
@@ -14,12 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.inovatech.smartpack.model.Role
 import com.inovatech.smartpack.model.User
 import com.inovatech.smartpack.model.uiState.AdminHomeUiState
+import com.inovatech.smartpack.ui.items.CommonFilterBar
 import com.inovatech.smartpack.ui.items.DeleteDialog
 import com.inovatech.smartpack.ui.items.UserListItem
 import kotlinx.serialization.Serializable
@@ -31,19 +27,11 @@ object UsersTab
 @Composable
 fun UsersTab(
     viewModel: AdminHomeViewModel,
-    uiState: AdminHomeUiState,
-    launchSnackbar: (String) -> Unit,
+    uiState: AdminHomeUiState
 ) {
-    LaunchedEffect(uiState.msg) {
-        if (!uiState.isLoading && uiState.msg != null) {
-            launchSnackbar(uiState.msg)
-            viewModel.resetMsg()
-        }
-    }
-
     PullToRefreshBox(
         isRefreshing = uiState.isRefreshing,
-        onRefresh = { viewModel.refreshUsers() },
+        onRefresh = { viewModel.refreshAll() },
         modifier = Modifier.fillMaxSize()
     ) {
         Column {
@@ -55,9 +43,10 @@ fun UsersTab(
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(8.dp))
-            UserFilterBar(
+            CommonFilterBar(
                 query = uiState.searchQuery,
-                onQueryChange = viewModel::onSearchQueryChanged
+                onQueryChange = viewModel::onSearchQueryChanged,
+                placeHolder = "Cerca per nom o email"
             )
             Spacer(modifier = Modifier.height(8.dp))
             LazyColumn(
@@ -65,8 +54,6 @@ fun UsersTab(
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(uiState.filteredUsers) { user ->
-                    /* TODO: Enlloc de seleccionar usuari al fer click, mostrar botons
-                    i permetre modificar, eliminar o assignar empresa */
                     UserListItem(user = user, onClick = viewModel::onUserSelected)
                     Spacer(modifier = Modifier.height(8.dp))
                 }
@@ -77,39 +64,11 @@ fun UsersTab(
                     user = user,
                     onDismiss = { viewModel.onUserSelected(null) },
                     onUpdate = viewModel::updateUser,
-                    onDelete = { viewModel.deactivateUser(user.id) }
+                    onDelete = { viewModel.deactivateUser(user.id); viewModel.onUserSelected(null) }
                 )
             }
         }
     }
-}
-
-@Composable
-fun UserFilterBar(
-    query: String,
-    onQueryChange: (String) -> Unit,
-) {
-    //Quadre de cerca
-    OutlinedTextField(
-        value = query,
-        onValueChange = onQueryChange,
-        modifier = Modifier.fillMaxWidth(),
-        singleLine = true,
-        leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
-        trailingIcon = {
-            if (query.isNotEmpty()) {
-                IconButton(onClick = { onQueryChange("") }) {
-                    Icon(
-                        Icons.Filled.Clear, contentDescription = null
-                    )
-                }
-            }
-        },
-        placeholder = { Text("Cerca per nom o email") },
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.White, unfocusedContainerColor = Color.White
-        )
-    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -203,7 +162,6 @@ fun UserDetailsDialog(
                             address = address
                         )
                     )
-                    onDismiss()
                 }) { Text("Modificar") }
         },
         dismissButton = {
@@ -216,23 +174,7 @@ fun UserDetailsDialog(
         DeleteDialog(
             onDismiss = { showDeleteDialog = false },
             text = "Segur que vols eliminar aquest usuari? Aquesta acció és irreversible",
-            onConfirm = { onDelete(); showDeleteDialog = false; onDismiss() }
+            onConfirm = { onDelete(); showDeleteDialog = false }
         )
     }
-}
-
-@Preview
-@Composable
-fun UserDetailsDialogPreview() {
-    val sampleUser = User(
-        id = 1,
-        name = "Joan",
-        surname = "Garcia",
-        email = "joan@example.com",
-        tel = "600123456",
-        address = "C/ Exemple, 1",
-        companyId = 1,
-        role = Role.ROLE_USER
-    )
-    UserDetailsDialog(user = sampleUser, onDismiss = {}, onUpdate = {}, onDelete = {})
 }

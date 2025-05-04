@@ -49,12 +49,7 @@ fun ActiveServicesTab(
     //Controla el servei a eliminar
     var serviceToDelete by remember { mutableStateOf<Service?>(null) }
 
-    LaunchedEffect(uiState.msg) {
-        if (!uiState.isLoading && uiState.msg != null) {
-            launchSnackbar(uiState.msg)
-            viewModel.resetMsg()
-        }
-    }
+
 
     LaunchedEffect(Unit) {
         viewModel.refreshServices()
