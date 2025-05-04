@@ -43,6 +43,9 @@ data object AdminHome
 fun AdminHomeScreen(
     viewModel: AdminHomeViewModel = hiltViewModel(),
     navToConfig: () -> Unit,
+    navToNewService: () -> Unit,
+    navToNewVehicle: () -> Unit,
+    //TODO Afegir les pantalles de creació que falten
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val navController = rememberNavController()
@@ -51,6 +54,15 @@ fun AdminHomeScreen(
     var currentTab by remember { mutableStateOf<AdminHomeTab>(AdminHomeTab.ServicesTabDestAdmin) }
 
     var fabExpanded by remember { mutableStateOf(false) }
+
+    LaunchedEffect(uiState.msg) {
+        if (!uiState.isLoading) {
+            uiState.msg?.let {
+                snackbarHostState.showSnackbar(it)
+                viewModel.resetMsg()
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -69,9 +81,8 @@ fun AdminHomeScreen(
                     //TODO: Crear pantalles per afegir nous objectes
                     onCreateUser = { },
                     onCreateCompany = { },
-                    onCreateService = { },
-                    onCreateVehicle = { }
-                )
+                    onCreateService = { navToNewService() },
+                    onCreateVehicle = { navToNewVehicle() })
             },
             bottomBar = {
                 HomeBottomBar(
@@ -135,34 +146,29 @@ fun AdminHomeScreen(
             ) {
                 composable<ServicesTab> {
                     ServicesTab(
-                        viewModel = viewModel,
-                        uiState = uiState,
-                        launchSnackbar = { msg ->
+                        viewModel = viewModel, uiState = uiState, launchSnackbar = { msg ->
                             scope.launch {
                                 snackbarHostState.showSnackbar(msg)
                             }
-                        }
-                    )
+                        })
                 }
                 composable<CompanyTab> {
-                    CompanyTab()
+                    CompanyTab(
+                        viewModel = viewModel, uiState = uiState
+                    )
                 }
                 composable<UsersTab> {
                     UsersTab(
-                        viewModel = viewModel,
-                        uiState = uiState,
-                        launchSnackbar = { msg ->
-                            scope.launch {
-                                snackbarHostState.showSnackbar(msg)
-                            }
-                        }
+                        viewModel = viewModel, uiState = uiState
                     )
                 }
                 composable<InvoicesTab> {
                     InvoicesTab()
                 }
                 composable<VehiclesTab> {
-                    VehiclesTab()
+                    VehiclesTab(
+                        viewModel = viewModel, uiState = uiState
+                    )
                 }
             }
 
@@ -174,8 +180,7 @@ fun AdminHomeScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color(0x88000000))
-                    .clickable { fabExpanded = false }
-            ) {}
+                    .clickable { fabExpanded = false }) {}
         }
         LoadingScreen(uiState.isLoading)
     }
@@ -226,47 +231,43 @@ fun AdminFab(
         ) {
             AnimatedVisibility(
                 visible = expanded,
-                enter = fadeIn(tween(120)) +
-                        scaleIn(initialScale = 0.8f, animationSpec = tween(120)) +
-                        slideInVertically(
-                            initialOffsetY = { it / 2 },
-                            animationSpec = tween(120)
-                        ),
-                exit = fadeOut(tween(80)) +
-                        scaleOut(targetScale = 0.8f, animationSpec = tween(80)) +
-                        slideOutVertically(
-                            targetOffsetY = { it / 2 },
-                            animationSpec = tween(80)
-                        )
+                enter = fadeIn(tween(120)) + scaleIn(
+                    initialScale = 0.8f,
+                    animationSpec = tween(120)
+                ) + slideInVertically(
+                    initialOffsetY = { it / 2 }, animationSpec = tween(120)
+                ),
+                exit = fadeOut(tween(80)) + scaleOut(
+                    targetScale = 0.8f,
+                    animationSpec = tween(80)
+                ) + slideOutVertically(
+                    targetOffsetY = { it / 2 }, animationSpec = tween(80)
+                )
             ) {
                 Column(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     FabMenuItem(
-                        text = "Nou servei",
-                        iconRes = R.drawable.ic_package_box
+                        text = "Nou servei", iconRes = R.drawable.ic_package_box
                     ) {
                         onCreateService()
                         onFabClick()
                     }
                     FabMenuItem(
-                        text = "Nova empresa",
-                        iconRes = R.drawable.ic_business
+                        text = "Nova empresa", iconRes = R.drawable.ic_business
                     ) {
                         onCreateCompany()
                         onFabClick()
                     }
                     FabMenuItem(
-                        text = "Nou usuari",
-                        iconRes = R.drawable.ic_account_circle
+                        text = "Nou usuari", iconRes = R.drawable.ic_account_circle
                     ) {
                         onCreateUser()
                         onFabClick()
                     }
                     FabMenuItem(
-                        text = "Nou vehicle",
-                        iconRes = R.drawable.ic_delivery_truck
+                        text = "Nou vehicle", iconRes = R.drawable.ic_delivery_truck
                     ) {
                         onCreateVehicle()
                         onFabClick()
@@ -302,9 +303,7 @@ private fun FabMenuItem(text: String, @DrawableRes iconRes: Int, onClick: () -> 
             .height(IntrinsicSize.Min)
     ) {
         Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.White
+            text = text, style = MaterialTheme.typography.bodyMedium, color = Color.White
         )
         Spacer(Modifier.width(12.dp))
         Icon(
@@ -320,8 +319,7 @@ private fun FabMenuItem(text: String, @DrawableRes iconRes: Int, onClick: () -> 
 @Composable
 fun FabMenuItemPreview() {
     FabMenuItem(
-        text = "Nou usuari",
-        iconRes = R.drawable.ic_account_circle
+        text = "Nou usuari", iconRes = R.drawable.ic_account_circle
     ) { }
 }
 
@@ -334,23 +332,13 @@ fun HomeBottomBar(
     val items = listOf(
         Triple(
             AdminHomeTab.ServicesTabDestAdmin, painterResource(R.drawable.ic_package_box), "Serveis"
-        ),
-        Triple(
-            AdminHomeTab.CompanyTabDestAdmin,
-            painterResource(R.drawable.ic_business),
-            "Empreses"
-        ),
-        Triple(
-            AdminHomeTab.UsersTabDestAdmin,
-            painterResource(R.drawable.ic_happy),
-            "Usuaris"
-        ),
-        Triple(
-            AdminHomeTab.InvoicesTabDestAdmin,
-            painterResource(R.drawable.ic_invoice),
-            "Factures"
-        ),
-        Triple(
+        ), Triple(
+            AdminHomeTab.CompanyTabDestAdmin, painterResource(R.drawable.ic_business), "Empreses"
+        ), Triple(
+            AdminHomeTab.UsersTabDestAdmin, painterResource(R.drawable.ic_happy), "Usuaris"
+        ), Triple(
+            AdminHomeTab.InvoicesTabDestAdmin, painterResource(R.drawable.ic_invoice), "Factures"
+        ), Triple(
             AdminHomeTab.VehiclesTabDestAdmin,
             painterResource(R.drawable.ic_delivery_truck),
             "Vehicles"

@@ -18,8 +18,10 @@ import com.inovatech.smartpack.ui.screens.admin.AdminHome
 import com.inovatech.smartpack.ui.screens.admin.AdminHomeScreen
 import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHome
 import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHomeScreen
-import com.inovatech.smartpack.ui.screens.user.NewService
-import com.inovatech.smartpack.ui.screens.user.NewServiceScreen
+import com.inovatech.smartpack.ui.screens.newObjects.NewService
+import com.inovatech.smartpack.ui.screens.newObjects.NewServiceScreen
+import com.inovatech.smartpack.ui.screens.newObjects.NewVehicle
+import com.inovatech.smartpack.ui.screens.newObjects.NewVehicleScreen
 import com.inovatech.smartpack.ui.screens.user.UserHome
 import com.inovatech.smartpack.ui.screens.user.UserHomeScreen
 import com.inovatech.smartpack.ui.screens.userConfig.*
@@ -91,21 +93,12 @@ fun Navigation(
                     RememberPasswordScreen(
                         onBackClick = { navController.popBackStack(Login, inclusive = false) })
                 }
-                composable<UserHome> {
-                    UserHomeScreen(
-                        navToConfig = {
-                            navController.navigate(UserConfig)
-                        },
-                        navToNewService = {
-                            navController.navigate(NewService)
-                        }
+                composable<ChangePassword> { backStackEntry ->
+                    val args: ChangePassword = backStackEntry.toRoute()
+                    ChangePasswordScreen(
+                        userId = args.id,
+                        onBackPressed = { navController.navigateUp() }
                     )
-                }
-                composable<NewService> {
-                    NewServiceScreen(
-                        navigateUp = { navController.navigateUp() }
-                    )
-
                 }
                 composable<UserConfig> {
                     UserConfigScreen(
@@ -120,11 +113,14 @@ fun Navigation(
                         }
                     )
                 }
-                composable<ChangePassword> { backStackEntry ->
-                    val args: ChangePassword = backStackEntry.toRoute()
-                    ChangePasswordScreen(
-                        userId = args.id,
-                        onBackPressed = { navController.navigateUp() }
+                composable<UserHome> {
+                    UserHomeScreen(
+                        navToConfig = {
+                            navController.navigate(UserConfig)
+                        },
+                        navToNewService = {
+                            navController.navigate(NewService)
+                        }
                     )
                 }
                 composable<DeliverymanHome> {
@@ -137,7 +133,23 @@ fun Navigation(
                     AdminHomeScreen(
                         navToConfig = {
                             navController.navigate(UserConfig)
+                        },
+                        navToNewService = {
+                            navController.navigate(NewService)
+                        },
+                        navToNewVehicle = {
+                            navController.navigate(NewVehicle)
                         }
+                    )
+                }
+                composable<NewService> {
+                    NewServiceScreen(
+                        navigateUp = { navController.navigateUp() }
+                    )
+                }
+                composable<NewVehicle> {
+                    NewVehicleScreen(
+                        navigateUp = { navController.navigateUp() }
                     )
                 }
             }
