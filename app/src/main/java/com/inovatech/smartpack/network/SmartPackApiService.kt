@@ -230,4 +230,29 @@ interface SmartPackApiService {
      */
     @PATCH("/servei/{id}/desactivar")
     suspend fun deactivateService(@Path("id") serviceId: Long): Response<ApiResponse>
+
+
+    //Empreses
+
+    @POST("/empresa/create")
+    suspend fun createCompany(@Body company: CompanyDTO): Response<CompanyDTO>
+
+    @PUT("/empresa/{id}")
+    suspend fun updateCompany(
+        @Path("id") companyId: Long,
+        @Body newCompany: CompanyDTO,
+    ): Response<CompanyDTO>
+
+    @GET("/empresa/list")
+    suspend fun getAllCompanies(): Response<List<CompanyDTO>>
+
+    @GET("/empresa/{empresaID}/usuaris")
+    suspend fun getUsersAssignedToCompany(@Path("empresaID") companyId: Long): Response<List<UserResponse>>
+    /**
+     * Petició per desactivar una empresa
+     * @param companyId: La id de la empresa a esborrar
+     * @return Retorna una resposta de l'API del tipus ApiResponse
+     */
+    @PATCH("/empresa/{id}/desactivate")
+    suspend fun deactivateCompany(companyId: Long): Response<ApiResponse>
 }
