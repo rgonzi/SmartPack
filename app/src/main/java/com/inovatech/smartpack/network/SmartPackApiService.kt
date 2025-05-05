@@ -231,6 +231,12 @@ interface SmartPackApiService {
     @PATCH("/servei/{id}/desactivar")
     suspend fun deactivateService(@Path("id") serviceId: Long): Response<ApiResponse>
 
+    /**
+     * Petició per eliminar definitivament un servei creat quan encara es troba en estat ORDENAT
+     *
+     */
+    @DELETE("/servei/{id}")
+    suspend fun deleteService(@Path("id") serviceId: Long): Response<ApiResponse>
 
     //Empreses
 
@@ -248,6 +254,7 @@ interface SmartPackApiService {
 
     @GET("/empresa/{empresaID}/usuaris")
     suspend fun getUsersAssignedToCompany(@Path("empresaID") companyId: Long): Response<List<UserResponse>>
+
     /**
      * Petició per desactivar una empresa
      * @param companyId: La id de la empresa a esborrar

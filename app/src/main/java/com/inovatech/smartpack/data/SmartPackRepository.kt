@@ -36,6 +36,7 @@ interface SmartPackRepository {
     suspend fun getServicesPerDeliveryman(deliverymanId: Long): Response<List<ServiceDTO>>
     suspend fun getServiceHistoric(serviceId: Long): Response<List<ServiceHistoricDTO>>
     suspend fun deactivateService(serviceId: Long): Response<ApiResponse>
+    suspend fun deleteService(serviceId: Long): Response<ApiResponse>
 
     suspend fun createCompany(company: CompanyDTO): Response<CompanyDTO>
     suspend fun updateCompany(companyId: Long, newCompany: CompanyDTO): Response<CompanyDTO>
@@ -162,6 +163,9 @@ interface SmartPackRepository {
 
     override suspend fun deactivateService(serviceId: Long): Response<ApiResponse> {
         return smartPackApiService.deactivateService(serviceId)
+    }
+    override suspend fun deleteService(serviceId: Long): Response<ApiResponse> {
+        return smartPackApiService.deleteService(serviceId)
     }
 
     override suspend fun createCompany(company: CompanyDTO): Response<CompanyDTO> {

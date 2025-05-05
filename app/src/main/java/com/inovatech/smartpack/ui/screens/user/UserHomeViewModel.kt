@@ -229,12 +229,12 @@ class UserHomeViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
 
             try {
-                val response = smartPackRepository.deactivateService(serviceId)
+                val response = smartPackRepository.deleteService(serviceId)
 
                 if (response.isSuccessful) {
                     _uiState.update {
                         it.copy(
-                            msg = response.body()?.msg ?: "Servei desactivat correctament",
+                            msg = response.body()?.msg ?: "Servei eliminat correctament",
                             //Eliminem també el servei del llistat de serveis actius
                             activeServices = it.activeServices.filter { it.id != serviceId },
                         )
