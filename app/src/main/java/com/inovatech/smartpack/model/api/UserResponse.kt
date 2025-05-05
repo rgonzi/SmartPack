@@ -9,6 +9,7 @@ import com.inovatech.smartpack.model.User
 data class UserResponse(
     val id: Long = 0,
     val email: String = "",
+    @SerializedName("dni") val dni: String = "",
     @SerializedName("nom") val name: String = "",
     @SerializedName("cognom") val surname: String = "",
     @SerializedName("telefon") val tel: String = "",
@@ -17,12 +18,10 @@ data class UserResponse(
     @SerializedName("empresaID") val companyId: Long? = null
 )
 
-
-//TODO Posar camp DNI
-
 fun UserResponse.toUser() = User(
     id = id,
     email = email,
+    dni = dni,
     name = name,
     surname = surname,
     tel = tel,

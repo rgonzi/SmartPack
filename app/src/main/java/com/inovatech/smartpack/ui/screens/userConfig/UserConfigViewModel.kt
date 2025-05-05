@@ -39,6 +39,7 @@ class UserConfigViewModel @Inject constructor(
     fun updateName(name: String) = _uiState.update { it.copy(user = it.user!!.copy(name = name)) }
     fun updateSurname(surname: String) =
         _uiState.update { it.copy(user = it.user!!.copy(surname = surname)) }
+    fun updateDni(dni: String) = _uiState.update { it.copy(user = it.user!!.copy(dni = dni)) }
 
     fun updateTel(tel: String) = _uiState.update { it.copy(user = it.user!!.copy(tel = tel)) }
     fun updateAddress(address: String) =
@@ -152,8 +153,6 @@ class UserConfigViewModel @Inject constructor(
                         }
                     }
                 }
-
-
             } catch (e: IOException) {
                 _uiState.update {
                     it.copy(errorMessage = "No s'ha pogut connectar amb el servidor")

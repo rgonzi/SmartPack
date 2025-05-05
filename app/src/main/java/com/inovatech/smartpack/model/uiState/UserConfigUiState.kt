@@ -13,6 +13,7 @@ data class UserConfigUiState(
     val msg: String? = null,
     val name: String = "",
     val surname: String = "",
+    val dni: String = "",
     val tel: String = "",
     val address: String = "",
 )

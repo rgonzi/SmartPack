@@ -10,6 +10,7 @@ import com.inovatech.smartpack.model.api.DeliverymanRequest
 import com.inovatech.smartpack.model.uiState.SignUpUiState
 import com.inovatech.smartpack.utils.Settings
 import com.inovatech.smartpack.utils.Settings.TIMEOUT
+import com.inovatech.smartpack.utils.isValidDni
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,6 +42,7 @@ class SignUpViewModel @Inject constructor(
             "password" -> _uiState.update { it.copy(password = value) }
             "repeatedPassword" -> _uiState.update { it.copy(repeatedPassword = value) }
             "secretWord" -> _uiState.update { it.copy(secretWord = value) }
+            "dni" -> _uiState.update { it.copy(dni = value) }
             "name" -> _uiState.update { it.copy(name = value) }
             "surname" -> _uiState.update { it.copy(surname = value) }
             "tel" -> _uiState.update { it.copy(tel = value) }
@@ -63,6 +65,7 @@ class SignUpViewModel @Inject constructor(
         val email = _uiState.value.email
         val password = _uiState.value.password
         val repeatedPassword = _uiState.value.repeatedPassword
+        val dni = _uiState.value.dni
         val name = _uiState.value.name
         val surname = _uiState.value.surname
         val tel = _uiState.value.tel
@@ -72,8 +75,7 @@ class SignUpViewModel @Inject constructor(
         val license = _uiState.value.license
 
         return when {
-            name.isEmpty() || surname.isEmpty() || tel.isEmpty() || address.isEmpty() ||
-                    addressType.isEmpty() || secretWord.isEmpty() -> {
+            name.isEmpty() || surname.isEmpty() || tel.isEmpty() || address.isEmpty() || addressType.isEmpty() || dni.isEmpty() || secretWord.isEmpty() -> {
                 _uiState.update { it.copy(error = "Tots els camps són obligatoris") }
                 false
             }
@@ -90,6 +92,11 @@ class SignUpViewModel @Inject constructor(
 
             !password.isValidPassword() -> {
                 _uiState.update { it.copy(error = "La contrasenya ha de tenir mínim 8 caràcters, almenys 1 majúscula i 1 número") }
+                false
+            }
+
+            !dni.isValidDni() -> {
+                _uiState.update { it.copy(error = "El DNI no té el format correcte") }
                 false
             }
 
@@ -129,6 +136,7 @@ class SignUpViewModel @Inject constructor(
                 email = state.email,
                 password = state.password,
                 secretWord = state.secretWord,
+                dni = state.dni,
                 role = state.role,
                 name = state.name,
                 surname = state.surname,
@@ -168,23 +176,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun clearFields() {
-        _uiState.update {
-            it.copy(
-                email = "",
-                password = "",
-                repeatedPassword = "",
-                secretWord = "",
-                name = "",
-                surname = "",
-                tel = "",
-                address = "",
-                license = "",
-                addressType = "",
-                hasTriedRegister = false,
-                signUpSuccess = false,
-                error = null
-            )
-        }
+        _uiState.update { SignUpUiState() }
     }
 
     /**

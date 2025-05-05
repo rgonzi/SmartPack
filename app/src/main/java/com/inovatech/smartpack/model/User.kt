@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 data class User(
     val id: Long = 0,
     val email: String? = null,
+    val dni: String? = null,
     val password: String? = null,
     val name: String? = null,
     val surname: String? = null,
@@ -27,6 +28,7 @@ enum class Role {
 fun User.toUserRequest() = UserRequest(
     email = email,
     password = password,
+    dni = dni,
     role = role,
     name = name,
     surname = surname,

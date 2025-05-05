@@ -137,6 +137,18 @@ fun SignUpScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
+        Spacer(modifier = Modifier.height(4.dp))
+
+        CommonTextField(
+            value = uiState.dni,
+            onValueChange = { viewModel.updateField("dni", it) },
+            label = "DNI",
+            trailingIcon = Icons.Default.Person,
+            imeAction = ImeAction.Next,
+            isError = uiState.hasTriedRegister && uiState.dni.isEmpty(),
+            modifier = Modifier.fillMaxWidth()
+        )
+
         Spacer(modifier = Modifier.height(8.dp))
 
         Row (

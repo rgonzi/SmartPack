@@ -22,3 +22,13 @@ fun String.isValidPassword(): Boolean {
     val passwordRegex = Regex("^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{8,}$")
     return passwordRegex.matches(this)
 }
+
+/**
+ * Funció d'extensió de String que permet comprovar si un DNI és correcte en funció
+ * d'un Regex definit.
+ */
+fun String.isValidDni(): Boolean {
+    //El Regex comprova que el format del DNI compleix que siguin 8 nombres + 1 lletra
+    val dniRegex = Regex("^[0-9]{8}[A-Za-z]$")
+    return dniRegex.matches(this)
+}

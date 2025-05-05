@@ -41,6 +41,7 @@ import com.inovatech.smartpack.ui.CommonTextField
 import com.inovatech.smartpack.ui.LoadingScreen
 import com.inovatech.smartpack.ui.items.BasicTopAppBar
 import com.inovatech.smartpack.ui.theme.Background
+import com.inovatech.smartpack.utils.isValidDni
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -139,6 +140,20 @@ fun UserConfigScreen(
                                 trailingIcon = Icons.Default.Person,
                                 imeAction = ImeAction.Done,
                                 isError = false
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            //DNI
+                            CommonTextField(
+                                value = uiState.user!!.dni ?: "",
+                                onValueChange = {
+                                    viewModel.updateDni(it)
+                                    hasChanges = true
+                                },
+                                label = "DNI",
+                                trailingIcon = Icons.Default.Person,
+                                imeAction = ImeAction.Done,
+                                isError = !uiState.user!!.dni!!.isValidDni()
                             )
                             Spacer(modifier = Modifier.height(8.dp))
 

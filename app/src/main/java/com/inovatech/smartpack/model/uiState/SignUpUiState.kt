@@ -10,6 +10,7 @@ data class SignUpUiState(
     val password: String = "",
     val repeatedPassword: String = "",
     val secretWord: String = "",
+    val dni: String = "",
     val role: Role = Role.ROLE_USER,
     val name: String = "",
     val surname: String = "",
