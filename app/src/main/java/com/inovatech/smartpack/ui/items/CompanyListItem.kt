@@ -44,15 +44,16 @@ fun CompanyListItem(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                //Id + nom
+                //Id + nom empresa
                 Text(
                     text = "#${company.id}: ${company.name} - ",
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
-                //Email
+                //NIF
                 Text(text = company.nif, color = Color.White)
             }
+            //Email + telèfon
             Text(text = "${company.email} - ${company.phone}", color = Color.White)
         }
     }

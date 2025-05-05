@@ -15,6 +15,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,7 +28,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.inovatech.smartpack.model.User
 import com.inovatech.smartpack.model.Vehicle
 import com.inovatech.smartpack.model.uiState.AdminHomeUiState
 import com.inovatech.smartpack.ui.items.CommonFilterBar
@@ -38,43 +38,53 @@ import kotlinx.serialization.Serializable
 @Serializable
 object VehiclesTab
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VehiclesTab(
     viewModel: AdminHomeViewModel,
     uiState: AdminHomeUiState
 ) {
-    Column {
-        Text(
-            "Llistat de vehicles",
-            fontSize = 24.sp,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        CommonFilterBar(
-            query = uiState.searchQuery,
-            onQueryChange = viewModel::onSearchQueryChanged,
-            placeHolder = "Cerca per matrícula"
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        LazyColumn(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(uiState.filteredVehicles) { vehicle ->
-                VehicleListItem(vehicle = vehicle, onClick = viewModel::onVehicleSelected)
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-        }
-
-        uiState.selectedVehicle?.let { vehicle ->
-            VehicleDetailsDialog(
-                vehicle = vehicle,
-                onDismiss = { viewModel.onVehicleSelected(null) },
-                onUpdate = viewModel::updateVehicle,
-                onDelete = { viewModel.deactivateVehicle(vehicle.id); viewModel.onVehicleSelected(null) }
+    PullToRefreshBox(
+        isRefreshing = uiState.isRefreshing,
+        onRefresh = { viewModel.refreshAll() },
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Column {
+            Text(
+                "Llistat de vehicles",
+                fontSize = 24.sp,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth()
             )
+            CommonFilterBar(
+                query = uiState.searchQuery,
+                onQueryChange = viewModel::onSearchQueryChanged,
+                placeHolder = "Cerca per matrícula"
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyColumn(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(uiState.filteredVehicles) { vehicle ->
+                    VehicleListItem(vehicle = vehicle, onClick = viewModel::onVehicleSelected)
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+
+            uiState.selectedVehicle?.let { vehicle ->
+                VehicleDetailsDialog(
+                    vehicle = vehicle,
+                    onDismiss = { viewModel.onVehicleSelected(null) },
+                    onUpdate = viewModel::updateVehicle,
+                    onDelete = {
+                        viewModel.deactivateVehicle(vehicle.id); viewModel.onVehicleSelected(
+                        null
+                    )
+                    }
+                )
+            }
         }
     }
 }
