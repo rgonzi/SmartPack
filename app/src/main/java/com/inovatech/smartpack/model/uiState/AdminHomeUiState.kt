@@ -32,10 +32,10 @@ data class AdminHomeUiState(
         }
     val filteredServices: List<Service>
         get() = servicesList.filter {
-            (searchQuery.isBlank() || it.id.toString()
-                .contains(searchQuery, true) || it.packageToDeliver.recipientName.contains(
-                searchQuery, true
-            ))
+            (searchQuery.isBlank() || it.id.toString().contains(searchQuery, true)
+                    || it.packageToDeliver.recipientName.contains(searchQuery, true)
+                    || it.packageToDeliver.recipientPhone.contains(searchQuery, true)
+            )
         }
     val filteredCompanies: List<Company>
         get() = companiesList.filter {

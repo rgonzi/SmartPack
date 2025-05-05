@@ -200,6 +200,12 @@ interface SmartPackApiService {
     ): Response<ServiceDTO>
 
     /**
+     * Petició per obtenir un llistat de tots els serveis
+     */
+    @GET("/servei/list")
+    suspend fun getAllServices(): Response<List<ServiceDTO>>
+
+    /**
      * Petició per obtenir una llista de serveis creats per un usuari
      * @param userId: La id de l'usuari
      * @return La llista amb els serveis del tipus ServiceDTO
@@ -233,7 +239,6 @@ interface SmartPackApiService {
 
     /**
      * Petició per eliminar definitivament un servei creat quan encara es troba en estat ORDENAT
-     *
      */
     @DELETE("/servei/{id}")
     suspend fun deleteService(@Path("id") serviceId: Long): Response<ApiResponse>

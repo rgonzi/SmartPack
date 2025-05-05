@@ -4,13 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
-import com.inovatech.smartpack.model.Company
-import com.inovatech.smartpack.model.User
-import com.inovatech.smartpack.model.Vehicle
+import com.inovatech.smartpack.model.*
+import com.inovatech.smartpack.model.api.toService
 import com.inovatech.smartpack.model.api.toUser
-import com.inovatech.smartpack.model.toCompanyDTO
-import com.inovatech.smartpack.model.toUserRequest
-import com.inovatech.smartpack.model.toVehicleDTO
 import com.inovatech.smartpack.model.uiState.AdminHomeUiState
 import com.inovatech.smartpack.utils.Settings
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,11 +23,50 @@ class AdminHomeViewModel @Inject constructor(
     val uiState: StateFlow<AdminHomeUiState> = _uiState.asStateFlow()
 
     init {
-        getAllUsers()
+        loadData()
     }
 
     fun resetMsg() {
         _uiState.update { it.copy(msg = null) }
+    }
+
+    private fun loadData() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            getAllUsers()
+            getAllVehicles()
+            getAllCompanies()
+            getAllServices()
+            //getAllInvoices()
+            //TODO: Esperar a que s'hagi carregat totes les dades
+            _uiState.update { it.copy(isLoading = false) }
+        }
+    }
+
+    private fun getAllServices() {
+        _uiState.update { it.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            try {
+                val response = smartPackRepository.getAllServices()
+                if (response.isSuccessful && response.body() != null) {
+                    val services = response.body()!!.map { it.toService() }
+                    _uiState.update { it.copy(servicesList = services) }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Error ${response.code()}: No s'han pogut carregar els serveis"
+                        )
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+            _uiState.update { it.copy(isLoading = false, isRefreshing = false) }
+        }
     }
 
     private fun getAllUsers() {
@@ -41,7 +76,7 @@ class AdminHomeViewModel @Inject constructor(
                 val response = smartPackRepository.getAllUsers()
                 if (response.isSuccessful && response.body() != null) {
                     val users = response.body()!!.map { it.toUser() }
-                    _uiState.update { it.copy(usersList = users, isLoading = false) }
+                    _uiState.update { it.copy(usersList = users) }
                 } else {
                     _uiState.update {
                         it.copy(
@@ -93,7 +128,7 @@ class AdminHomeViewModel @Inject constructor(
         _uiState.update { it.copy(isRefreshing = true) }
 
         getAllUsers()
-
+        //TODO Incorporar les funcions per obtenir totes les dades
         //La funció getAllUsers() ja s'encarrega de canviar isRefreshing = false
     }
 
@@ -111,6 +146,10 @@ class AdminHomeViewModel @Inject constructor(
 
     fun onCompanySelected(company: Company?) {
         _uiState.update { it.copy(selectedCompany = company) }
+    }
+
+    fun onServiceSelected(service: Service?) {
+        _uiState.update { it.copy(selectedService = service) }
     }
 
     fun updateUser(updatedUser: User) {
@@ -143,6 +182,10 @@ class AdminHomeViewModel @Inject constructor(
             }
             _uiState.update { it.copy(isLoading = false) }
         }
+    }
+
+    fun updateService(updatedService: Service) {
+        //TODO: Acabar d'implementar
     }
 
     fun updateVehicle(updatedVehicle: Vehicle) {
@@ -240,6 +283,10 @@ class AdminHomeViewModel @Inject constructor(
             }
             _uiState.update { it.copy(isLoading = false, selectedUser = null) }
         }
+    }
+
+    fun deactivateService(serviceId: Long) {
+        //TODO: Acabar d'implementar
     }
 
     fun deactivateCompany(companyId: Long) {

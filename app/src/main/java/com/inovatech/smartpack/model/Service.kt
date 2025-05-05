@@ -24,3 +24,5 @@ fun Service.toServiceDTO() = ServiceDTO(
     deliverymanId = deliverymanId,
     packageRequest = packageToDeliver.toPackageDTO()
 )
+
+fun Service.isCompleted() = status == ServiceStatus.ENTREGAT || status == ServiceStatus.RETORNAT
