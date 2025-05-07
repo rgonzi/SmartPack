@@ -1,49 +1,29 @@
 package com.inovatech.smartpack.ui.screens.admin
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.inovatech.smartpack.model.Package
-import com.inovatech.smartpack.model.Service
-import com.inovatech.smartpack.model.User
-import com.inovatech.smartpack.model.isCompleted
+import com.inovatech.smartpack.model.*
 import com.inovatech.smartpack.model.uiState.AdminHomeUiState
 import com.inovatech.smartpack.ui.items.CommonFilterBar
 import com.inovatech.smartpack.ui.items.DeleteDialog
 import com.inovatech.smartpack.ui.items.ServiceListItem
-import com.inovatech.smartpack.ui.screens.user.ServiceDetailsDialog
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -54,7 +34,6 @@ object ServicesTab
 fun ServicesTab(
     viewModel: AdminHomeViewModel,
     uiState: AdminHomeUiState,
-    launchSnackbar: (String) -> Unit,
 ) {
     var showActiveServices by remember { mutableStateOf(true) }
     var showFinishedServices by remember { mutableStateOf(false) }
@@ -75,7 +54,7 @@ fun ServicesTab(
             CommonFilterBar(
                 query = uiState.searchQuery,
                 onQueryChange = viewModel::onSearchQueryChanged,
-                placeHolder = "Cerca per id, nom o telèfon destinatari"
+                placeHolder = "Cerca per id, nom o telèfon dest."
             )
 
             //Chips per filtrar serveis actuals o finalitzats
@@ -112,11 +91,15 @@ fun ServicesTab(
             }
             uiState.selectedService?.let { service ->
                 ServiceDetailsDialog(
+                    uiState = uiState,
                     service = service,
                     onDismiss = { viewModel.onServiceSelected(null) },
                     onUpdate = viewModel::updateService,
-                    onDelete = { viewModel.deactivateService(service.id); viewModel.onServiceSelected(null) }
-                )
+                    onDelete = {
+                        viewModel.deactivateService(service.id); viewModel.onServiceSelected(
+                        null
+                    )
+                    })
             }
         }
     }
@@ -125,13 +108,13 @@ fun ServicesTab(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServiceDetailsDialog(
+    uiState: AdminHomeUiState,
     service: Service,
     onDismiss: () -> Unit,
     onUpdate: (Service) -> Unit,
     onDelete: () -> Unit,
 ) {
     var status by remember { mutableStateOf(service.status) }
-    var isCompleted by remember { mutableStateOf(service.isCompleted()) }
     var assignedTo by remember { mutableStateOf(service.deliverymanId) }
     var recipientName by remember { mutableStateOf(service.packageToDeliver.recipientName) }
     var recipientAddress by remember { mutableStateOf(service.packageToDeliver.recipientAddress) }
@@ -141,6 +124,7 @@ fun ServiceDetailsDialog(
     var dimensions by remember { mutableStateOf(service.packageToDeliver.dimensions) }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showModifyDeliverymanDialog by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -171,8 +155,7 @@ fun ServiceDetailsDialog(
                 OutlinedTextField(
                     value = recipientAddress,
                     onValueChange = { recipientAddress = it },
-                    minLines = 2,
-                    maxLines = 2,
+                    maxLines = 3,
                     label = { Text("Adreça destinatari") },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -210,7 +193,7 @@ fun ServiceDetailsDialog(
                         label = { Text("Mides") },
                         trailingIcon = { Text("cm") },
                         modifier = Modifier
-                            .weight(2f)
+                            .weight(1.3f)
                             .padding(vertical = 4.dp)
                     )
                 }
@@ -225,20 +208,27 @@ fun ServiceDetailsDialog(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    "Estat: ${status}",
-                    color = if (isCompleted) Color.Green else Color.Blue,
-                    fontSize = 16.sp
-                )
-                //TODO: Mostrar Menú inferior per canviar l'estat
+                //Estat del servei
+                StateDropdownMenu(value = status, modifyStatus = { status = it })
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    "Transportista assignat: #${assignedTo ?: "No"}",
-                    fontSize = 16.sp
-                )
-                //TODO: Mostrar Menú inferior per seleccionar un nou transportista
+                //Transportista assignat
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        "Trans. assignat: #${assignedTo ?: "No"}", fontSize = 16.sp
+                    )
+                    //Botó per obrir el quadre per modificar el transportista assignat
+                    Text(
+                        text = "Modificar",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        textDecoration = TextDecoration.Underline,
+                        modifier = Modifier.clickable { showModifyDeliverymanDialog = true })
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -250,6 +240,8 @@ fun ServiceDetailsDialog(
                 ) {
                     Text("Eliminar servei", fontWeight = FontWeight.Bold)
                 }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("*No oblideu confirmar els canvis!!", fontSize = 13.sp)
             }
         },
         confirmButton = {
@@ -268,6 +260,8 @@ fun ServiceDetailsDialog(
                             )
                         )
                     )
+                    //Tanquem el diàleg igualment
+                    onDismiss()
                 }) { Text("Modificar") }
         },
         dismissButton = {
@@ -275,16 +269,135 @@ fun ServiceDetailsDialog(
                 Text("Cancel·lar")
             }
         })
+    //Mostrem el diàleg de confirmació per desactivar el servei
     if (showDeleteDialog) {
         DeleteDialog(
             onDismiss = { showDeleteDialog = false },
             text = "Segur que vols eliminar aquest servei? Aquesta acció és irreversible",
             onConfirm = { onDelete(); showDeleteDialog = false })
     }
+    //Mostrem el diàleg per modificar el transportista dins d'un llistat donat
+    if (showModifyDeliverymanDialog) {
+        ModifyDeliverymanDialog(
+
+            onDismiss = { showModifyDeliverymanDialog = false },
+            onConfirm = { assignedTo = it; showModifyDeliverymanDialog = false },
+            uiState = uiState,
+            currentAssignedId = assignedTo
+        )
+    }
 }
 
-@Preview
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ServiceDetailsDialogPreview() {
-    ServiceDetailsDialog(service = Service(), onDismiss = {}, onUpdate = {}, onDelete = {})
+fun StateDropdownMenu(
+    value: ServiceStatus,
+    modifyStatus: (ServiceStatus) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded, onExpandedChange = { expanded = it }) {
+        OutlinedTextField(
+            value = value.name,
+            onValueChange = {},
+            label = { Text("Estat") },
+            readOnly = true,
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable)
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded, onDismissRequest = { expanded = false }) {
+            ServiceStatus.entries.forEach { status ->
+                DropdownMenuItem(
+                    text = { Text(text = status.name) }, onClick = {
+                        modifyStatus(status)
+                        expanded = false
+                    }, contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ModifyDeliverymanDialog(
+    uiState: AdminHomeUiState,
+    currentAssignedId: Long?,
+    onDismiss: () -> Unit,
+    onConfirm: (Long?) -> Unit,
+) {
+    val deliverymenList = uiState.deliverymenList
+    val selectedDeliveryman = remember {
+        mutableStateOf(
+            deliverymenList.find { it.id == currentAssignedId })
+    }
+    //Mapa que relaciona userId i nom
+    val nameByUserId = remember(uiState.usersList) {
+        uiState.usersList.associate { user -> user.id to user.name }
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Assignar transportista", fontWeight = FontWeight.Bold) },
+        text = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth().heightIn(200.dp),
+                ) {
+                    item {
+                        // Opció desassignar transportista"
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { selectedDeliveryman.value = null }
+                        ) {
+                            RadioButton(
+                                selected = (selectedDeliveryman.value == null),
+                                onClick = { selectedDeliveryman.value = null })
+                            Text("Desassignar transportista")
+                        }
+                        HorizontalDivider()
+                    }
+                    items(deliverymenList) { deliveryman ->
+                        // Transportistes disponibles
+
+                        val userName = nameByUserId[deliveryman.userId]
+                            ?: "Transportista #${deliveryman.id}"
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { selectedDeliveryman.value = deliveryman }
+                        ) {
+                            RadioButton(
+                                selected = (selectedDeliveryman.value?.id == deliveryman.id),
+                                onClick = { selectedDeliveryman.value = deliveryman })
+                            Text(text = "#${deliveryman.id} - $userName")
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm(selectedDeliveryman.value?.id)
+                    //Tanquem el diàleg igualment
+                    onDismiss()
+                }) { Text("Assignar") }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel·lar")
+            }
+        }
+    )
 }
