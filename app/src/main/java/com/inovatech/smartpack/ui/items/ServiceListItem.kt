@@ -16,7 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.inovatech.smartpack.model.Service
 import com.inovatech.smartpack.ui.theme.BlueSecondary
@@ -50,8 +53,22 @@ fun ServiceListItem(
                 //Estat
                 Text(text = service.status.toString(), color = Color.White)
             }
-            //Telèfon destinatari
-            Text(text = "Telèfon: ${service.packageToDeliver.recipientPhone}", color = Color.White)
+            Row(
+                verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
+            ) {
+                //Telèfon destinatari
+                Text(
+                    text = "Telèfon: ${service.packageToDeliver.recipientPhone}",
+                    color = Color.White
+                )
+                service.deliverymanId?.let {
+                    Text(
+                        text = " - Transportista: #$it",
+                        color = Color.White,
+                        fontStyle = FontStyle.Italic
+                    )
+                }
+            }
         }
     }
 }
