@@ -1,6 +1,7 @@
 package com.inovatech.smartpack.model.uiState
 
 import com.inovatech.smartpack.model.Company
+import com.inovatech.smartpack.model.Deliveryman
 import com.inovatech.smartpack.model.Service
 import com.inovatech.smartpack.model.User
 import com.inovatech.smartpack.model.Vehicle
@@ -17,6 +18,7 @@ data class AdminHomeUiState(
     val usersList: List<User> = emptyList(),
     val servicesList: List<Service> = emptyList(),
     val companiesList: List<Company> = emptyList(),
+    val deliverymenList: List<Deliveryman> = emptyList(),
 //    val invoicesList: List<Invoice> = emptyList(),
     val vehiclesList: List<Vehicle> = emptyList(),
     val isLoading: Boolean = false,

@@ -5,8 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.model.*
+import com.inovatech.smartpack.model.api.toCompany
+import com.inovatech.smartpack.model.api.toDeliveryman
 import com.inovatech.smartpack.model.api.toService
 import com.inovatech.smartpack.model.api.toUser
+import com.inovatech.smartpack.model.api.toVehicle
 import com.inovatech.smartpack.model.uiState.AdminHomeUiState
 import com.inovatech.smartpack.utils.Settings
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +37,7 @@ class AdminHomeViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             getAllUsers()
+            getAllDeliverymen()
             getAllVehicles()
             getAllCompanies()
             getAllServices()
@@ -44,8 +48,6 @@ class AdminHomeViewModel @Inject constructor(
     }
 
     private fun getAllServices() {
-        _uiState.update { it.copy(isLoading = true) }
-
         viewModelScope.launch {
             try {
                 val response = smartPackRepository.getAllServices()
@@ -65,12 +67,11 @@ class AdminHomeViewModel @Inject constructor(
                 }
                 Log.d(Settings.LOG_TAG, e.message.toString())
             }
-            _uiState.update { it.copy(isLoading = false, isRefreshing = false) }
+            _uiState.update { it.copy(isLoading = false) }
         }
     }
 
     private fun getAllUsers() {
-        _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             try {
                 val response = smartPackRepository.getAllUsers()
@@ -90,46 +91,89 @@ class AdminHomeViewModel @Inject constructor(
                 }
                 Log.d(Settings.LOG_TAG, e.message.toString())
             }
-            _uiState.update { it.copy(isLoading = false, isRefreshing = false) }
+        }
+    }
+
+    private fun getAllDeliverymen() {
+        viewModelScope.launch {
+            try {
+                val response = smartPackRepository.getAllDeliverymen()
+                if (response.isSuccessful && response.body() != null) {
+                    val deliverymen = response.body()!!.map { it.toDeliveryman() }
+                    _uiState.update { it.copy(deliverymenList = deliverymen) }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Error ${response.code()}: No s'han pogut carregar les empreses"
+                        )
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
         }
     }
 
     private fun getAllVehicles() {
-        //TODO: Implementar obtenir vehicles
-//        _uiState.update { it.copy(isLoading = true) }
-//        viewModelScope.launch {
-//            try {
-//                val response = smartPackRepository.getAllVehicles()
-//                if (response.isSuccessful && response.body() != null) {
-//                    val vehicles = response.body()!!.map { it.toVehicle() }
-//                    _uiState.update { it.copy(vehiclesList = vehicles, isLoading = false) }
-//                } else {
-//                    _uiState.update {
-//                        it.copy(
-//                            msg = "Error ${response.code()}: No s'han pogut carregar els vehicles"
-//                        )
-//                    }
-//                }
-//            } catch (e: IOException) {
-//                _uiState.update {
-//                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
-//                }
-//                Log.d(Settings.LOG_TAG, e.message.toString())
-//            }
-//            _uiState.update { it.copy(isLoading = false, isRefreshing = false) }
-//        }
+        viewModelScope.launch {
+            try {
+                val response = smartPackRepository.getAllVehicles()
+                if (response.isSuccessful && response.body() != null) {
+                    val vehicles = response.body()!!.map { it.toVehicle() }
+                    _uiState.update { it.copy(vehiclesList = vehicles) }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Error ${response.code()}: No s'han pogut carregar els vehicles"
+                        )
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+        }
     }
 
     private fun getAllCompanies() {
-        //TODO: Implementar obtenir empreses
+        viewModelScope.launch {
+            try {
+                val response = smartPackRepository.getAllCompanies()
+                if (response.isSuccessful && response.body() != null) {
+                    val companies = response.body()!!.map { it.toCompany() }
+                    _uiState.update { it.copy(companiesList = companies) }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Error ${response.code()}: No s'han pogut carregar les empreses"
+                        )
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+        }
     }
 
     fun refreshAll() {
         _uiState.update { it.copy(isRefreshing = true) }
 
         getAllUsers()
-        //TODO Incorporar les funcions per obtenir totes les dades
-        //La funció getAllUsers() ja s'encarrega de canviar isRefreshing = false
+        getAllVehicles()
+        getAllCompanies()
+        getAllServices()
+
+        //TODO Incorporar la funció per obtenir totes les factures
+
+        _uiState.update { it.copy(isRefreshing = false) }
     }
 
     fun onSearchQueryChanged(query: String) {
@@ -185,7 +229,35 @@ class AdminHomeViewModel @Inject constructor(
     }
 
     fun updateService(updatedService: Service) {
-        //TODO: Acabar d'implementar
+
+        viewModelScope.launch {
+            try {
+                val response = smartPackRepository.updateService(
+                    serviceId = updatedService.id, newService = updatedService.toServiceDTO()
+                )
+
+                if (response.isSuccessful && response.body() != null) {
+                    _uiState.update {
+                        it.copy(
+                            selectedVehicle = null, msg = "Servei modificat correctament"
+                        )
+                    }
+                    refreshAll()
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Error ${response.code()}: No s'ha pogut fer la modificació"
+                        )
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+            _uiState.update { it.copy(isLoading = false) }
+        }
     }
 
     fun updateVehicle(updatedVehicle: Vehicle) {
@@ -193,11 +265,9 @@ class AdminHomeViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val response =
-                    smartPackRepository.updateVehicle(
-                        updatedVehicle.id,
-                        updatedVehicle.toVehicleDTO()
-                    )
+                val response = smartPackRepository.updateVehicle(
+                    updatedVehicle.id, updatedVehicle.toVehicleDTO()
+                )
 
                 if (response.isSuccessful && response.body() != null) {
                     _uiState.update {
@@ -228,11 +298,9 @@ class AdminHomeViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val response =
-                    smartPackRepository.updateCompany(
-                        updatedCompany.id,
-                        updatedCompany.toCompanyDTO()
-                    )
+                val response = smartPackRepository.updateCompany(
+                    updatedCompany.id, updatedCompany.toCompanyDTO()
+                )
 
                 if (response.isSuccessful && response.body() != null) {
                     _uiState.update {
@@ -286,7 +354,30 @@ class AdminHomeViewModel @Inject constructor(
     }
 
     fun deactivateService(serviceId: Long) {
-        //TODO: Acabar d'implementar
+        _uiState.update { it.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            try {
+                val response = smartPackRepository.deactivateService(serviceId)
+
+                if (response.isSuccessful) {
+                    if (response.body() != null) {
+                        _uiState.update {
+                            it.copy(
+                                msg = response.body()?.msg ?: "Usuari desactivat correctament"
+                            )
+                        }
+                        refreshAll()
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+            _uiState.update { it.copy(isLoading = false, selectedUser = null) }
+        }
     }
 
     fun deactivateCompany(companyId: Long) {
@@ -311,7 +402,7 @@ class AdminHomeViewModel @Inject constructor(
                     it.copy(msg = "No s'ha pogut connectar amb el servidor")
                 }
                 Log.d(Settings.LOG_TAG, e.message.toString())
-                }
+            }
             _uiState.update { it.copy(isLoading = false, selectedCompany = null) }
         }
     }
