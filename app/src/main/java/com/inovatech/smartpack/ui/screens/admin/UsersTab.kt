@@ -35,6 +35,8 @@ fun UsersTab(
         modifier = Modifier.fillMaxSize()
     ) {
         Column {
+            //TODO: Diferenciar usuaris normals dels transportistes amb la icona del camió
+            //TODO: Posar 3 Chips per mostrar tots, usuaris normals o transportistes
             Text(
                 "Llistat d'usuaris",
                 fontSize = 24.sp,

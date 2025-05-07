@@ -189,7 +189,7 @@ class UserHomeViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
 
             try {
-                val response = smartPackRepository.modifyService(
+                val response = smartPackRepository.updateService(
                     modifiedService.id, modifiedService.toServiceDTO()
                 )
 

@@ -56,8 +56,6 @@ fun SignUpScreen(
     val coroutineScope = rememberCoroutineScope()
     var checked by remember { mutableStateOf(false) }
 
-
-    //TODO Afegir camp DNI al registrar usuari
     CommonInitScreen(
         title = "Introdueix les teves dades",
         nomBotoPrincipal = "Registrar-me",
@@ -139,6 +137,7 @@ fun SignUpScreen(
 
         Spacer(modifier = Modifier.height(4.dp))
 
+        //DNI
         CommonTextField(
             value = uiState.dni,
             onValueChange = { viewModel.updateField("dni", it) },

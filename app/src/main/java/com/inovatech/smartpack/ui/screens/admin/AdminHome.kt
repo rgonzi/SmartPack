@@ -145,30 +145,19 @@ fun AdminHomeScreen(
                     .padding(16.dp)
             ) {
                 composable<ServicesTab> {
-                    ServicesTab(
-                        viewModel = viewModel, uiState = uiState, launchSnackbar = { msg ->
-                            scope.launch {
-                                snackbarHostState.showSnackbar(msg)
-                            }
-                        })
+                    ServicesTab(viewModel = viewModel, uiState = uiState)
                 }
                 composable<CompanyTab> {
-                    CompanyTab(
-                        viewModel = viewModel, uiState = uiState
-                    )
+                    CompanyTab(viewModel = viewModel, uiState = uiState)
                 }
                 composable<UsersTab> {
-                    UsersTab(
-                        viewModel = viewModel, uiState = uiState
-                    )
+                    UsersTab(viewModel = viewModel, uiState = uiState)
                 }
                 composable<InvoicesTab> {
                     InvoicesTab()
                 }
                 composable<VehiclesTab> {
-                    VehiclesTab(
-                        viewModel = viewModel, uiState = uiState
-                    )
+                    VehiclesTab(viewModel = viewModel, uiState = uiState)
                 }
             }
 
