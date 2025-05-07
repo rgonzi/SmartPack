@@ -91,6 +91,14 @@ interface SmartPackApiService {
     @GET("/transportista/usuari/{userId}")
     suspend fun getDeliverymanByUserId(@Path("userId") userId: Long): Response<DeliverymanResponse>
 
+
+    /**
+     * Petició per obtenir tots els transportistes
+     *
+     */
+    @GET("/transportista/list")
+    suspend fun getAllDeliverymen(): Response<List<DeliverymanResponse>>
+
     /**
      * Petició per crear un nou transportista
      * @param transportista: Les dades del transportista a crear del tipus DeliverymanRequest
@@ -141,6 +149,12 @@ interface SmartPackApiService {
     suspend fun getVehicleById(@Path("id") id: Long): Response<VehicleDTO>
 
     /**
+     * Petició per obtenir un llistat de tots els vehicles creats
+     */
+    @GET("/vehicle/list")
+    suspend fun getAllVehicles(): Response<List<VehicleDTO>>
+
+    /**
      * Petició per crear un vehicle nou
      * @param vehicle: les dades del vehicle a crear del tipus VehicleDTO
      * @return El vehicle creat amb les seves dades del tipus VehicleDTO
@@ -182,7 +196,7 @@ interface SmartPackApiService {
      * @return Les dades modificades del tipus ServiceDTO
      */
     @PUT("/servei/{id}")
-    suspend fun modifyService(
+    suspend fun updateService(
         @Path("id") serviceId: Long,
         @Body newService: ServiceDTO,
     ): Response<ServiceDTO>

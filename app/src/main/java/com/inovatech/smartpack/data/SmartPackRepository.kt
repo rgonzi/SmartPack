@@ -19,18 +19,20 @@ interface SmartPackRepository {
     suspend fun getAllUsers(): Response<List<UserResponse>>
 
     suspend fun getDeliverymanByUserId(userId: Long): Response<DeliverymanResponse>
+    suspend fun getAllDeliverymen(): Response<List<DeliverymanResponse>>
     suspend fun updateDeliveryman(id: Long, transportista: DeliverymanRequest): Response<DeliverymanResponse>
     suspend fun createDeliveryman(transportista: DeliverymanRequest): Response<DeliverymanResponse>
     suspend fun assignVehicleToDeliveryman(transportistaId: Long, vehicleId: Long): Response<ApiResponse>
     suspend fun desassignVehicleFromDeliveryman(deliverymanId: Long): Response<ApiResponse>
 
     suspend fun getVehicleById(vehicleId: Long): Response<VehicleDTO>
+    suspend fun getAllVehicles(): Response<List<VehicleDTO>>
     suspend fun createVehicle(vehicle: VehicleDTO): Response<VehicleDTO>
     suspend fun updateVehicle(id: Long, vehicle: VehicleDTO): Response<VehicleDTO>
     suspend fun deactivateVehicle(id: Long): Response<ApiResponse>
 
     suspend fun createService(service: ServiceDTO): Response<ServiceDTO>
-    suspend fun modifyService(serviceId: Long, newService: ServiceDTO): Response<ServiceDTO>
+    suspend fun updateService(serviceId: Long, newService: ServiceDTO): Response<ServiceDTO>
     suspend fun changeServiceStatus(serviceId: Long, statusRequest: ChangeStatusRequest): Response<ServiceDTO>
     suspend fun getServicesPerUser(userId: Long): Response<List<ServiceDTO>>
     suspend fun getServicesPerDeliveryman(deliverymanId: Long): Response<List<ServiceDTO>>
@@ -94,6 +96,10 @@ interface SmartPackRepository {
         return smartPackApiService.getDeliverymanByUserId(userId)
     }
 
+    override suspend fun getAllDeliverymen(): Response<List<DeliverymanResponse>> {
+        return smartPackApiService.getAllDeliverymen()
+    }
+
     override suspend fun updateDeliveryman(
         id: Long,
         transportista: DeliverymanRequest,
@@ -120,6 +126,10 @@ interface SmartPackRepository {
         return smartPackApiService.getVehicleById(vehicleId)
     }
 
+    override suspend fun getAllVehicles(): Response<List<VehicleDTO>> {
+        return smartPackApiService.getAllVehicles()
+    }
+
     override suspend fun createVehicle(vehicle: VehicleDTO): Response<VehicleDTO> {
         return smartPackApiService.createVehicle(vehicle)
     }
@@ -136,11 +146,11 @@ interface SmartPackRepository {
         return smartPackApiService.createService(service)
     }
 
-    override suspend fun modifyService(
+    override suspend fun updateService(
         serviceId: Long,
         newService: ServiceDTO,
     ): Response<ServiceDTO> {
-        return smartPackApiService.modifyService(serviceId, newService)
+        return smartPackApiService.updateService(serviceId, newService)
     }
 
     override suspend fun changeServiceStatus(
