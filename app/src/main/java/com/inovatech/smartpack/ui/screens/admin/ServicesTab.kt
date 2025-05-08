@@ -59,9 +59,7 @@ fun ServicesTab(
 
             //Chips per filtrar serveis actuals o finalitzats
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
                 FilterChip(selected = showActiveServices, onClick = {
@@ -279,7 +277,6 @@ fun ServiceDetailsDialog(
     //Mostrem el diàleg per modificar el transportista dins d'un llistat donat
     if (showModifyDeliverymanDialog) {
         ModifyDeliverymanDialog(
-
             onDismiss = { showModifyDeliverymanDialog = false },
             onConfirm = { assignedTo = it; showModifyDeliverymanDialog = false },
             uiState = uiState,
