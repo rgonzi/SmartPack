@@ -134,7 +134,10 @@ fun AdminHomeScreen(
                                 launchSingleTop = true
                             }
                         }
-                    })
+                        //Esborrem la query de cerca
+                        viewModel.onSearchQueryChanged("")
+                    }
+                )
             }) {
             NavHost(
                 navController = navController,

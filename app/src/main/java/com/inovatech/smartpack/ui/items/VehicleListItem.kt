@@ -3,9 +3,7 @@ package com.inovatech.smartpack.ui.items
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -42,10 +40,11 @@ fun VehicleListItem(
         ) {
             //Id + Marca + Model
             Text(
-                text = "#${vehicle.id}: ${vehicle.brand} - ${vehicle.model} - ",
+                text = "#${vehicle.id}: ${vehicle.brand} ${vehicle.model}",
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
+            Spacer(modifier = Modifier.weight(1f))
             //Matrícula
             Text(text = vehicle.plate, color = Color.White)
         }
