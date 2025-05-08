@@ -18,12 +18,12 @@ data class User(
     val address: String? = null,
     val observations: String? = null,
     val role: Role? = null,
-    val companyId: Long? = null
+    val companyId: Long? = null,
 )
 
-enum class Role {
-    ROLE_USER, ROLE_ADMIN, ROLE_DELIVERYMAN
-}
+enum class Role { ROLE_USER, ROLE_ADMIN, ROLE_DELIVERYMAN }
+
+enum class UserFilter { ALL, USER, DELIVERYMAN }
 
 fun User.toUserRequest() = UserRequest(
     email = email,
