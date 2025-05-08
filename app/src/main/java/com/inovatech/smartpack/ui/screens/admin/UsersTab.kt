@@ -1,19 +1,27 @@
 package com.inovatech.smartpack.ui.screens.admin
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.inovatech.smartpack.model.Deliveryman
+import com.inovatech.smartpack.model.Role
 import com.inovatech.smartpack.model.User
+import com.inovatech.smartpack.model.UserFilter
+import com.inovatech.smartpack.model.Vehicle
 import com.inovatech.smartpack.model.uiState.AdminHomeUiState
 import com.inovatech.smartpack.ui.items.CommonFilterBar
 import com.inovatech.smartpack.ui.items.DeleteDialog
@@ -27,8 +35,11 @@ object UsersTab
 @Composable
 fun UsersTab(
     viewModel: AdminHomeViewModel,
-    uiState: AdminHomeUiState
+    uiState: AdminHomeUiState,
 ) {
+    var userFilter by remember { mutableStateOf(UserFilter.ALL) }
+    val usersDisplayed = uiState.filteredUsers(uiState.searchQuery, userFilter)
+
     PullToRefreshBox(
         isRefreshing = uiState.isRefreshing,
         onRefresh = { viewModel.refreshAll() },
@@ -49,12 +60,32 @@ fun UsersTab(
                 onQueryChange = viewModel::onSearchQueryChanged,
                 placeHolder = "Cerca per nom o email"
             )
+            //Filtre per mostrar només usuaris normals o transportistes
+            Row(
+                horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()
+            ) {
+                FilterChip(
+                    selected = userFilter == UserFilter.ALL,
+                    onClick = { userFilter = UserFilter.ALL },
+                    label = { Text("Tots") })
+                Spacer(modifier = Modifier.width(8.dp))
+                FilterChip(
+                    selected = userFilter == UserFilter.USER,
+                    onClick = { userFilter = UserFilter.USER },
+                    label = { Text("Usuaris") })
+                Spacer(modifier = Modifier.width(8.dp))
+                FilterChip(
+                    selected = userFilter == UserFilter.DELIVERYMAN,
+                    onClick = { userFilter = UserFilter.DELIVERYMAN },
+                    label = { Text("Transportistes") })
+            }
+
             Spacer(modifier = Modifier.height(8.dp))
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(uiState.filteredUsers) { user ->
+                items(usersDisplayed) { user ->
                     UserListItem(user = user, onClick = viewModel::onUserSelected)
                     Spacer(modifier = Modifier.height(8.dp))
                 }
@@ -65,12 +96,12 @@ fun UsersTab(
                     user = user,
                     onDismiss = { viewModel.onUserSelected(null) },
                     onUpdate = viewModel::updateUser,
-                    onDelete = { viewModel.deactivateUser(user.id); viewModel.onUserSelected(null) }
-                )
+                    onDelete = { viewModel.deactivateUser(user.id); viewModel.onUserSelected(null) })
             }
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -169,8 +200,8 @@ fun UserDetailsDialog(
             TextButton(onClick = onDismiss) {
                 Text("Cancel·lar")
             }
-        }
-    )
+        })
+
     if (showDeleteDialog) {
         DeleteDialog(
             onDismiss = { showDeleteDialog = false },

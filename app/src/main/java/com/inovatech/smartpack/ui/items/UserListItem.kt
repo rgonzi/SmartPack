@@ -51,6 +51,16 @@ fun UserListItem(
             )
             //Email
             Text(text = user.email!!, color = Color.White)
+            //Mostrem una petita icona per saber si és transportista o no
+            if (user.role == Role.ROLE_DELIVERYMAN) {
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_delivery_truck),
+                    contentDescription = null,
+                    tint = Color.Green,
+                    modifier = Modifier.size(12.dp)
+                )
+            }
         }
     }
 }
