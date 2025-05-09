@@ -59,6 +59,7 @@ fun VehiclesTab(
         horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()
     ) {
         if (uiState.deliveryman != null) {
+            val vehicle = uiState.deliveryman.vehicle
 
             VehicleCard(
                 uiState = uiState, viewModel = viewModel
@@ -69,15 +70,13 @@ fun VehiclesTab(
             // Botó per crear vehicle o guardar canvis
             Button(
                 onClick = {
-                    if (uiState.deliveryman.vehicle.id == 0L) {
-                        viewModel.createVehicle()
-                    } else {
+                    vehicle?.let {
                         viewModel.updateVehicle()
-                    }
+                    } ?: viewModel.createVehicle()
                     viewModel.vehicleHasChanged(false)
                 }, enabled = uiState.vehicleHasChanged, modifier = Modifier.fillMaxWidth(0.6f)
             ) {
-                Text(if (uiState.deliveryman.vehicle.id == 0L) "Crear vehicle" else "Desar canvis")
+                Text(vehicle?.let { "Desar canvis" } ?: "Crear vehicle")
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -97,7 +96,7 @@ fun VehiclesTab(
                 Text("Desar canvis")
             }
 
-            if (uiState.deliveryman.vehicle.id != 0L) {
+            vehicle?.let {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 //Botó per eliminar el vehicle
@@ -109,8 +108,6 @@ fun VehiclesTab(
                     Text("Eliminar vehicle", fontWeight = FontWeight.Bold)
                 }
             }
-
-
 
             if (showDeleteDialog) {
                 DeleteDialog(
@@ -142,7 +139,7 @@ fun VehicleCard(
     viewModel: DeliveryManHomeViewModel,
     uiState: DeliveryManUiState,
 ) {
-
+    val vehicle = uiState.deliveryman!!.vehicle
     Card(
         modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp)
     ) {
@@ -152,13 +149,13 @@ fun VehicleCard(
                 "Vehicle assignat", fontSize = 20.sp, fontWeight = FontWeight.Bold
             )
 
-            if (uiState.deliveryman!!.vehicle.id == 0L) {
+            if (vehicle == null) {
                 Text("No tens cap vehicle assignat")
                 Text("Pots crear-ne un ara: ")
             }
             //Marca
             CommonTextField(
-                value = uiState.deliveryman.vehicle.brand, onValueChange = {
+                value = vehicle?.brand ?: "", onValueChange = {
                     viewModel.updateVehicleBrand(it)
                     viewModel.vehicleHasChanged(true)
                 }, label = "Marca", trailingIcon = null, imeAction = ImeAction.Next, isError = false
@@ -167,7 +164,7 @@ fun VehicleCard(
             Spacer(modifier = Modifier.height(8.dp))
             //Model
             CommonTextField(
-                value = uiState.deliveryman.vehicle.model, onValueChange = {
+                value = vehicle?.model ?: "", onValueChange = {
                     viewModel.updateVehicleModel(it)
                     viewModel.vehicleHasChanged(true)
                 }, label = "Model", trailingIcon = null, imeAction = ImeAction.Next, isError = false
@@ -176,7 +173,7 @@ fun VehicleCard(
             Spacer(modifier = Modifier.height(8.dp))
             //Matrícula
             CommonTextField(
-                value = uiState.deliveryman.vehicle.plate,
+                value = vehicle?.plate ?: "",
                 onValueChange = {
                     viewModel.updateVehiclePlate(it)
                     viewModel.vehicleHasChanged(true)

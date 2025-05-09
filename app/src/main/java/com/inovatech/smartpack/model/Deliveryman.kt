@@ -10,7 +10,7 @@ data class Deliveryman(
     val userId: Long = 0,
     val licence: String = "",
     val active: Boolean = true,
-    val vehicle: Vehicle = Vehicle()
+    val vehicle: Vehicle? = null
 )
 
 fun Deliveryman.toDeliverymanRequest() = DeliverymanRequest(
