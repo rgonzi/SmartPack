@@ -44,6 +44,8 @@ interface SmartPackRepository {
     suspend fun createCompany(company: CompanyDTO): Response<CompanyDTO>
     suspend fun updateCompany(companyId: Long, newCompany: CompanyDTO): Response<CompanyDTO>
     suspend fun getAllCompanies(): Response<List<CompanyDTO>>
+    suspend fun assignUserToCompany(assignUserToCompanyRequest: AssignUserToCompanyRequest): Response<ApiResponse>
+    suspend fun desassignUserFromCompany(userId: Long): Response<ApiResponse>
     suspend fun getUsersAssignedToCompany(companyId: Long): Response<List<UserResponse>>
     suspend fun deactivateCompany(companyId: Long): Response<ApiResponse>
 }
@@ -196,6 +198,14 @@ interface SmartPackRepository {
 
     override suspend fun getAllCompanies(): Response<List<CompanyDTO>> {
         return smartPackApiService.getAllCompanies()
+    }
+
+    override suspend fun assignUserToCompany(assignUserToCompanyRequest: AssignUserToCompanyRequest): Response<ApiResponse> {
+        return smartPackApiService.assignUserToCompany(assignUserToCompanyRequest)
+    }
+
+    override suspend fun desassignUserFromCompany(userId: Long): Response<ApiResponse> {
+        return smartPackApiService.desassignUserFromCompany(userId)
     }
 
     override suspend fun getUsersAssignedToCompany(companyId: Long): Response<List<UserResponse>> {

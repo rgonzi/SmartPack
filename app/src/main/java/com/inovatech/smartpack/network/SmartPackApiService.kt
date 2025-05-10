@@ -275,6 +275,20 @@ interface SmartPackApiService {
     suspend fun getUsersAssignedToCompany(@Path("empresaID") companyId: Long): Response<List<UserResponse>>
 
     /**
+     * Petició per assignar un usuari a una empresa
+     * @param AssignUserToCompanyRequest: Conté la id de la empresa a assignar i la id del usuari
+     */
+    @POST("/empresa/assignar-usuari")
+    suspend fun assignUserToCompany(@Body assignUserToCompanyRequest: AssignUserToCompanyRequest): Response<ApiResponse>
+
+    /**
+     * Petició per desassignar una empresa d'un usuari donat
+     * @param userId: La id del usuari en qüestió
+     */
+    @PATCH("/desassignar-usuari/{userId}")
+    suspend fun desassignUserFromCompany(@Path("userId") userId: Long): Response<ApiResponse>
+
+    /**
      * Petició per desactivar una empresa
      * @param companyId: La id de la empresa a esborrar
      * @return Retorna una resposta de l'API del tipus ApiResponse

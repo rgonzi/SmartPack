@@ -50,13 +50,6 @@ fun CompanyTab(
         modifier = Modifier.fillMaxSize()
     ) {
         Column {
-            Text(
-                "Llistat d'empreses",
-                fontSize = 24.sp,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth()
-            )
             CommonFilterBar(
                 query = uiState.searchQuery,
                 onQueryChange = viewModel::onSearchQueryChanged,
@@ -150,16 +143,15 @@ fun CompanyDetailsDialog(
                         .fillMaxWidth()
                         .padding(vertical = 4.dp)
                 )
-                //TODO: Veure usuaris assignats
                 Spacer(modifier = Modifier.height(8.dp))
 
                 //Botó per mostrar un dialeg per desactivar la empresa
                 OutlinedButton(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Red
-                    ), onClick = { showDeleteDialog = true }, modifier = Modifier.fillMaxWidth(0.6f)
+                    ), onClick = { showDeleteDialog = true }, modifier = Modifier.fillMaxWidth(0.66f)
                 ) {
-                    Text("Eliminar empresa", fontWeight = FontWeight.Bold)
+                    Text("Eliminar empresa", fontWeight = FontWeight.Bold, fontSize = 14.sp)
                 }
             }
         },

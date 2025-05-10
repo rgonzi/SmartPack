@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.model.*
+import com.inovatech.smartpack.model.api.AssignUserToCompanyRequest
 import com.inovatech.smartpack.model.api.toCompany
 import com.inovatech.smartpack.model.api.toDeliveryman
 import com.inovatech.smartpack.model.api.toService
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
+import kotlin.collections.map
 
 @HiltViewModel
 class AdminHomeViewModel @Inject constructor(
@@ -42,7 +44,6 @@ class AdminHomeViewModel @Inject constructor(
             getAllCompanies()
             getAllServices()
             //getAllInvoices()
-            //TODO: Esperar a que s'hagi carregat totes les dades
             _uiState.update { it.copy(isLoading = false) }
         }
     }
@@ -404,6 +405,157 @@ class AdminHomeViewModel @Inject constructor(
                 Log.d(Settings.LOG_TAG, e.message.toString())
             }
             _uiState.update { it.copy(isLoading = false, selectedCompany = null) }
+        }
+    }
+
+    fun assignVehicle(deliverymanId: Long, vehicleId: Long) {
+        _uiState.update { it.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            try {
+                val response =
+                    smartPackRepository.assignVehicleToDeliveryman(deliverymanId, vehicleId)
+
+                if (response.isSuccessful) {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Vehicle assignat correctament",
+                            deliverymenList = it.deliverymenList.map { deliveryman ->
+                                if (deliveryman.id == deliverymanId) deliveryman.copy(
+                                    vehicle = Vehicle(
+                                        id = vehicleId
+                                    )
+                                )
+                                else deliveryman
+                            })
+                    }
+                    refreshAll()
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Error ${response.code()}: No s'ha pogut fer la modificació"
+                        )
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+            _uiState.update { it.copy(isLoading = false) }
+        }
+    }
+
+    fun assignCompany(userId: Long, companyId: Long) {
+        _uiState.update { it.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            try {
+                val response = smartPackRepository.assignUserToCompany(
+                    AssignUserToCompanyRequest(
+                        userId = userId,
+                        companyId = companyId
+                    )
+                )
+                if (response.isSuccessful) {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Empresa assignada correctament",
+                            usersList = it.usersList.map { user ->
+                                if (user.id == userId) user.copy(
+                                    companyId = companyId
+                                )
+                                else user
+                            })
+                    }
+                    refreshAll()
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Error ${response.code()}: No s'ha pogut fer la modificació"
+                        )
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+            _uiState.update { it.copy(isLoading = false) }
+        }
+    }
+
+    fun deassignCompany(userId: Long) {
+        _uiState.update { it.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            try {
+                val response = smartPackRepository.desassignUserFromCompany(userId)
+
+                if (response.isSuccessful) {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Empresa desassignada correctament",
+                            usersList = it.usersList.map { user ->
+                                if (user.id == userId) user.copy(
+                                    companyId = null
+                                )
+                                else user
+                            })
+                    }
+                    refreshAll()
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Error ${response.code()}: No s'ha pogut fer la modificació"
+                        )
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+            _uiState.update { it.copy(isLoading = false) }
+        }
+    }
+
+    fun deassignVehicle(deliverymanId: Long) {
+        _uiState.update { it.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            try {
+                val response = smartPackRepository.desassignVehicleFromDeliveryman(deliverymanId)
+
+                if (response.isSuccessful) {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Vehicle desassignat correctament",
+                            deliverymenList = it.deliverymenList.map { deliveryman ->
+                                if (deliveryman.id == deliverymanId) deliveryman.copy(
+                                    vehicle = null
+                                )
+                                else deliveryman
+                            })
+                    }
+                    refreshAll()
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Error ${response.code()}: No s'ha pogut fer la modificació"
+                        )
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+            _uiState.update { it.copy(isLoading = false) }
         }
     }
 
