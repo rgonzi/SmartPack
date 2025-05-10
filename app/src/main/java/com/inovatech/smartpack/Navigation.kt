@@ -18,10 +18,14 @@ import com.inovatech.smartpack.ui.screens.admin.AdminHome
 import com.inovatech.smartpack.ui.screens.admin.AdminHomeScreen
 import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHome
 import com.inovatech.smartpack.ui.screens.deliveryman.DeliverymanHomeScreen
-import com.inovatech.smartpack.ui.screens.newObjects.NewService
-import com.inovatech.smartpack.ui.screens.newObjects.NewServiceScreen
-import com.inovatech.smartpack.ui.screens.newObjects.NewVehicle
-import com.inovatech.smartpack.ui.screens.newObjects.NewVehicleScreen
+import com.inovatech.smartpack.ui.screens.newEntities.NewCompany
+import com.inovatech.smartpack.ui.screens.newEntities.NewCompanyScreen
+import com.inovatech.smartpack.ui.screens.newEntities.NewService
+import com.inovatech.smartpack.ui.screens.newEntities.NewServiceScreen
+import com.inovatech.smartpack.ui.screens.newEntities.NewUserByAdmin
+import com.inovatech.smartpack.ui.screens.newEntities.NewUserByAdminScreen
+import com.inovatech.smartpack.ui.screens.newEntities.NewVehicle
+import com.inovatech.smartpack.ui.screens.newEntities.NewVehicleScreen
 import com.inovatech.smartpack.ui.screens.user.UserHome
 import com.inovatech.smartpack.ui.screens.user.UserHomeScreen
 import com.inovatech.smartpack.ui.screens.userConfig.*
@@ -138,11 +142,27 @@ fun Navigation(
                         },
                         navToNewVehicle = {
                             navController.navigate(NewVehicle)
+                        },
+                        navToNewUser = {
+                            navController.navigate(NewUserByAdmin)
+                        },
+                        navToNewCompany = {
+                            navController.navigate(NewCompany)
                         }
                     )
                 }
                 composable<NewService> {
                     NewServiceScreen(
+                        navigateUp = { navController.navigateUp() }
+                    )
+                }
+                composable<NewCompany> {
+                    NewCompanyScreen(
+                        navigateUp = { navController.navigateUp() }
+                    )
+                }
+                composable<NewUserByAdmin> {
+                    NewUserByAdminScreen(
                         navigateUp = { navController.navigateUp() }
                     )
                 }

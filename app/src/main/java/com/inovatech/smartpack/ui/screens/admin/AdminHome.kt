@@ -44,6 +44,8 @@ fun AdminHomeScreen(
     viewModel: AdminHomeViewModel = hiltViewModel(),
     navToConfig: () -> Unit,
     navToNewService: () -> Unit,
+    navToNewCompany: () -> Unit,
+    navToNewUser: () -> Unit,
     navToNewVehicle: () -> Unit,
     //TODO Afegir les pantalles de creació que falten
 ) {
@@ -78,9 +80,8 @@ fun AdminHomeScreen(
                 AdminFab(
                     expanded = fabExpanded,
                     onFabClick = { fabExpanded = !fabExpanded },
-                    //TODO: Crear pantalles per afegir nous objectes
-                    onCreateUser = { },
-                    onCreateCompany = { },
+                    onCreateUser = { navToNewUser() },
+                    onCreateCompany = { navToNewCompany() },
                     onCreateService = { navToNewService() },
                     onCreateVehicle = { navToNewVehicle() })
             },
