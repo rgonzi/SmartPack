@@ -45,7 +45,7 @@ class DeliveryManHomeViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 deliveryman = it.deliveryman!!.copy(
-                    vehicle = it.deliveryman.vehicle.copy(brand = brand)
+                    vehicle = it.deliveryman.vehicle?.copy(brand = brand)
                 )
             )
         }
@@ -55,7 +55,7 @@ class DeliveryManHomeViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 deliveryman = it.deliveryman!!.copy(
-                    vehicle = it.deliveryman.vehicle.copy(model = model)
+                    vehicle = it.deliveryman.vehicle?.copy(model = model)
                 )
             )
         }
@@ -65,7 +65,7 @@ class DeliveryManHomeViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 deliveryman = it.deliveryman!!.copy(
-                    vehicle = it.deliveryman.vehicle.copy(plate = plate)
+                    vehicle = it.deliveryman.vehicle?.copy(plate = plate)
                 )
             )
         }
@@ -189,7 +189,7 @@ class DeliveryManHomeViewModel @Inject constructor(
     private fun validateVehicleInput(): Boolean {
         val vehicle = uiState.value.deliveryman!!.vehicle
 
-        if (vehicle.brand.isBlank() || vehicle.model.isBlank() || vehicle.plate.isBlank()) {
+        if (vehicle?.brand.isNullOrBlank() || vehicle.model.isBlank() || vehicle.plate.isBlank()) {
             _uiState.update {
                 it.copy(
                     msg = "Si us plau, ompliu tots els camps del vehicle.", isLoading = false
@@ -268,7 +268,7 @@ class DeliveryManHomeViewModel @Inject constructor(
     fun createVehicle() {
         _uiState.update { it.copy(isLoading = true) }
 
-        val vehicle = uiState.value.deliveryman!!.vehicle
+        val vehicle = uiState.value.deliveryman!!.vehicle!!
 
         if (validateVehicleInput()) {
             viewModelScope.launch {
@@ -316,7 +316,7 @@ class DeliveryManHomeViewModel @Inject constructor(
     }
 
     fun updateVehicle() {
-        val vehicle = uiState.value.deliveryman!!.vehicle
+        val vehicle = uiState.value.deliveryman!!.vehicle!!
 
         _uiState.update { it.copy(isLoading = true, msg = null) }
 
@@ -393,7 +393,7 @@ class DeliveryManHomeViewModel @Inject constructor(
 
     fun deactivateVehicle() {
         val deliveryman = uiState.value.deliveryman!!
-        val vehicleId = deliveryman.vehicle.id
+        val vehicleId = deliveryman.vehicle!!.id
         _uiState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {

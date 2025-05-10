@@ -1,4 +1,4 @@
-package com.inovatech.smartpack.ui.screens.newObjects
+package com.inovatech.smartpack.ui.screens.newEntities
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

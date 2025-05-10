@@ -1,4 +1,4 @@
-package com.inovatech.smartpack.ui.screens.newObjects
+package com.inovatech.smartpack.ui.screens.newEntities
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

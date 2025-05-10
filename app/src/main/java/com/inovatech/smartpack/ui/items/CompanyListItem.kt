@@ -3,12 +3,7 @@ package com.inovatech.smartpack.ui.items
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -42,19 +37,20 @@ fun CompanyListItem(
         Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 //Id + nom empresa
                 Text(
-                    text = "#${company.id}: ${company.name} - ",
+                    text = "#${company.id}: ${company.name}",
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
                 //NIF
-                Text(text = company.nif, color = Color.White)
+                Text(text = "NIF: ${company.nif}", color = Color.White)
             }
             //Email + telèfon
-            Text(text = "${company.email} - ${company.phone}", color = Color.White)
+            Text(text = "${company.phone} - ${company.email}", color = Color.White)
         }
     }
 }

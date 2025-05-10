@@ -3,6 +3,7 @@ package com.inovatech.smartpack.ui.items
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,11 +43,13 @@ fun ServiceListItem(
         )) {
         Column {
             Row(
-                verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 //Id + nom destinatari
                 Text(
-                    text = "#${service.id}: ${service.packageToDeliver.recipientName} - ",
+                    text = "#${service.id}: ${service.packageToDeliver.recipientName}",
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
@@ -54,7 +57,9 @@ fun ServiceListItem(
                 Text(text = service.status.toString(), color = Color.White)
             }
             Row(
-                verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 //Telèfon destinatari
                 Text(
@@ -63,7 +68,7 @@ fun ServiceListItem(
                 )
                 service.deliverymanId?.let {
                     Text(
-                        text = " - Transportista: #$it",
+                        text = "Transportista: #$it",
                         color = Color.White,
                         fontStyle = FontStyle.Italic
                     )

@@ -1,13 +1,10 @@
-package com.inovatech.smartpack.ui.screens.newObjects
+package com.inovatech.smartpack.ui.screens.newEntities
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
-import com.inovatech.smartpack.model.ServiceStatus
 import com.inovatech.smartpack.model.Vehicle
-import com.inovatech.smartpack.model.api.ServiceDTO
-import com.inovatech.smartpack.model.toPackageDTO
 import com.inovatech.smartpack.model.toVehicleDTO
 import com.inovatech.smartpack.model.uiState.NewVehicleUiState
 import com.inovatech.smartpack.utils.Settings

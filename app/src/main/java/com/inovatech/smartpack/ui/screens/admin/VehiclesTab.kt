@@ -50,13 +50,6 @@ fun VehiclesTab(
         modifier = Modifier.fillMaxSize()
     ) {
         Column {
-            Text(
-                "Llistat de vehicles",
-                fontSize = 24.sp,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth()
-            )
             CommonFilterBar(
                 query = uiState.searchQuery,
                 onQueryChange = viewModel::onSearchQueryChanged,
