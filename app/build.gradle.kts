@@ -82,7 +82,6 @@ dependencies {
     // Gson converter
     implementation(libs.converter.gson)
     //OkHttp
-    //implementation(libs.okhttp)
     implementation (libs.okhttp3.logging.interceptor)
 
     //Criptografia per a EncryptedSharedPreferences
@@ -93,6 +92,9 @@ dependencies {
     implementation (libs.hilt.android)
     kapt (libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    //SplashScreen
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     testImplementation(libs.junit)
     testImplementation (libs.kotlinx.coroutines.test)
@@ -107,7 +109,7 @@ dependencies {
     androidTestImplementation  (libs.hilt.android.testing)
     kaptAndroidTest (libs.hilt.compiler)
 
-    // For local unit tests
+    // For local unit tests with hilt
     testImplementation (libs.hilt.android.testing)
     kaptTest (libs.hilt.compiler)
 

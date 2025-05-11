@@ -29,6 +29,7 @@ import com.inovatech.smartpack.ui.screens.newEntities.NewVehicleScreen
 import com.inovatech.smartpack.ui.screens.user.UserHome
 import com.inovatech.smartpack.ui.screens.user.UserHomeScreen
 import com.inovatech.smartpack.ui.screens.userConfig.*
+import com.inovatech.smartpack.utils.Settings
 import kotlinx.coroutines.delay
 
 /**
@@ -42,22 +43,21 @@ fun Navigation(
     tokenRepository: TokenRepository,
 ) {
     val navController: NavHostController = rememberNavController()
-    var startDestination by remember { mutableStateOf<Any>(Splash) }
+    var startDestination by remember { mutableStateOf<Any>(Login) }
+    var showSplashScreen by remember { mutableStateOf(true) }
 
-    //TODO: Posar una SplashScreen de debò
+    //SplashScreen de duració determinada
     LaunchedEffect(Unit) {
-        delay(1000)
-        startDestination = Login
+        delay(Settings.SPLASH_SCREEN_DURATION)
+        showSplashScreen = false
     }
     AnimatedVisibility(
-        startDestination == Splash, enter = fadeIn(), exit = fadeOut()
+        showSplashScreen, enter = fadeIn(), exit = fadeOut()
     ) {
-        Surface(modifier = Modifier.fillMaxSize()) {
-            SplashScreen()
-        }
+        SplashScreen()
     }
     AnimatedVisibility(
-        startDestination != Splash, enter = fadeIn(), exit = fadeOut()
+        !showSplashScreen, enter = fadeIn(), exit = fadeOut()
     ) {
         Surface {
             NavHost(
