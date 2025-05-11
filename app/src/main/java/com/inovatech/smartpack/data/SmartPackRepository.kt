@@ -35,6 +35,7 @@ interface SmartPackRepository {
     suspend fun updateService(serviceId: Long, newService: ServiceDTO): Response<ServiceDTO>
     suspend fun changeServiceStatus(serviceId: Long, statusRequest: ChangeStatusRequest): Response<ServiceDTO>
     suspend fun confirmDelivery(serviceId: Long, deliveryConfirmationDTO: DeliveryConfirmationDTO): Response<ApiResponse>
+    suspend fun assignDeliverymanToService(serviceId: Long, deliverymanId: Long?): Response<ServiceDTO>
     suspend fun getServicesPerUser(userId: Long): Response<List<ServiceDTO>>
     suspend fun getServicesPerDeliveryman(deliverymanId: Long): Response<List<ServiceDTO>>
     suspend fun getServiceHistoric(serviceId: Long): Response<List<ServiceHistoricDTO>>
@@ -168,6 +169,13 @@ interface SmartPackRepository {
         deliveryConfirmationDTO: DeliveryConfirmationDTO,
     ): Response<ApiResponse> {
         return smartPackApiService.confirmDelivery(serviceId, deliveryConfirmationDTO)
+    }
+
+    override suspend fun assignDeliverymanToService(
+        serviceId: Long,
+        deliverymanId: Long?,
+    ): Response<ServiceDTO> {
+        return smartPackApiService.assignDeliverymanToService(serviceId, deliverymanId)
     }
 
     override suspend fun getServicesPerUser(userId: Long): Response<List<ServiceDTO>> {

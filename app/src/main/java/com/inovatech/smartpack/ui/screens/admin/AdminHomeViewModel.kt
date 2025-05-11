@@ -445,6 +445,40 @@ class AdminHomeViewModel @Inject constructor(
         }
     }
 
+    fun assignDeliverymanToService(serviceId: Long, deliverymanId: Long?) {
+        _uiState.update { it.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            try {
+                val response = smartPackRepository.assignDeliverymanToService(
+                    serviceId = serviceId,
+                    deliverymanId = deliverymanId
+                )
+                if (response.isSuccessful) {
+                    _uiState.update { it.copy(
+                        msg = "Transportista assignat correctament",
+                        servicesList = it.servicesList.map { service ->
+                            if (service.id == serviceId) service.copy(deliverymanId = deliverymanId)
+                            else service
+                        }
+                    ) }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Error ${response.code()}: No s'ha pogut fer l'assignació"
+                        )
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update {
+                    it.copy(msg = "No s'ha pogut connectar amb el servidor")
+                }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+            _uiState.update { it.copy(isLoading = false) }
+        }
+    }
+
     fun assignCompany(userId: Long, companyId: Long) {
         _uiState.update { it.copy(isLoading = true) }
 
@@ -526,7 +560,8 @@ class AdminHomeViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val response = smartPackRepository.desassignVehicleFromDeliveryman(deliverymanId)
+                val response =
+                    smartPackRepository.desassignVehicleFromDeliveryman(deliverymanId)
 
                 if (response.isSuccessful) {
                     _uiState.update {

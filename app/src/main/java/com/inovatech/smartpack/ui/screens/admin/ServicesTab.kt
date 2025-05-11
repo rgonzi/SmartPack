@@ -84,6 +84,7 @@ fun ServicesTab(
                     service = service,
                     onDismiss = { viewModel.onServiceSelected(null) },
                     onUpdate = viewModel::updateService,
+                    assignDeliverymanToService = { viewModel.assignDeliverymanToService(service.id, it) },
                     onDelete = {
                         viewModel.deactivateService(service.id); viewModel.onServiceSelected(
                         null
@@ -101,6 +102,7 @@ fun ServiceDetailsDialog(
     service: Service,
     onDismiss: () -> Unit,
     onUpdate: (Service) -> Unit,
+    assignDeliverymanToService: (Long?) -> Unit,
     onDelete: () -> Unit,
 ) {
     var status by remember { mutableStateOf(service.status) }
@@ -269,7 +271,7 @@ fun ServiceDetailsDialog(
     if (showModifyDeliverymanDialog) {
         ModifyDeliverymanDialog(
             onDismiss = { showModifyDeliverymanDialog = false },
-            onConfirm = { assignedTo = it; showModifyDeliverymanDialog = false },
+            onConfirm = { assignedTo = it; assignDeliverymanToService(it); showModifyDeliverymanDialog = false },
             uiState = uiState,
             currentAssignedId = assignedTo
         )
