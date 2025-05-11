@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
@@ -96,6 +98,7 @@ fun UserConfigScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
                     .padding(paddingValues)
                     .padding(horizontal = 16.dp)
             ) {
@@ -110,7 +113,7 @@ fun UserConfigScreen(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
+                        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
 
                             Text("Edita les dades que vulguis: ")
 
@@ -127,7 +130,7 @@ fun UserConfigScreen(
                                 isError = false
                             )
 
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
 
                             //Surname
                             CommonTextField(
@@ -141,7 +144,7 @@ fun UserConfigScreen(
                                 imeAction = ImeAction.Done,
                                 isError = false
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
 
                             //DNI
                             CommonTextField(
@@ -155,7 +158,7 @@ fun UserConfigScreen(
                                 imeAction = ImeAction.Done,
                                 isError = !uiState.user!!.dni!!.isValidDni()
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
 
                             //Tel number
                             CommonTextField(
@@ -169,7 +172,7 @@ fun UserConfigScreen(
                                 imeAction = ImeAction.Done,
                                 isError = false
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
 
                             //Address
                             CommonTextField(
@@ -183,7 +186,7 @@ fun UserConfigScreen(
                                 imeAction = ImeAction.Done,
                                 isError = false
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
 
                             //Observations
                             OutlinedTextField(
