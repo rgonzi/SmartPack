@@ -30,7 +30,6 @@ import androidx.navigation.compose.rememberNavController
 import com.inovatech.smartpack.R
 import com.inovatech.smartpack.ui.LoadingScreen
 import com.inovatech.smartpack.ui.theme.Background
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -51,9 +50,7 @@ fun AdminHomeScreen(
     val uiState by viewModel.uiState.collectAsState()
     val navController = rememberNavController()
     val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
     var currentTab by remember { mutableStateOf<AdminHomeTab>(AdminHomeTab.ServicesTabDestAdmin) }
-
     var fabExpanded by remember { mutableStateOf(false) }
 
     LaunchedEffect(uiState.msg) {

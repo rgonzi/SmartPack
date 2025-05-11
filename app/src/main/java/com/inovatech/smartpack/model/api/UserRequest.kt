@@ -8,13 +8,13 @@ import com.inovatech.smartpack.model.Role
  */
 data class UserRequest(
     val email: String = "",
-    val password: String = "",
+    val password: String? = null,
     val role: Role = Role.ROLE_USER,
-    @SerializedName("dni") val dni: String = "",
+    @SerializedName("dni") val dni: String? = null,
     @SerializedName("nom") val name: String = "",
     @SerializedName("cognom") val surname: String = "",
     @SerializedName("telefon") val tel: String = "",
     @SerializedName("adreça") val address: String = "",
-    @SerializedName("observacio") val observations: String = "",
-    @SerializedName("secret") val secretWord: String = ""
+    @SerializedName("observacio") val observations: String? = null,
+    @SerializedName("secret") val secretWord: String? = null
 )

@@ -27,12 +27,12 @@ enum class UserFilter { ALL, USER, DELIVERYMAN }
 
 fun User.toUserRequest() = UserRequest(
     email = email?: "",
-    password = password?: "",
-    dni = dni?: "",
+    password = password,
+    dni = dni,
     role = role?: Role.ROLE_USER,
     name = name?: "",
     surname = surname?: "",
     tel = tel?: "",
     address = address ?: "",
-    observations = observations?: ""
+    observations = observations
 )

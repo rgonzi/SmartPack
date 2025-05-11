@@ -23,10 +23,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.inovatech.smartpack.R
 import com.inovatech.smartpack.model.Role
+import com.inovatech.smartpack.model.api.UserRequest
 import com.inovatech.smartpack.ui.CommonTextField
 import com.inovatech.smartpack.ui.LoadingScreen
 import com.inovatech.smartpack.ui.PasswordTextField
 import com.inovatech.smartpack.ui.items.BasicTopAppBar
+import com.inovatech.smartpack.ui.screens.admin.UsersTab
 import com.inovatech.smartpack.ui.theme.Background
 import com.inovatech.smartpack.utils.isValidDni
 import com.inovatech.smartpack.utils.isValidEmail
@@ -61,6 +63,17 @@ fun NewUserByAdminScreen(
             containerColor = Color.Transparent,
             modifier = Modifier.fillMaxSize()
         ) { paddingValues ->
+
+            var email by remember { mutableStateOf("") }
+            var password by remember { mutableStateOf("") }
+            var secretWord by remember { mutableStateOf("") }
+            var dni by remember { mutableStateOf("") }
+            var name by remember { mutableStateOf("") }
+            var surname by remember { mutableStateOf("") }
+            var tel by remember { mutableStateOf("") }
+            var address by remember { mutableStateOf("") }
+            var role by remember { mutableStateOf(Role.ROLE_USER) }
+
             LaunchedEffect(uiState.msg) {
                 if (!uiState.isLoading && uiState.msg != null) {
                     snackbarHostState.showSnackbar(uiState.msg!!)
@@ -83,32 +96,32 @@ fun NewUserByAdminScreen(
 
                         //Email
                         CommonTextField(
-                            value = uiState.newUser.email,
-                            onValueChange = { viewModel.updateEmail(it) },
+                            value = email,
+                            onValueChange = { email = it },
                             label = "Correu",
                             imeAction = ImeAction.Next,
                             trailingIcon = Icons.Default.Email,
-                            isError = !uiState.newUser.email.isValidEmail()
-                                    && uiState.newUser.email.isNotEmpty()
+                            isError = !email.isValidEmail()
+                                    && email.isNotEmpty()
                         )
                         Spacer(modifier = Modifier.height(4.dp))
 
                         //Password
                         PasswordTextField(
-                            value = uiState.newUser.password,
-                            onValueChange = { viewModel.updatePassword(it) },
+                            value = password,
+                            onValueChange = { password = it },
                             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                             trailingIconClick = { passwordVisible = !passwordVisible },
                             imeAction = ImeAction.Next,
-                            isError = !uiState.newUser.password.isValidPassword()
-                                    && uiState.newUser.password.isNotEmpty()
+                            isError = !password.isValidPassword()
+                                    && password.isNotEmpty()
                         )
                         Spacer(modifier = Modifier.height(4.dp))
 
                         //Paraula secreta
                         CommonTextField(
-                            value = uiState.newUser.secretWord,
-                            onValueChange = { viewModel.updateSecretWord(it) },
+                            value = secretWord,
+                            onValueChange = { secretWord = it },
                             label = "Paraula secreta",
                             imeAction = ImeAction.Next,
                             isError = false
@@ -117,12 +130,12 @@ fun NewUserByAdminScreen(
 
                         //DNI
                         CommonTextField(
-                            value = uiState.newUser.dni,
-                            onValueChange = { viewModel.updateDni(it) },
+                            value = dni,
+                            onValueChange = { dni = it },
                             label = "DNI",
                             imeAction = ImeAction.Next,
-                            isError = !uiState.newUser.dni.isValidDni()
-                                    && uiState.newUser.dni.isNotEmpty()
+                            isError = !dni.isValidDni()
+                                    && dni.isNotEmpty()
                         )
                         Spacer(modifier = Modifier.height(4.dp))
 
@@ -134,27 +147,27 @@ fun NewUserByAdminScreen(
                             Spacer(modifier = Modifier.width(8.dp))
 
                             RadioButton(
-                                selected = uiState.newUser.role == Role.ROLE_USER,
-                                onClick = { viewModel.updateRole(Role.ROLE_USER) })
+                                selected = role == Role.ROLE_USER,
+                                onClick = { role = Role.ROLE_USER })
                             Text("Usuari", fontSize = 12.sp)
                             Spacer(modifier = Modifier.width(8.dp))
 
                             RadioButton(
-                                selected = uiState.newUser.role == Role.ROLE_DELIVERYMAN,
-                                onClick = { viewModel.updateRole(Role.ROLE_DELIVERYMAN) })
+                                selected = role == Role.ROLE_DELIVERYMAN,
+                                onClick = { role = Role.ROLE_DELIVERYMAN })
                             Text("Transportista", fontSize = 12.sp)
                             Spacer(modifier = Modifier.width(8.dp))
 
                             RadioButton(
-                                selected = uiState.newUser.role == Role.ROLE_ADMIN,
-                                onClick = { viewModel.updateRole(Role.ROLE_ADMIN) })
+                                selected = role == Role.ROLE_ADMIN,
+                                onClick = { role = Role.ROLE_ADMIN })
                             Text("Admin", fontSize = 12.sp)
                         }
                         Spacer(modifier = Modifier.height(4.dp))
                         //Name
                         CommonTextField(
-                            value = uiState.newUser.name,
-                            onValueChange = { viewModel.updateName(it) },
+                            value = name,
+                            onValueChange = { name = it },
                             label = "Nom",
                             imeAction = ImeAction.Next,
                             isError = false
@@ -163,8 +176,8 @@ fun NewUserByAdminScreen(
 
                         //Surname
                         CommonTextField(
-                            value = uiState.newUser.surname,
-                            onValueChange = { viewModel.updateSurname(it) },
+                            value = surname,
+                            onValueChange = { surname = it },
                             label = "Cognoms",
                             imeAction = ImeAction.Next,
                             isError = false
@@ -173,8 +186,8 @@ fun NewUserByAdminScreen(
 
                         //Tel number
                         CommonTextField(
-                            value = uiState.newUser.tel,
-                            onValueChange = { viewModel.updateTel(it) },
+                            value = tel,
+                            onValueChange = { tel = it },
                             label = "Número de telèfon",
                             imeAction = ImeAction.Next,
                             isError = false
@@ -183,8 +196,8 @@ fun NewUserByAdminScreen(
 
                         //Address
                         CommonTextField(
-                            value = uiState.newUser.address,
-                            onValueChange = { viewModel.updateAddress(it) },
+                            value = address,
+                            onValueChange = { address = it },
                             label = "Adreça",
                             imeAction = ImeAction.Done,
                             isError = false
@@ -196,7 +209,21 @@ fun NewUserByAdminScreen(
 
                 // Botó per guardar els canvis realitzats
                 Button(
-                    onClick = { viewModel.createUser() }, modifier = Modifier.fillMaxWidth(0.6f)
+                    onClick = {
+                        viewModel.createUser(
+                            UserRequest(
+                                email = email,
+                                password = password,
+                                role = role,
+                                dni = dni,
+                                name = name,
+                                surname = surname,
+                                tel = tel,
+                                address = address,
+                                secretWord = secretWord
+                            )
+                        )
+                    }, modifier = Modifier.fillMaxWidth(0.6f)
                 ) {
                     Text("Crear usuari")
                 }

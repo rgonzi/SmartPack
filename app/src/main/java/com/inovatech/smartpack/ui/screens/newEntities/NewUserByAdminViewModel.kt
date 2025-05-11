@@ -26,50 +26,13 @@ class NewUserByAdminViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(msg = null)
     }
 
-    fun updateEmail(email: String) {
-        _uiState.update { it.copy(newUser = it.newUser.copy(email = email)) }
-    }
-
-    fun updatePassword(password: String) {
-        _uiState.update { it.copy(newUser = it.newUser.copy(password = password)) }
-    }
-
-    fun updateSecretWord(secretWord: String) {
-        _uiState.update { it.copy(newUser = it.newUser.copy(secretWord = secretWord)) }
-    }
-
-    fun updateDni(dni: String) {
-        _uiState.update { it.copy(newUser = it.newUser.copy(dni = dni)) }
-    }
-
-    fun updateRole(role: Role) {
-        _uiState.update { it.copy(newUser = it.newUser.copy(role = role)) }
-    }
-
-    fun updateName(name: String) {
-        _uiState.update { it.copy(newUser = it.newUser.copy(name = name)) }
-    }
-
-    fun updateSurname(surname: String) {
-        _uiState.update { it.copy(newUser = it.newUser.copy(surname = surname)) }
-    }
-
-    fun updateTel(tel: String) {
-        _uiState.update { it.copy(newUser = it.newUser.copy(tel = tel)) }
-    }
-
-    fun updateAddress(address: String) {
-        _uiState.update { it.copy(newUser = it.newUser.copy(address = address)) }
-    }
-
-    fun createUser() {
+    fun createUser(newUser: UserRequest) {
         _uiState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
-            val response = smartpackRepository.register(uiState.value.newUser)
+            val response = smartpackRepository.register(newUser)
             if (response.isSuccessful) {
                 _uiState.update { it.copy(msg = "Usuari creat correctament") }
-                _uiState.update { it.copy(newUser = UserRequest()) }
             } else {
                 _uiState.update { it.copy(msg = "Error ${response.code()}: S'ha produït un error al registrar") }
             }
