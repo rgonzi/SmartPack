@@ -172,8 +172,6 @@ class AdminHomeViewModel @Inject constructor(
         getAllCompanies()
         getAllServices()
 
-        //TODO Incorporar la funció per obtenir totes les factures
-
         _uiState.update { it.copy(isRefreshing = false) }
     }
 

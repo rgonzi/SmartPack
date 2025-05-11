@@ -47,7 +47,6 @@ fun AdminHomeScreen(
     navToNewCompany: () -> Unit,
     navToNewUser: () -> Unit,
     navToNewVehicle: () -> Unit,
-    //TODO Afegir les pantalles de creació que falten
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val navController = rememberNavController()
@@ -158,7 +157,7 @@ fun AdminHomeScreen(
                     UsersTab(viewModel = viewModel, uiState = uiState)
                 }
                 composable<InvoicesTab> {
-                    InvoicesTab()
+                    InvoicesTab(snackbarHostState = snackbarHostState)
                 }
                 composable<VehiclesTab> {
                     VehiclesTab(viewModel = viewModel, uiState = uiState)
