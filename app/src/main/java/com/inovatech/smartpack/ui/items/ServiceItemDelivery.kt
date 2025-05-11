@@ -3,32 +3,22 @@ package com.inovatech.smartpack.ui.items
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,10 +26,7 @@ import com.inovatech.smartpack.R
 import com.inovatech.smartpack.model.Package
 import com.inovatech.smartpack.model.Service
 import com.inovatech.smartpack.model.ServiceStatus
-import com.inovatech.smartpack.ui.theme.BlueSecondary
-import com.inovatech.smartpack.ui.theme.StatusDelivered
-import com.inovatech.smartpack.ui.theme.StatusNotDelivered
-import com.inovatech.smartpack.ui.theme.StatusReturned
+import com.inovatech.smartpack.ui.theme.*
 
 @Composable
 fun ServiceItemDelivery(
@@ -48,7 +35,10 @@ fun ServiceItemDelivery(
     onClick: () -> Unit,
     onNavToDetail: () -> Unit,
     onStatusChange: (ServiceStatus) -> Unit,
+    onConfirmDelivery: (String) -> Unit
 ) {
+    var showConfirmDeliveryDialog by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(24.dp))
@@ -108,7 +98,7 @@ fun ServiceItemDelivery(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 StatusButton("Entregat", color = StatusDelivered) {
-                    onStatusChange(ServiceStatus.ENTREGAT)
+                    showConfirmDeliveryDialog = true
                 }
                 StatusButton("Absent", color = StatusNotDelivered) {
                     onStatusChange(ServiceStatus.NO_ENTREGAT)
@@ -119,7 +109,54 @@ fun ServiceItemDelivery(
             }
         }
     }
+
+    if (showConfirmDeliveryDialog) {
+        ConfirmDeliveryDialog(
+            onDismiss = { showConfirmDeliveryDialog = false },
+            onConfirm = {
+                onConfirmDelivery(it)
+                showConfirmDeliveryDialog = false
+            }
+        )
+    }
+
 }
+
+@Composable
+fun ConfirmDeliveryDialog(onDismiss: () -> Unit, onConfirm: (String) -> Unit) {
+    var recipientPhone by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Confirma el telèfon del destinatari:", fontWeight = FontWeight.Bold) },
+        text = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                OutlinedTextField(
+                    value = recipientPhone,
+                    onValueChange = { recipientPhone = it },
+                    label = { Text("Telèfon del destinatari") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    keyboardActions = KeyboardActions(onDone = { onConfirm(recipientPhone) }),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm(recipientPhone) }) { Text("Confirmar") }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Cancel·lar") }
+        }
+    )
+}
+
 
 @Composable
 fun StatusButton(text: String, color: Color, onClick: () -> Unit) {
@@ -147,6 +184,7 @@ fun ServiceItemDeliveryPreview() {
         ), isExpanded = true,
         onClick = { },
         onNavToDetail = { },
-        onStatusChange = { }
+        onStatusChange = { },
+        onConfirmDelivery = { }
     )
 }

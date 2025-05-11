@@ -214,6 +214,17 @@ interface SmartPackApiService {
     ): Response<ServiceDTO>
 
     /**
+     * Petició per confirmar que un servei ha estat entregat
+     * @param serviceId: La id del servei a confirmar
+     * @param recipientPhone: El número de telèfon del destinatari del servei per confirmar la entrega
+     */
+    @POST("/servei/{id}/confirmar")
+    suspend fun confirmDelivery(
+        @Path("id") serviceId: Long,
+        @Body deliveryConfirmationDTO: DeliveryConfirmationDTO,
+    ): Response<ApiResponse>
+
+    /**
      * Petició per obtenir un llistat de tots els serveis
      */
     @GET("/servei/list")

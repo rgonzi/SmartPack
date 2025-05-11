@@ -37,8 +37,6 @@ fun AssignedServicesTab(
     var expandedItemId by remember { mutableStateOf<Long?>(null) }
     val services = uiState.assignedServices
 
-    //TODO Demanar mbl destinatari només al canviar l'estat d'un paquet a Entregat
-
     LaunchedEffect(uiState.msg) {
         if (!uiState.isLoading && uiState.msg != null) {
             launchSnackbar(uiState.msg)
@@ -74,7 +72,10 @@ fun AssignedServicesTab(
                             expandedItemId = if (expandedItemId == service.id) null else service.id
                         },
                         onNavToDetail = { onNavToDetail(service.id) },
-                        onStatusChange = { status -> viewModel.changeStatus(service.id, status) }
+                        onStatusChange = { status -> viewModel.changeStatus(service.id, status) },
+                        onConfirmDelivery = { recipientPhone ->
+                            viewModel.confirmDelivery(service.id, recipientPhone)
+                        }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }

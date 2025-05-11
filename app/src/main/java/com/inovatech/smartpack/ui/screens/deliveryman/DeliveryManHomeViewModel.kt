@@ -9,6 +9,7 @@ import com.inovatech.smartpack.model.ServiceStatus
 import com.inovatech.smartpack.model.User
 import com.inovatech.smartpack.model.Vehicle
 import com.inovatech.smartpack.model.api.ChangeStatusRequest
+import com.inovatech.smartpack.model.api.DeliveryConfirmationDTO
 import com.inovatech.smartpack.model.api.DeliverymanRequest
 import com.inovatech.smartpack.model.api.toDeliveryman
 import com.inovatech.smartpack.model.api.toService
@@ -18,6 +19,7 @@ import com.inovatech.smartpack.model.api.toVehicle
 import com.inovatech.smartpack.model.toDeliverymanRequest
 import com.inovatech.smartpack.model.toVehicleDTO
 import com.inovatech.smartpack.model.uiState.DeliveryManUiState
+import com.inovatech.smartpack.ui.theme.StatusDelivered
 import com.inovatech.smartpack.utils.Settings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -209,11 +211,8 @@ class DeliveryManHomeViewModel @Inject constructor(
 
                 if (response.isSuccessful && response.body() != null) {
                     _uiState.update {
-                        it.copy(
-                            assignedServices = response.body()!!
-                                .map { it.toService() }
-                                .filter { it.status == ServiceStatus.TRANSIT }
-                        )
+                        it.copy(assignedServices = response.body()!!.map { it.toService() }
+                            .filter { it.status == ServiceStatus.TRANSIT })
                     }
                 } else {
                     _uiState.update {
@@ -443,6 +442,40 @@ class DeliveryManHomeViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             msg = "Error ${response.code()}: No s'ha pogut modificar l'estat del servei"
+                        )
+                    }
+                }
+            } catch (e: IOException) {
+                _uiState.update { it.copy(msg = "No s'ha pogut connectar amb el servidor") }
+                Log.d(Settings.LOG_TAG, e.message.toString())
+            }
+            _uiState.update { it.copy(isLoading = false) }
+        }
+    }
+
+    fun confirmDelivery(serviceId: Long, recipientPhone: String) {
+        _uiState.update { it.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            try {
+                val response = smartPackRepository
+                    .confirmDelivery(serviceId, DeliveryConfirmationDTO(recipientPhone))
+
+                if (response.isSuccessful) {
+                    _uiState.update {
+                        val confirmedService = it.assignedServices.find { it.id == serviceId }!!
+                        val updatedService = confirmedService.copy(status = ServiceStatus.ENTREGAT)
+                        it.copy(
+                            assignedServices = it.assignedServices.filterNot { it == confirmedService },
+                            finalizedServices = it.finalizedServices + updatedService,
+                            msg = response.body()?.msg ?: "Servei confirmat correctament"
+                        )
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            msg = "Error ${response.code()}: ${response.body()?.msg 
+                                ?: "No s'ha pogut confirmar la entrega (possible telèfon erroni)"}"
                         )
                     }
                 }
