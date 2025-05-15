@@ -1,5 +1,6 @@
 package com.inovatech.smartpack.ui.screens
 
+import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.data.TokenRepository
 import com.inovatech.smartpack.ui.screens.userConfig.UserConfigViewModel
 import org.junit.Before
@@ -17,9 +18,15 @@ class HomeViewModelTest {
     @Mock
     private lateinit var tokenRepository: TokenRepository
 
+    @Mock
+    private lateinit var smartPackRepository: SmartPackRepository
+
     @Before
     fun setUp() {
-        viewModel = UserConfigViewModel(tokenRepository)
+        viewModel = UserConfigViewModel(
+            tokenRepository,
+            smartPackRepository = smartPackRepository
+        )
     }
 
     /**

@@ -23,6 +23,9 @@ import com.inovatech.smartpack.model.Role
 import com.inovatech.smartpack.model.User
 import com.inovatech.smartpack.ui.theme.BlueSecondary
 
+/**
+ * Composable que defineix el disseny del item mostrat i mostra els detalls en llistar Usuaris com a admin
+ */
 @Composable
 fun UserListItem(
     user: User,

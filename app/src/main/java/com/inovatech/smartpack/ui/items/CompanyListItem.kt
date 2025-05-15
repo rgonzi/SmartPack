@@ -18,6 +18,9 @@ import androidx.compose.ui.unit.dp
 import com.inovatech.smartpack.model.Company
 import com.inovatech.smartpack.ui.theme.BlueSecondary
 
+/**
+* Composable que defineix el disseny del item mostrat en llistar Empreses com a admin
+*/
 @Composable
 fun CompanyListItem(
     company: Company,

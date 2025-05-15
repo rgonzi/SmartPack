@@ -1,5 +1,6 @@
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.data.TokenRepository
+import com.inovatech.smartpack.model.Role
 import com.inovatech.smartpack.model.api.LoginRequest
 import com.inovatech.smartpack.model.api.LoginResponse
 import com.inovatech.smartpack.ui.screens.LoginViewModel
@@ -149,7 +150,7 @@ class LoginViewModelTest {
         loginViewModel.updateEmail(email)
         loginViewModel.updatePassword(pass)
 
-        val mockResponse = LoginResponse(token = "test_token", expiresIn = Date())
+        val mockResponse = LoginResponse(token = "test_token", expiresIn = Date(), role = Role.ROLE_USER)
         val request = LoginRequest(email, pass)
 
         whenever(mockRepository.login(request)).thenReturn(Response.success(mockResponse))

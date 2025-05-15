@@ -39,6 +39,9 @@ import com.inovatech.smartpack.model.ServiceStatus
 import com.inovatech.smartpack.ui.theme.BlueSecondary
 import com.inovatech.smartpack.ui.theme.OrangePrimary
 
+/**
+ * Composable que defineix el disseny del item mostrat en llistar Serveis actius com a usuari
+ */
 @Composable
 fun ServiceItem(
     service: Service,

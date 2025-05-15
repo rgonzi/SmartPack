@@ -6,10 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.inovatech.smartpack.data.SmartPackRepository
 import com.inovatech.smartpack.model.api.UserRequest
 import com.inovatech.smartpack.model.Role
-import com.inovatech.smartpack.model.api.DeliverymanRequest
 import com.inovatech.smartpack.model.uiState.SignUpUiState
 import com.inovatech.smartpack.utils.Settings
-import com.inovatech.smartpack.utils.Settings.TIMEOUT
+import com.inovatech.smartpack.utils.Settings.LOGIN_TIMEOUT
 import com.inovatech.smartpack.utils.isValidDni
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
@@ -144,7 +143,7 @@ class SignUpViewModel @Inject constructor(
                 //Concatenem el tipus de via amb el nom de la via
                 address = state.addressType + " " + state.address
             )
-            val result = withTimeoutOrNull(TIMEOUT) {
+            val result = withTimeoutOrNull(LOGIN_TIMEOUT) {
                 try {
                     val response = smartPackRepository.register(usuariPerRegistrar)
                     if (response.isSuccessful) {

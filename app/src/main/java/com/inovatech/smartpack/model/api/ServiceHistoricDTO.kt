@@ -3,6 +3,9 @@ package com.inovatech.smartpack.model.api
 import com.google.gson.annotations.SerializedName
 import com.inovatech.smartpack.model.ServiceHistoric
 
+/**
+ * Classe que representa una petició i una resposta per realitzar accions sobre l'històric d'un Servei
+ */
 data class ServiceHistoricDTO (
     @SerializedName("id") val id: Long,
     @SerializedName("serveId") val serviceId: Long,

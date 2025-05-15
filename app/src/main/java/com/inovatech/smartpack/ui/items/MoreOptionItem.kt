@@ -14,6 +14,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * Composable que defineix el disseny del item per a cada opció del menú de MoreOptions com a Usuari
+ */
 @Composable
 fun MoreOptionItem(title: String, onClick: () -> Unit) {
     Card(

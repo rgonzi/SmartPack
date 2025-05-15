@@ -2,6 +2,9 @@ package com.inovatech.smartpack.model
 
 import com.inovatech.smartpack.model.api.ServiceHistoricDTO
 
+/**
+ * Classe que defineix la entitat Històric de Servei.
+ */
 data class ServiceHistoric(
     val id: Long,
     val serviceId: Long,

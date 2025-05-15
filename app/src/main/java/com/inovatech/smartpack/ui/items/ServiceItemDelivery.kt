@@ -28,6 +28,10 @@ import com.inovatech.smartpack.model.Service
 import com.inovatech.smartpack.model.ServiceStatus
 import com.inovatech.smartpack.ui.theme.*
 
+
+/**
+ * Composable que defineix el disseny del item mostrat en llistar Serveis actius com a transportista
+ */
 @Composable
 fun ServiceItemDelivery(
     service: Service,

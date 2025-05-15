@@ -25,6 +25,10 @@ import androidx.compose.ui.unit.dp
 import com.inovatech.smartpack.model.Service
 import com.inovatech.smartpack.ui.theme.BlueSecondary
 
+
+/**
+ * Composable que defineix el disseny del item mostrat i mostra els detalls en llistar Serveis com a admin
+ */
 @Composable
 fun ServiceListItem(
     service: Service,

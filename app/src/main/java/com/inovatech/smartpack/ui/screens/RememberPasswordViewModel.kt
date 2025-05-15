@@ -9,7 +9,7 @@ import com.inovatech.smartpack.model.api.ForgotPasswordRequest
 import com.inovatech.smartpack.model.uiState.RememberPasswordUiState
 import com.inovatech.smartpack.model.api.ResetPasswordRequest
 import com.inovatech.smartpack.utils.Settings
-import com.inovatech.smartpack.utils.Settings.TIMEOUT
+import com.inovatech.smartpack.utils.Settings.LOGIN_TIMEOUT
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -96,7 +96,7 @@ class RememberPasswordViewModel @Inject constructor(
 
                 viewModelScope.launch {
                     delay(800)
-                    val result = withTimeoutOrNull(TIMEOUT) {
+                    val result = withTimeoutOrNull(LOGIN_TIMEOUT) {
                         try {
                             val response = smartPackRepository.resetPassword(resetPasswordRequest)
 
@@ -142,7 +142,7 @@ class RememberPasswordViewModel @Inject constructor(
                 viewModelScope.launch {
                     val forgotPasswordRequest = ForgotPasswordRequest(email, secretWord)
                     delay(800)
-                    val result = withTimeoutOrNull(TIMEOUT) {
+                    val result = withTimeoutOrNull(LOGIN_TIMEOUT) {
                         try {
                             val response = smartPackRepository.forgotPassword(forgotPasswordRequest)
 

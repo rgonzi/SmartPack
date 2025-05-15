@@ -9,6 +9,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
+/**
+ * Composable que defineix el disseny d'un AlertDialog estàndard que mostra un missatge d'advertencia
+ * a l'hora d'esborrar qualsevol tipus d'entitat
+ */
 @Composable
 fun DeleteDialog(
     onDismiss: () -> Unit,

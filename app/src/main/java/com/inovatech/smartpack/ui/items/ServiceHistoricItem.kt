@@ -21,6 +21,9 @@ import com.inovatech.smartpack.model.ServiceHistoric
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+/**
+ * Composable que defineix el disseny del item en clicar per veure detalls. Mostra l'historial d'estat del servei
+ */
 @Composable
 fun ServiceHistoricItem(
     event: ServiceHistoric,

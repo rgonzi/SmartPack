@@ -31,7 +31,10 @@ android {
 
     buildTypes {
         release {
+            //Ofusquem la aplicació
             isMinifyEnabled = false
+            //Eliminem els recursos que no s'utilitzen
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

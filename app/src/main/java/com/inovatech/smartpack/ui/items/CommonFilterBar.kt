@@ -13,7 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
-
+/**
+ * Composable que defineix el disseny de la barra de cerca mostrada en qualsevol pantalla
+ * com a admin
+ */
 @Composable
 fun CommonFilterBar(
     query: String,

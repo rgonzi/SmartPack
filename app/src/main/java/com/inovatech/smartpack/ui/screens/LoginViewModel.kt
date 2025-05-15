@@ -8,7 +8,7 @@ import com.inovatech.smartpack.data.TokenRepository
 import com.inovatech.smartpack.model.api.LoginRequest
 import com.inovatech.smartpack.model.uiState.LoginUiState
 import com.inovatech.smartpack.utils.Settings
-import com.inovatech.smartpack.utils.Settings.TIMEOUT
+import com.inovatech.smartpack.utils.Settings.LOGIN_TIMEOUT
 import com.inovatech.smartpack.utils.isValidEmail
 import com.inovatech.smartpack.utils.isValidPassword
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -112,7 +112,7 @@ class LoginViewModel @Inject constructor(
 
             val usuariLogin = LoginRequest(email = email, password = password)
 
-            val result = withTimeoutOrNull(TIMEOUT) {
+            val result = withTimeoutOrNull(LOGIN_TIMEOUT) {
                 try {
                     val response = smartPackRepository.login(usuariLogin)
 

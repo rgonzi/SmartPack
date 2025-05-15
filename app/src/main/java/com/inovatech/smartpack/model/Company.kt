@@ -2,6 +2,9 @@ package com.inovatech.smartpack.model
 
 import com.inovatech.smartpack.model.api.CompanyDTO
 
+/**
+ * Classe que defineix la entitat Empresa.
+ */
 data class Company(
     val id: Long,
     val email: String,

@@ -94,7 +94,6 @@ interface SmartPackApiService {
 
     /**
      * Petició per obtenir tots els transportistes
-     *
      */
     @GET("/transportista/list")
     suspend fun getAllDeliverymen(): Response<List<DeliverymanResponse>>
@@ -277,18 +276,34 @@ interface SmartPackApiService {
 
     //Empreses
 
+    /**
+     * Petició per crear una nova empresa
+     * @param company: Dades de la nova empresa del tipus CompanyDTO
+     */
     @POST("/empresa/create")
     suspend fun createCompany(@Body company: CompanyDTO): Response<CompanyDTO>
 
+    /**
+     * Petició per modificar les dades d'una empresa
+     * @param companyId: La id de la empresa a modificar
+     * @param newCompany: Les noves dades actualitzades del tipus CompanyDTO
+     */
     @PUT("/empresa/{id}")
     suspend fun updateCompany(
         @Path("id") companyId: Long,
         @Body newCompany: CompanyDTO,
     ): Response<CompanyDTO>
 
+    /**
+     * Petició per obtenir un llistat de totes les empreses
+     */
     @GET("/empresa/list")
     suspend fun getAllCompanies(): Response<List<CompanyDTO>>
 
+    /**
+     * Petició per obtenir els usuaris assignats a una empresa en concret
+     * @param companyId: La id de la empresa
+     */
     @GET("/empresa/{empresaID}/usuaris")
     suspend fun getUsersAssignedToCompany(@Path("empresaID") companyId: Long): Response<List<UserResponse>>
 

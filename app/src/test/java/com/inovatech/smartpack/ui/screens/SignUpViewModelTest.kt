@@ -1,6 +1,7 @@
 package com.inovatech.smartpack.ui.screens
 
 import com.inovatech.smartpack.data.SmartPackRepository
+import com.inovatech.smartpack.model.Role
 import com.inovatech.smartpack.model.api.UserRequest
 import com.inovatech.smartpack.model.User
 import com.inovatech.smartpack.model.api.UserResponse
@@ -134,7 +135,7 @@ class SignUpViewModelTest {
         val request = UserRequest(
             email = "email",
             password = "1234567A",
-            role = null,
+            role = Role.ROLE_USER,
             name = "Test",
             surname = "Test test",
             tel = "123456789",

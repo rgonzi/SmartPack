@@ -3,6 +3,9 @@ package com.inovatech.smartpack.model.api
 import com.google.gson.annotations.SerializedName
 import com.inovatech.smartpack.model.Company
 
+/**
+ * Classe que representa una petició i una resposta per realitzar accions sobre l'entitat Empresa
+ */
 data class CompanyDTO(
     @SerializedName("id") val id: Long = 0,
     @SerializedName("email") val email: String = "",
