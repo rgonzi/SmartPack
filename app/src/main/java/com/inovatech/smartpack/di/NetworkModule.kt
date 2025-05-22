@@ -36,6 +36,7 @@ object NetworkModule {
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .addInterceptor(AuthInterceptor(tokenRepository))
+            .hostnameVerifier { hostname, session -> true } //Deshabilitem la verificació del hostname
             .build()
     }
 

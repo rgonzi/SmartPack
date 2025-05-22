@@ -5,7 +5,7 @@ package com.inovatech.smartpack.utils
  */
 object Settings {
     const val LOGIN_TIMEOUT = 8000L
-    const val BASE_URL = "http://inovatech.duckdns.org:8110"
+    const val BASE_URL = "https://192.168.1.117:9443"
     const val LOG_TAG = "SmartPack-Debug"
     const val SPLASH_SCREEN_DURATION = 2000L
 }
